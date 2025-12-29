@@ -16,6 +16,8 @@ RSpec.describe 'InertiaRails Configuration', type: :request do
   end
 
   describe 'Inertia response' do
+    before { sign_in }
+
     it 'responds to regular requests with full HTML' do
       get root_path
       expect(response).to have_http_status(:success)
@@ -54,6 +56,8 @@ RSpec.describe 'InertiaRails Configuration', type: :request do
   end
 
   describe 'version mismatch handling' do
+    before { sign_in }
+
     it 'returns 409 Conflict when version does not match' do
       get root_path, headers: { 'X-Inertia' => 'true', 'X-Inertia-Version' => 'outdated-version' }
       expect(response).to have_http_status(:conflict)

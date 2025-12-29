@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'Home', type: :request do
   describe 'GET /' do
+    before { sign_in }
+
     it 'returns a successful response' do
       get root_path
       expect(response).to have_http_status(:success)
@@ -21,6 +23,13 @@ RSpec.describe 'Home', type: :request do
       get root_path
       expect(response.body).to include('<!DOCTYPE html>')
       expect(response.body).to include('application-name')
+    end
+  end
+
+  describe 'GET / unauthenticated' do
+    it 'redirects to login' do
+      get root_path
+      expect(response).to redirect_to(new_session_path)
     end
   end
 end
