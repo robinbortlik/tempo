@@ -16,5 +16,11 @@ RSpec.describe 'Home', type: :request do
       get root_path
       expect(response.body).to include('Time tracking')
     end
+
+    it 'uses the inertia layout' do
+      get root_path
+      expect(response.body).to include('<!DOCTYPE html>')
+      expect(response.body).to include('application-name')
+    end
   end
 end
