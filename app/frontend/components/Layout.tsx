@@ -1,13 +1,13 @@
-import { Head } from '@inertiajs/react'
-import { ReactNode } from 'react'
+import { Head } from "@inertiajs/react";
+import { ReactNode } from "react";
 
 interface LayoutProps {
-  children: ReactNode
-  title?: string
+  children: ReactNode;
+  title?: string;
 }
 
 export default function Layout({ children, title }: LayoutProps) {
-  const pageTitle = title ? `${title} - Tempo` : 'Tempo'
+  const pageTitle = title ? `${title} - Tempo` : "Tempo";
 
   return (
     <>
@@ -15,5 +15,5 @@ export default function Layout({ children, title }: LayoutProps) {
       {/* Navigation placeholder - will be implemented in Phase 12 */}
       <main>{children}</main>
     </>
-  )
+  );
 }

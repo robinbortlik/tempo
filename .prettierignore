@@ -1,0 +1,9 @@
+node_modules
+public
+vendor
+tmp
+log
+coverage
+app/assets
+*.min.js
+*.min.css
