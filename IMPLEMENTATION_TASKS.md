@@ -36,11 +36,11 @@
 
 ## Phase 3: Core Data Models
 
-### [] 3.1 Settings Model
-  - [] 3.1.1 Generate Settings model (company_name, address, email, phone, vat_id, company_registration, bank_name, bank_account, bank_swift)
-  - [] 3.1.2 Add Active Storage attachment for logo
-  - [] 3.1.3 Create Settings singleton pattern (first_or_create)
-  - [] 3.1.4 Write model specs for validations
+### [x] 3.1 Settings Model
+  - [x] 3.1.1 Generate Settings model (company_name, address, email, phone, vat_id, company_registration, bank_name, bank_account, bank_swift)
+  - [x] 3.1.2 Add Active Storage attachment for logo
+  - [x] 3.1.3 Create Settings singleton pattern (first_or_create)
+  - [x] 3.1.4 Write model specs for validations
 
 ### [] 3.2 Client Model
   - [] 3.2.1 Generate Client model with all fields (name, address, email, contact_person, vat_id, company_registration, bank_details, payment_terms, hourly_rate, currency)

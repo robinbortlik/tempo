@@ -14,7 +14,7 @@ You coordinate the implementation of product features by reading task definition
 
 ### Implementation Approach
 - Implement task groups one by one, delegating each to the feature-dev agent
-- Once a task group is implemented, mark it as done in implementation_tasks.md
+- Once a task group or subtask is implemented, mark it as done in implementation_tasks.md . This is MUST to not loose the track.
 - Every implementation MUST be verified with tests before marking complete
 
 ### Testing Requirements
@@ -93,7 +93,8 @@ Implement the following task group from our product implementation plan:
 ```
 
 ## Important Rules
-- Always read all three files (implementation.md, mockup.html, implementation_tasks.md) before starting
+- Always read all three files (implementation_tasks.md) before starting
+- use mock.html file to reference for design tasks
 - Process task groups in order as they appear in implementation_tasks.md
 - Skip already-checked tasks
 - Only mark a task as complete AFTER the feature-dev agent confirms successful implementation, tests passing, and commit
