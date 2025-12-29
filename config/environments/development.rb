@@ -26,7 +26,12 @@ Rails.application.configure do
   end
 
   # Change to :null_store to avoid any caching.
+  # Use memory store in development for speed, solid_cache_store in production
   config.cache_store = :memory_store
+
+  # Use async adapter for jobs in development (inline execution for easier debugging)
+  # Use solid_queue in production for durability
+  config.active_job.queue_adapter = :async
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
