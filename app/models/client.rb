@@ -1,6 +1,6 @@
 class Client < ApplicationRecord
-  # Associations (to be added later)
-  # has_many :projects, dependent: :destroy
+  # Associations
+  has_many :projects, dependent: :destroy
   # has_many :invoices, dependent: :destroy
 
   # Callbacks

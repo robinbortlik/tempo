@@ -42,12 +42,12 @@
   - [x] 3.1.3 Create Settings singleton pattern (first_or_create)
   - [x] 3.1.4 Write model specs for validations
 
-### [] 3.2 Client Model
-  - [] 3.2.1 Generate Client model with all fields (name, address, email, contact_person, vat_id, company_registration, bank_details, payment_terms, hourly_rate, currency)
-  - [] 3.2.2 Add share_token column with secure default (SecureRandom.uuid)
-  - [] 3.2.3 Add validations (name required, hourly_rate > 0, currency format)
-  - [] 3.2.4 Add share_token uniqueness index
-  - [] 3.2.5 Write model specs
+### [x] 3.2 Client Model
+  - [x] 3.2.1 Generate Client model with all fields (name, address, email, contact_person, vat_id, company_registration, bank_details, payment_terms, hourly_rate, currency)
+  - [x] 3.2.2 Add share_token column with secure default (SecureRandom.uuid)
+  - [x] 3.2.3 Add validations (name required, hourly_rate > 0, currency format)
+  - [x] 3.2.4 Add share_token uniqueness index
+  - [x] 3.2.5 Write model specs
 
 ### [] 3.3 Project Model
   - [] 3.3.1 Generate Project model (client_id, name, hourly_rate, active)
