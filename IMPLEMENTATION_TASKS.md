@@ -2,38 +2,35 @@
 
 ## Phase 1: Project Foundation
 
-### [] 1.1 Rails Application Setup
-  - [] 1.1.1 Initialize Rails 8 app with SQLite, skip default JS (will use Inertia)
-  - [] 1.1.2 Configure Solid Queue, Solid Cache, Solid Cable
-  - [] 1.1.3 Add and configure Inertia Rails gem
-  - [] 1.1.4 Setup Vite with React and TypeScript
-  - [] 1.1.5 Install and configure Tailwind CSS
-  - [] 1.1.6 Install and configure shadcn/ui components
-  - [] 1.1.7 Create base Inertia layout with React
+### [x] 1.1 Rails Application Setup
+  - [x] 1.1.1 Initialize Rails 8 app with SQLite, skip default JS (will use Inertia)
+  - [x] 1.1.2 Configure Solid Queue, Solid Cache, Solid Cable
+  - [x] 1.1.3 Add and configure Inertia Rails gem
+  - [x] 1.1.4 Setup Vite with React and TypeScript
+  - [x] 1.1.5 Install and configure Tailwind CSS
+  - [x] 1.1.6 Install and configure shadcn/ui components
+  - [X] 1.1.7 Create base Inertia layout with React
 
-### [] 1.2 Development Environment
-  - [] 1.2.1 Configure ESLint and Prettier for TypeScript/React
-  - [] 1.2.2 Setup RSpec for Rails testing
-  - [] 1.2.3 Setup Vitest for React component testing
-  - [] 1.2.4 Create bin/dev script for concurrent Rails + Vite
+### [x] 1.2 Development Environment
+  - [x] 1.2.1 Configure ESLint and Prettier for TypeScript/React
+  - [x] 1.2.2 Setup RSpec for Rails testing
+  - [x] 1.2.3 Setup Vitest for React component testing
+  - [x] 1.2.4 Create bin/dev script for concurrent Rails + Vite
 
 ---
 
 ## Phase 2: Authentication
 
-### [] 2.1 User Model & Auth
-  - [] 2.1.1 Generate User model (email, password_digest)
-  - [] 2.1.2 Run Rails 8 authentication generator
-  - [] 2.1.3 Add email uniqueness validation and index
-  - [] 2.1.4 Create database seeds with default user
+### [x] 2.1 User Model & Auth
+  - [x] 2.1.1 Generate User model (email, password_digest)
+  - [x] 2.1.2 Run Rails 8 authentication generator
+  - [x] 2.1.3 Add email uniqueness validation and index
+  - [x] 2.1.4 Create database seeds with default user
 
-### [] 2.2 Auth UI
-  - [] 2.2.1 Create Login page component (React + shadcn form)
-  - [] 2.2.2 Create session controller with Inertia responses
-  - [] 2.2.3 Add authenticated route protection (before_action)
-  - [] 2.2.4 Create password reset request page
-  - [] 2.2.5 Create password reset form page
-  - [] 2.2.6 Configure Action Mailer for password reset emails
+### [x] 2.2 Auth UI
+  - [x] 2.2.1 Create Login page component (React + shadcn form)
+  - [x] 2.2.2 Create session controller with Inertia responses
+  - [x] 2.2.3 Add authenticated route protection (before_action)
 
 ---
 
