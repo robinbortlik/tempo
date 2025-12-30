@@ -3,6 +3,20 @@ import { createRoot } from "react-dom/client";
 import Layout from "../components/Layout";
 import "../styles/application.css";
 
+// Register service worker for PWA support
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((registration) => {
+        console.log("ServiceWorker registered:", registration.scope);
+      })
+      .catch((error) => {
+        console.log("ServiceWorker registration failed:", error);
+      });
+  });
+}
+
 // Import all page components eagerly
 const pages = import.meta.glob("../pages/**/*.tsx", { eager: true });
 

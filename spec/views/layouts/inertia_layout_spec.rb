@@ -17,9 +17,18 @@ RSpec.describe 'layouts/inertia', type: :view do
 
   it 'includes PWA meta tags' do
     expect(rendered).to include('name="apple-mobile-web-app-capable"')
+    expect(rendered).to include('name="apple-mobile-web-app-status-bar-style"')
+    expect(rendered).to include('name="apple-mobile-web-app-title"')
     expect(rendered).to include('name="mobile-web-app-capable"')
     expect(rendered).to include('name="application-name"')
+    expect(rendered).to include('name="theme-color"')
+    expect(rendered).to include('#1c1917')
     expect(rendered).to include('Tempo')
+  end
+
+  it 'includes PWA manifest link' do
+    expect(rendered).to include('rel="manifest"')
+    expect(rendered).to include('/manifest.json')
   end
 
   # Note: CSRF meta tags are tested via request specs since they require request context
