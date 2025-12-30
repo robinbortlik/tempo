@@ -12,6 +12,15 @@ class ReportsController < ApplicationController
       month: params[:month]
     )
 
-    render inertia: "Reports/Show", props: service.report
+    render inertia: "Reports/Show", props: service.report.merge(settings: settings_data)
+  end
+
+  private
+
+  def settings_data
+    settings = Setting.instance
+    {
+      company_name: settings.company_name
+    }
   end
 end
