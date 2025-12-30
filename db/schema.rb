@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_29_235238) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_29_235908) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -56,6 +56,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_235238) do
     t.index ["share_token"], name: "index_clients_on_share_token", unique: true
   end
 
+  create_table "invoices", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "projects", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.integer "client_id", null: false
@@ -89,6 +94,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_235238) do
     t.string "vat_id"
   end
 
+  create_table "time_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.text "description"
+    t.decimal "hours", precision: 6, scale: 2, null: false
+    t.integer "invoice_id"
+    t.integer "project_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_time_entries_on_date"
+    t.index ["invoice_id"], name: "index_time_entries_on_invoice_id"
+    t.index ["project_id", "date"], name: "index_time_entries_on_project_id_and_date"
+    t.index ["project_id"], name: "index_time_entries_on_project_id"
+    t.index ["status"], name: "index_time_entries_on_status"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -101,4 +122,5 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_235238) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "projects", "clients"
   add_foreign_key "sessions", "users"
+  add_foreign_key "time_entries", "projects"
 end
