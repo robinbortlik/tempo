@@ -1,19 +1,15 @@
-import { Head } from "@inertiajs/react";
 import { ReactNode } from "react";
+import AppLayout from "./AppLayout";
 
 interface LayoutProps {
   children: ReactNode;
   title?: string;
 }
 
+/**
+ * Main application layout wrapper.
+ * Delegates to AppLayout for the full navigation shell.
+ */
 export default function Layout({ children, title }: LayoutProps) {
-  const pageTitle = title ? `${title} - Tempo` : "Tempo";
-
-  return (
-    <>
-      <Head title={pageTitle} />
-      {/* Navigation placeholder - will be implemented in Phase 12 */}
-      <main>{children}</main>
-    </>
-  );
+  return <AppLayout title={title}>{children}</AppLayout>;
 }

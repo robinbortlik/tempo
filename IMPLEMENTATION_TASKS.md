@@ -186,92 +186,92 @@
   - [x] 8.2.8 Add finalize confirmation dialog
   - [x] 8.2.9 Add delete confirmation dialog (draft only)
 
-### [] 8.3 PDF Generation
-  - [] 8.3.1 Install and configure wicked_pdf gem
-  - [] 8.3.2 Install wkhtmltopdf binary (development)
-  - [] 8.3.3 Create invoice PDF template (HTML/ERB)
-  - [] 8.3.4 Add header section (your business details, logo)
-  - [] 8.3.5 Add client details section
-  - [] 8.3.6 Add invoice metadata (number, dates, period)
-  - [] 8.3.7 Add line items table (date, project, description, hours, rate, amount)
-  - [] 8.3.8 Add totals section
-  - [] 8.3.9 Add footer with payment terms/bank details
-  - [] 8.3.10 Add pdf action to InvoicesController
-  - [] 8.3.11 Add download PDF button to invoice show page
-  - [] 8.3.12 Write PDF generation specs
+### [x] 8.3 PDF Generation
+  - [x] 8.3.1 Install and configure wicked_pdf gem
+  - [x] 8.3.2 Install wkhtmltopdf binary (development)
+  - [x] 8.3.3 Create invoice PDF template (HTML/ERB)
+  - [x] 8.3.4 Add header section (your business details, logo)
+  - [x] 8.3.5 Add client details section
+  - [x] 8.3.6 Add invoice metadata (number, dates, period)
+  - [x] 8.3.7 Add line items table (date, project, description, hours, rate, amount)
+  - [x] 8.3.8 Add totals section
+  - [x] 8.3.9 Add footer with payment terms/bank details
+  - [x] 8.3.10 Add pdf action to InvoicesController
+  - [x] 8.3.11 Add download PDF button to invoice show page
+  - [x] 8.3.12 Write PDF generation specs
 
 ---
 
 ## Phase 9: Dashboard & Analytics
 
-### [] 9.1 Dashboard Backend
-  - [] 9.1.1 Create DashboardController with index action
-  - [] 9.1.2 Create DashboardStatsService class
-  - [] 9.1.3 Calculate hours this week
-  - [] 9.1.4 Calculate hours this month
-  - [] 9.1.5 Calculate total unbilled hours (all clients)
-  - [] 9.1.6 Calculate total unbilled amount (all clients, multi-currency aware)
-  - [] 9.1.7 Calculate unbilled breakdown per client
-  - [] 9.1.8 Write service specs
+### [x] 9.1 Dashboard Backend
+  - [x] 9.1.1 Create DashboardController with index action
+  - [x] 9.1.2 Create DashboardStatsService class
+  - [x] 9.1.3 Calculate hours this week
+  - [x] 9.1.4 Calculate hours this month
+  - [x] 9.1.5 Calculate total unbilled hours (all clients)
+  - [x] 9.1.6 Calculate total unbilled amount (all clients, multi-currency aware)
+  - [x] 9.1.7 Calculate unbilled breakdown per client
+  - [x] 9.1.8 Write service specs
 
 ### [] 9.2 Charts Data Backend
-  - [] 9.2.1 Create ChartsController or extend Dashboard
-  - [] 9.2.2 Add time_by_client endpoint (pie chart data)
-  - [] 9.2.3 Add time_by_project endpoint (bar chart data)
-  - [] 9.2.4 Add earnings_over_time endpoint (line chart data, monthly)
-  - [] 9.2.5 Add hours_trend endpoint (monthly hours)
-  - [] 9.2.6 Write controller specs
+  - [x] 9.2.1 Create ChartsController or extend Dashboard
+  - [x] 9.2.2 Add time_by_client endpoint (pie chart data)
+  - [x] 9.2.3 Add time_by_project endpoint (bar chart data)
+  - [x] 9.2.4 Add earnings_over_time endpoint (line chart data, monthly)
+  - [x] 9.2.5 Add hours_trend endpoint (monthly hours)
+  - [x] 9.2.6 Write controller specs
 
-### [] 9.3 Dashboard UI
-  - [] 9.3.1 Create Dashboard page layout
-  - [] 9.3.2 Create StatCard component (shadcn card)
-  - [] 9.3.3 Add stats cards row (hours week/month, unbilled hours/amount)
-  - [] 9.3.4 Install Recharts library
-  - [] 9.3.5 Create TimeByClientChart component (pie/donut)
-  - [] 9.3.6 Create TimeByProjectChart component (bar)
-  - [] 9.3.7 Create EarningsChart component (line)
-  - [] 9.3.8 Create HoursTrendChart component (line/bar)
-  - [] 9.3.9 Create UnbilledByClientTable component
-  - [] 9.3.10 Arrange components in responsive grid layout
+### [x] 9.3 Dashboard UI
+  - [x] 9.3.1 Create Dashboard page layout
+  - [x] 9.3.2 Create StatCard component (shadcn card)
+  - [x] 9.3.3 Add stats cards row (hours week/month, unbilled hours/amount)
+  - [x] 9.3.4 Install Recharts library
+  - [x] 9.3.5 Create TimeByClientChart component (pie/donut)
+  - [x] 9.3.6 Create TimeByProjectChart component (bar)
+  - [x] 9.3.7 Create EarningsChart component (line)
+  - [x] 9.3.8 Create HoursTrendChart component (line/bar)
+  - [x] 9.3.9 Create UnbilledByClientTable component
+  - [x] 9.3.10 Arrange components in responsive grid layout
 
 ---
 
 ## Phase 10: Client Report Portal
 
-### [] 10.1 Report Portal Backend
-  - [] 10.1.1 Create ReportsController (public, no auth)
-  - [] 10.1.2 Add show action that finds client by share_token
-  - [] 10.1.3 Return 404 for invalid tokens
-  - [] 10.1.4 Create ClientReportService class
-  - [] 10.1.5 Service: fetch unbilled entries for period (year/month filter)
-  - [] 10.1.6 Service: fetch invoiced entries for period
-  - [] 10.1.7 Service: calculate totals per project
-  - [] 10.1.8 Service: group by project with subtotals
-  - [] 10.1.9 Write controller and service specs
+### [x] 10.1 Report Portal Backend
+  - [x] 10.1.1 Create ReportsController (public, no auth)
+  - [x] 10.1.2 Add show action that finds client by share_token
+  - [x] 10.1.3 Return 404 for invalid tokens
+  - [x] 10.1.4 Create ClientReportService class
+  - [x] 10.1.5 Service: fetch unbilled entries for period (year/month filter)
+  - [x] 10.1.6 Service: fetch invoiced entries for period
+  - [x] 10.1.7 Service: calculate totals per project
+  - [x] 10.1.8 Service: group by project with subtotals
+  - [x] 10.1.9 Write controller and service specs
 
-### [] 10.2 Report Portal UI
-  - [] 10.2.1 Create separate Inertia layout for public pages (no auth nav)
-  - [] 10.2.2 Create ClientReport page component
-  - [] 10.2.3 Add year/month filter controls
-  - [] 10.2.4 Create UnbilledSection component (entries table with totals)
-  - [] 10.2.5 Create InvoicedSection component (entries table with totals)
-  - [] 10.2.6 Create ProjectGroup component (collapsible, shows entries)
-  - [] 10.2.7 Add responsive design for mobile viewing
-  - [] 10.2.8 Add print-friendly styles
+### [x] 10.2 Report Portal UI
+  - [x] 10.2.1 Create separate Inertia layout for public pages (no auth nav)
+  - [x] 10.2.2 Create ClientReport page component
+  - [x] 10.2.3 Add year/month filter controls
+  - [x] 10.2.4 Create UnbilledSection component (entries table with totals)
+  - [x] 10.2.5 Create InvoicedSection component (entries table with totals)
+  - [x] 10.2.6 Create ProjectGroup component (collapsible, shows entries)
+  - [x] 10.2.7 Add responsive design for mobile viewing
+  - [x] 10.2.8 Add print-friendly styles
 
 ---
 
 ## Phase 11: PWA Support
 
-### [] 11.1 PWA Configuration
-  - [] 11.1.1 Create web app manifest (manifest.json)
-  - [] 11.1.2 Add app icons in required sizes (192x192, 512x512)
-  - [] 11.1.3 Configure manifest in HTML head
-  - [] 11.1.4 Create basic service worker for app shell caching
-  - [] 11.1.5 Register service worker in React app
-  - [] 11.1.6 Add meta tags for iOS Safari support
-  - [] 11.1.7 Test installation on desktop Chrome
-  - [] 11.1.8 Test installation on mobile
+### [x] 11.1 PWA Configuration
+  - [x] 11.1.1 Create web app manifest (manifest.json)
+  - [x] 11.1.2 Add app icons in required sizes (192x192, 512x512)
+  - [x] 11.1.3 Configure manifest in HTML head
+  - [x] 11.1.4 Create basic service worker for app shell caching
+  - [x] 11.1.5 Register service worker in React app
+  - [x] 11.1.6 Add meta tags for iOS Safari support
+  - [x] 11.1.7 Test installation on desktop Chrome
+  - [x] 11.1.8 Test installation on mobile
 
 ---
 

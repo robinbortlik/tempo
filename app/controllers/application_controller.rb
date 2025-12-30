@@ -10,4 +10,17 @@ class ApplicationController < ActionController::Base
       notice: flash[:notice]
     }
   }
+
+  # Share current user auth info with all Inertia pages
+  inertia_share auth: -> {
+    if Current.session&.user
+      {
+        user: {
+          email_address: Current.session.user.email_address
+        }
+      }
+    else
+      {}
+    end
+  }
 end

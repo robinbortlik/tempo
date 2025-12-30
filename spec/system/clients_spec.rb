@@ -169,16 +169,22 @@ RSpec.describe "Clients", type: :system do
     it "has working tabs" do
       visit client_path(client)
 
-      expect(page).to have_content("Overview")
-      expect(page).to have_content("Projects (0)")
-      expect(page).to have_content("Settings")
+      within('[role="tablist"]') do
+        expect(page).to have_content("Overview")
+        expect(page).to have_content("Projects (0)")
+        expect(page).to have_content("Settings")
+      end
 
       # Switch to Projects tab
-      click_on "Projects (0)"
+      within('[role="tablist"]') do
+        click_on "Projects (0)"
+      end
       expect(page).to have_content("No projects yet")
 
       # Switch to Settings tab
-      click_on "Settings"
+      within('[role="tablist"]') do
+        click_on "Settings"
+      end
       expect(page).to have_content("Danger Zone")
       expect(page).to have_button("Delete Client")
     end
@@ -250,7 +256,9 @@ RSpec.describe "Clients", type: :system do
     it "shows delete confirmation dialog" do
       visit client_path(client)
 
-      click_on "Settings"
+      within('[role="tablist"]') do
+        click_on "Settings"
+      end
       click_button "Delete Client"
 
       expect(page).to have_content("Delete Client To Delete?")
@@ -262,7 +270,9 @@ RSpec.describe "Clients", type: :system do
     it "deletes the client when confirmed" do
       visit client_path(client)
 
-      click_on "Settings"
+      within('[role="tablist"]') do
+        click_on "Settings"
+      end
       click_button "Delete Client"
 
       within('[role="alertdialog"]') do
@@ -277,7 +287,9 @@ RSpec.describe "Clients", type: :system do
     it "can cancel deletion" do
       visit client_path(client)
 
-      click_on "Settings"
+      within('[role="tablist"]') do
+        click_on "Settings"
+      end
       click_button "Delete Client"
 
       within('[role="alertdialog"]') do
@@ -296,7 +308,9 @@ RSpec.describe "Clients", type: :system do
       it "shows error when trying to delete client with projects" do
         visit client_path(client)
 
-        click_on "Settings"
+        within('[role="tablist"]') do
+          click_on "Settings"
+        end
         click_button "Delete Client"
 
         within('[role="alertdialog"]') do
