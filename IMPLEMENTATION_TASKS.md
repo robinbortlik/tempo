@@ -49,48 +49,48 @@
   - [x] 3.2.4 Add share_token uniqueness index
   - [x] 3.2.5 Write model specs
 
-### [] 3.3 Project Model
-  - [] 3.3.1 Generate Project model (client_id, name, hourly_rate, active)
-  - [] 3.3.2 Add belongs_to :client association
-  - [] 3.3.3 Add has_many :projects to Client
-  - [] 3.3.4 Add effective_hourly_rate method (project rate || client rate)
-  - [] 3.3.5 Add validations and model specs
+### [x] 3.3 Project Model
+  - [x] 3.3.1 Generate Project model (client_id, name, hourly_rate, active)
+  - [x] 3.3.2 Add belongs_to :client association
+  - [x] 3.3.3 Add has_many :projects to Client
+  - [x] 3.3.4 Add effective_hourly_rate method (project rate || client rate)
+  - [x] 3.3.5 Add validations and model specs
 
-### [] 3.4 TimeEntry Model
-  - [] 3.4.1 Generate TimeEntry model (project_id, date, hours, description, status, invoice_id)
-  - [] 3.4.2 Add enum for status (unbilled: 0, invoiced: 1)
-  - [] 3.4.3 Add belongs_to :project and optional belongs_to :invoice
-  - [] 3.4.4 Add has_many :time_entries to Project
-  - [] 3.4.5 Add scopes: unbilled, invoiced, for_date_range(start, end)
-  - [] 3.4.6 Add calculated_amount method (hours * project.effective_hourly_rate)
-  - [] 3.4.7 Add validations (hours > 0, date required) and model specs
+### [x] 3.4 TimeEntry Model
+  - [x] 3.4.1 Generate TimeEntry model (project_id, date, hours, description, status, invoice_id)
+  - [x] 3.4.2 Add enum for status (unbilled: 0, invoiced: 1)
+  - [x] 3.4.3 Add belongs_to :project and optional belongs_to :invoice
+  - [x] 3.4.4 Add has_many :time_entries to Project
+  - [x] 3.4.5 Add scopes: unbilled, invoiced, for_date_range(start, end)
+  - [x] 3.4.6 Add calculated_amount method (hours * project.effective_hourly_rate)
+  - [x] 3.4.7 Add validations (hours > 0, date required) and model specs
 
-### [] 3.5 Invoice Model
-  - [] 3.5.1 Generate Invoice model (client_id, number, status, issue_date, due_date, period_start, period_end, total_hours, total_amount, currency, notes)
-  - [] 3.5.2 Add enum for status (draft: 0, final: 1)
-  - [] 3.5.3 Add belongs_to :client and has_many :time_entries
-  - [] 3.5.4 Add has_many :invoices to Client
-  - [] 3.5.5 Create InvoiceNumberGenerator service (YYYY-NNN format)
-  - [] 3.5.6 Add before_create callback to set number
-  - [] 3.5.7 Add calculate_totals method
-  - [] 3.5.8 Add validations and model specs
+### [x] 3.5 Invoice Model
+  - [x] 3.5.1 Generate Invoice model (client_id, number, status, issue_date, due_date, period_start, period_end, total_hours, total_amount, currency, notes)
+  - [x] 3.5.2 Add enum for status (draft: 0, final: 1)
+  - [x] 3.5.3 Add belongs_to :client and has_many :time_entries
+  - [x] 3.5.4 Add has_many :invoices to Client
+  - [x] 3.5.5 Create InvoiceNumberGenerator service (YYYY-NNN format)
+  - [x] 3.5.6 Add before_create callback to set number
+  - [x] 3.5.7 Add calculate_totals method
+  - [x] 3.5.8 Add validations and model specs
 
 ---
 
 ## Phase 4: Settings Feature
 
-### [] 4.1 Settings Backend
-  - [] 4.1.1 Create SettingsController with show and update actions
-  - [] 4.1.2 Add Inertia render for settings page
-  - [] 4.1.3 Handle logo upload via Active Storage
-  - [] 4.1.4 Write controller specs
+### [x] 4.1 Settings Backend
+  - [x] 4.1.1 Create SettingsController with show and update actions
+  - [x] 4.1.2 Add Inertia render for settings page
+  - [x] 4.1.3 Handle logo upload via Active Storage
+  - [x] 4.1.4 Write controller specs
 
-### [] 4.2 Settings UI
-  - [] 4.2.1 Create Settings page layout component
-  - [] 4.2.2 Create SettingsForm component with all fields
-  - [] 4.2.3 Add logo upload with preview
-  - [] 4.2.4 Add form validation (client-side)
-  - [] 4.2.5 Add success/error toast notifications
+### [ ] 4.2 Settings UI
+  - [ ] 4.2.1 Create Settings page layout component
+  - [ ] 4.2.2 Create SettingsForm component with all fields
+  - [ ] 4.2.3 Add logo upload with preview
+  - [ ] 4.2.4 Add form validation (client-side)
+  - [ ] 4.2.5 Add success/error toast notifications
 
 ---
 
@@ -305,26 +305,6 @@
   - [] 13.1.4 Create .dockerignore file
   - [] 13.1.5 Test local Docker build and run
 
-### [] 13.2 Kamal Configuration
-  - [] 13.2.1 Initialize Kamal (kamal init)
-  - [] 13.2.2 Configure deploy.yml with server details
-  - [] 13.2.3 Configure SQLite volume persistence
-  - [] 13.2.4 Configure Active Storage volume
-  - [] 13.2.5 Set up environment variables in .kamal/secrets
-  - [] 13.2.6 Configure health check endpoint
-  - [] 13.2.7 Configure SSL with Traefik
-  - [] 13.2.8 Test deployment to VPS
-  - [] 13.2.9 Document deployment commands
-
-### [] 13.3 Production Readiness
-  - [] 13.3.1 Configure production logging
-  - [] 13.3.2 Set up database backups (SQLite file backup)
-  - [] 13.3.3 Configure error tracking (optional: Sentry/similar)
-  - [] 13.3.4 Add health check endpoint
-  - [] 13.3.5 Create production seeds (initial user)
-  - [] 13.3.6 Write deployment documentation
-
----
 
 ## Task Dependencies
 

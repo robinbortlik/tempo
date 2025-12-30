@@ -10,6 +10,7 @@ interface PageProps {
     alert?: string;
     notice?: string;
   };
+  [key: string]: unknown;
 }
 
 export default function Login() {
