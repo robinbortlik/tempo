@@ -1,7 +1,7 @@
 class Client < ApplicationRecord
   # Associations
   has_many :projects, dependent: :destroy
-  # has_many :invoices, dependent: :destroy
+  has_many :invoices, dependent: :destroy
 
   # Callbacks
   before_validation :generate_share_token, on: :create

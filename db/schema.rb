@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_29_235908) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_30_000348) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -57,8 +57,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_235908) do
   end
 
   create_table "invoices", force: :cascade do |t|
+    t.integer "client_id", null: false
     t.datetime "created_at", null: false
+    t.string "currency"
+    t.date "due_date"
+    t.date "issue_date"
+    t.text "notes"
+    t.string "number", null: false
+    t.date "period_end"
+    t.date "period_start"
+    t.integer "status", default: 0, null: false
+    t.decimal "total_amount", precision: 12, scale: 2
+    t.decimal "total_hours", precision: 8, scale: 2
     t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["number"], name: "index_invoices_on_number", unique: true
+    t.index ["status"], name: "index_invoices_on_status"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -120,6 +134,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_235908) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "invoices", "clients"
   add_foreign_key "projects", "clients"
   add_foreign_key "sessions", "users"
   add_foreign_key "time_entries", "projects"
