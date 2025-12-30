@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "vite build",
     "lint": "eslint app/frontend",
     "lint:fix": "eslint app/frontend --fix",
     "format": "prettier --write app/frontend",

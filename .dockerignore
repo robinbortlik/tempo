@@ -30,11 +30,16 @@
 /tmp/storage/*
 !/tmp/storage/.keep
 
-# Ignore assets.
+# Ignore Node.js dependencies (will be installed in Docker)
 /node_modules/
+
+# Ignore built assets (will be built in Docker)
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
+/public/vite/
+/public/vite-dev/
+/public/vite-test/
 
 # Ignore CI service files.
 /.github
@@ -49,3 +54,19 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+/docker-compose*.yml
+
+# Ignore test and coverage files
+/coverage/
+/.rspec
+/spec/examples.txt
+
+# Ignore editor and IDE files
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+
+# Ignore macOS files
+.DS_Store
