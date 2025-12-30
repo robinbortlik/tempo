@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle exec rspec:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
+}
