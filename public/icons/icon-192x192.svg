@@ -1,4 +1,19 @@
-<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
-  <rect width="192" height="192" rx="24" fill="#1c1917"/>
-  <text x="96" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="120" font-weight="700" text-anchor="middle" fill="#ffffff">T</text>
+<svg width="192" height="192" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#292524"/>
+      <stop offset="100%" style="stop-color:#1c1917"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="96" ry="96" fill="url(#bgGradient)"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#fafaf9" stroke-width="16" opacity="0.15"/>
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#fafaf9" stroke-width="8" opacity="0.9"/>
+  <line x1="256" y1="132" x2="256" y2="152" stroke="#fafaf9" stroke-width="8" stroke-linecap="round"/>
+  <line x1="380" y1="256" x2="360" y2="256" stroke="#fafaf9" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="380" x2="256" y2="360" stroke="#fafaf9" stroke-width="8" stroke-linecap="round"/>
+  <line x1="132" y1="256" x2="152" y2="256" stroke="#fafaf9" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="190" y2="180" stroke="#fafaf9" stroke-width="14" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="330" y2="170" stroke="#fafaf9" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="16" fill="#fafaf9"/>
+  <circle cx="256" cy="256" r="8" fill="#f59e0b"/>
 </svg>

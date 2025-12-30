@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 Grover.configure do |config|
+  # Launch arguments for Chromium (required for Docker environments)
+  launch_args = if ENV["GROVER_NO_SANDBOX"] == "true"
+    ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+  else
+    []
+  end
+
   config.options = {
     format: "A4",
     margin: {
@@ -16,13 +23,8 @@ Grover.configure do |config|
     timeout: 30_000, # 30 seconds
     wait_until: "networkidle0",
     # Use system Chromium executable if set (for Docker)
-    executable_path: ENV.fetch("PUPPETEER_EXECUTABLE_PATH", nil)
+    executable_path: ENV.fetch("PUPPETEER_EXECUTABLE_PATH", nil),
+    # Launch arguments for Chromium
+    launch_args: launch_args
   }
-
-  # Launch arguments for Chromium (required for Docker environments)
-  config.launch_args = if ENV["GROVER_NO_SANDBOX"] == "true"
-    ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
-  else
-    []
-  end
 end

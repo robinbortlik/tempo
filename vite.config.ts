@@ -5,8 +5,10 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
+    react({
+      include: /\.(tsx|ts|jsx|js)$/,
+    }),
     RubyPlugin(),
-    react(),
   ],
   resolve: {
     alias: {

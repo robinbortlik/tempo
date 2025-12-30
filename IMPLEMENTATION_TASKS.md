@@ -277,33 +277,33 @@
 
 ## Phase 12: Navigation & Layout
 
-### [] 12.1 App Shell
-  - [] 12.1.1 Create AppLayout component with sidebar
-  - [] 12.1.2 Create Sidebar component with navigation links
-  - [] 12.1.3 Create Header component with user menu
-  - [] 12.1.4 Add mobile responsive navigation (hamburger menu)
-  - [] 12.1.5 Create Breadcrumb component
-  - [] 12.1.6 Add active state styling to nav items
-  - [] 12.1.7 Create Toast/notification system (shadcn sonner)
+### [x] 12.1 App Shell
+  - [x] 12.1.1 Create AppLayout component with sidebar
+  - [x] 12.1.2 Create Sidebar component with navigation links
+  - [x] 12.1.3 Create Header component with user menu
+  - [x] 12.1.4 Add mobile responsive navigation (hamburger menu)
+  - [x] 12.1.5 Create Breadcrumb component
+  - [x] 12.1.6 Add active state styling to nav items
+  - [x] 12.1.7 Create Toast/notification system (shadcn sonner)
 
-### [] 12.2 Shared Components
-  - [] 12.2.1 Create PageHeader component (title + actions)
-  - [] 12.2.2 Create EmptyState component
-  - [] 12.2.3 Create LoadingSpinner component
-  - [] 12.2.4 Create ConfirmDialog component
-  - [] 12.2.5 Create CurrencyDisplay component (formats by currency)
-  - [] 12.2.6 Create DateDisplay component (consistent date formatting)
+### [x] 12.2 Shared Components
+  - [x] 12.2.1 Create PageHeader component (title + actions)
+  - [x] 12.2.2 Create EmptyState component
+  - [x] 12.2.3 Create LoadingSpinner component
+  - [x] 12.2.4 Create ConfirmDialog component
+  - [x] 12.2.5 Create CurrencyDisplay component (formats by currency)
+  - [x] 12.2.6 Create DateDisplay component (consistent date formatting)
 
 ---
 
 ## Phase 13: Deployment
 
-### [] 13.1 Docker Setup
-  - [] 13.1.1 Create Dockerfile for production
-  - [] 13.1.2 Add wkhtmltopdf to Docker image
-  - [] 13.1.3 Configure multi-stage build (asset compilation)
-  - [] 13.1.4 Create .dockerignore file
-  - [] 13.1.5 Test local Docker build and run
+### [x] 13.1 Docker Setup
+  - [x] 13.1.1 Create Dockerfile for production
+  - [x] 13.1.2 Add wkhtmltopdf to Docker image
+  - [x] 13.1.3 Configure multi-stage build (asset compilation)
+  - [x] 13.1.4 Create .dockerignore file
+  - [x] 13.1.5 Test local Docker build and run
 
 
 ## Task Dependencies
