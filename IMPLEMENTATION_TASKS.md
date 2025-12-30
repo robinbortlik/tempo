@@ -148,43 +148,43 @@
   - [x] 7.1.6 Add bulk operations endpoint (optional)
   - [x] 7.1.7 Write controller specs
 
-### [] 7.2 Time Entries UI
-  - [] 7.2.1 Create TimeEntriesIndex page with date grouping
-  - [] 7.2.2 Create QuickEntryForm component (inline form at top)
-  - [] 7.2.3 Create TimeEntryRow component with inline edit capability
-  - [] 7.2.4 Add project selector dropdown (grouped by client)
-  - [] 7.2.5 Add date picker component
-  - [] 7.2.6 Add status badge (unbilled/invoiced)
-  - [] 7.2.7 Disable edit/delete for invoiced entries
-  - [] 7.2.8 Add filtering by date range, client, project
+### [x] 7.2 Time Entries UI
+  - [x] 7.2.1 Create TimeEntriesIndex page with date grouping
+  - [x] 7.2.2 Create QuickEntryForm component (inline form at top)
+  - [x] 7.2.3 Create TimeEntryRow component with inline edit capability
+  - [x] 7.2.4 Add project selector dropdown (grouped by client)
+  - [x] 7.2.5 Add date picker component
+  - [x] 7.2.6 Add status badge (unbilled/invoiced)
+  - [x] 7.2.7 Disable edit/delete for invoiced entries
+  - [x] 7.2.8 Add filtering by date range, client, project
 
 ---
 
 ## Phase 8: Invoices Feature
 
-### [] 8.1 Invoice Generation Backend
-  - [] 8.1.1 Create InvoicesController with index action (filterable by status, client, year)
-  - [] 8.1.2 Add new action (prepare invoice preview data)
-  - [] 8.1.3 Create InvoiceBuilder service class
-  - [] 8.1.4 InvoiceBuilder: accept client_id, date_range, calculate totals
-  - [] 8.1.5 InvoiceBuilder: fetch unbilled time entries for range
-  - [] 8.1.6 Add create action (save as draft, associate time entries)
-  - [] 8.1.7 Add show action
-  - [] 8.1.8 Add update action (only if draft)
-  - [] 8.1.9 Add finalize action (mark final, mark entries as invoiced)
-  - [] 8.1.10 Add destroy action (only if draft, unassociate entries)
-  - [] 8.1.11 Write controller and service specs
+### [x] 8.1 Invoice Generation Backend
+  - [x] 8.1.1 Create InvoicesController with index action (filterable by status, client, year)
+  - [x] 8.1.2 Add new action (prepare invoice preview data)
+  - [x] 8.1.3 Create InvoiceBuilder service class
+  - [x] 8.1.4 InvoiceBuilder: accept client_id, date_range, calculate totals
+  - [x] 8.1.5 InvoiceBuilder: fetch unbilled time entries for range
+  - [x] 8.1.6 Add create action (save as draft, associate time entries)
+  - [x] 8.1.7 Add show action
+  - [x] 8.1.8 Add update action (only if draft)
+  - [x] 8.1.9 Add finalize action (mark final, mark entries as invoiced)
+  - [x] 8.1.10 Add destroy action (only if draft, unassociate entries)
+  - [x] 8.1.11 Write controller and service specs
 
-### [] 8.2 Invoices UI
-  - [] 8.2.1 Create InvoicesIndex page with data table
-  - [] 8.2.2 Add columns: number, client, date, status, amount, actions
-  - [] 8.2.3 Add status filter tabs (all, draft, final)
-  - [] 8.2.4 Create NewInvoice page with client and date range selectors
-  - [] 8.2.5 Create InvoicePreview component (shows entries, totals)
-  - [] 8.2.6 Create InvoiceShow page with full details
-  - [] 8.2.7 Create InvoiceEdit page (for draft invoices)
-  - [] 8.2.8 Add finalize confirmation dialog
-  - [] 8.2.9 Add delete confirmation dialog (draft only)
+### [x] 8.2 Invoices UI
+  - [x] 8.2.1 Create InvoicesIndex page with data table
+  - [x] 8.2.2 Add columns: number, client, date, status, amount, actions
+  - [x] 8.2.3 Add status filter tabs (all, draft, final)
+  - [x] 8.2.4 Create NewInvoice page with client and date range selectors
+  - [x] 8.2.5 Create InvoicePreview component (shows entries, totals)
+  - [x] 8.2.6 Create InvoiceShow page with full details
+  - [x] 8.2.7 Create InvoiceEdit page (for draft invoices)
+  - [x] 8.2.8 Add finalize confirmation dialog
+  - [x] 8.2.9 Add delete confirmation dialog (draft only)
 
 ### [] 8.3 PDF Generation
   - [] 8.3.1 Install and configure wicked_pdf gem
