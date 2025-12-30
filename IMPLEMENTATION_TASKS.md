@@ -85,68 +85,68 @@
   - [x] 4.1.3 Handle logo upload via Active Storage
   - [x] 4.1.4 Write controller specs
 
-### [ ] 4.2 Settings UI
-  - [ ] 4.2.1 Create Settings page layout component
-  - [ ] 4.2.2 Create SettingsForm component with all fields
-  - [ ] 4.2.3 Add logo upload with preview
-  - [ ] 4.2.4 Add form validation (client-side)
-  - [ ] 4.2.5 Add success/error toast notifications
+### [x] 4.2 Settings UI
+  - [x] 4.2.1 Create Settings page layout component
+  - [x] 4.2.2 Create SettingsForm component with all fields
+  - [x] 4.2.3 Add logo upload with preview
+  - [x] 4.2.4 Add form validation (client-side)
+  - [x] 4.2.5 Add success/error toast notifications
 
 ---
 
 ## Phase 5: Clients Feature
 
-### [] 5.1 Clients Backend
-  - [] 5.1.1 Create ClientsController with index action
-  - [] 5.1.2 Add show action with associated projects and recent time entries
-  - [] 5.1.3 Add create action with Inertia redirect
-  - [] 5.1.4 Add update action
-  - [] 5.1.5 Add destroy action (with dependent destroy check)
-  - [] 5.1.6 Write controller specs for all actions
+### [x] 5.1 Clients Backend
+  - [x] 5.1.1 Create ClientsController with index action
+  - [x] 5.1.2 Add show action with associated projects and recent time entries
+  - [x] 5.1.3 Add create action with Inertia redirect
+  - [x] 5.1.4 Add update action
+  - [x] 5.1.5 Add destroy action (with dependent destroy check)
+  - [x] 5.1.6 Write controller specs for all actions
 
-### [] 5.2 Clients UI
-  - [] 5.2.1 Create ClientsIndex page with data table (shadcn)
-  - [] 5.2.2 Add columns: name, currency, hourly rate, unbilled hours, actions
-  - [] 5.2.3 Create ClientForm component (used for new/edit)
-  - [] 5.2.4 Create NewClient page with form
-  - [] 5.2.5 Create EditClient page with form
-  - [] 5.2.6 Create ClientShow page with tabs (overview, projects, invoices)
-  - [] 5.2.7 Add delete confirmation dialog
-  - [] 5.2.8 Add share link display/copy button on client show
+### [x] 5.2 Clients UI
+  - [x] 5.2.1 Create ClientsIndex page with data table (shadcn)
+  - [x] 5.2.2 Add columns: name, currency, hourly rate, unbilled hours, actions
+  - [x] 5.2.3 Create ClientForm component (used for new/edit)
+  - [x] 5.2.4 Create NewClient page with form
+  - [x] 5.2.5 Create EditClient page with form
+  - [x] 5.2.6 Create ClientShow page with tabs (overview, projects, invoices)
+  - [x] 5.2.7 Add delete confirmation dialog
+  - [x] 5.2.8 Add share link display/copy button on client show
 
 ---
 
 ## Phase 6: Projects Feature
 
-### [] 6.1 Projects Backend
-  - [] 6.1.1 Create ProjectsController with index action (filterable by client)
-  - [] 6.1.2 Add show action with time entries
-  - [] 6.1.3 Add create action (nested under client or standalone)
-  - [] 6.1.4 Add update action
-  - [] 6.1.5 Add destroy action
-  - [] 6.1.6 Write controller specs
+### [x] 6.1 Projects Backend
+  - [x] 6.1.1 Create ProjectsController with index action (filterable by client)
+  - [x] 6.1.2 Add show action with time entries
+  - [x] 6.1.3 Add create action (nested under client or standalone)
+  - [x] 6.1.4 Add update action
+  - [x] 6.1.5 Add destroy action
+  - [x] 6.1.6 Write controller specs
 
-### [] 6.2 Projects UI
-  - [] 6.2.1 Create ProjectsIndex page with grouping by client
-  - [] 6.2.2 Create ProjectForm component
-  - [] 6.2.3 Create NewProject page (with client pre-selected if from client page)
-  - [] 6.2.4 Create EditProject page
-  - [] 6.2.5 Create ProjectShow page with time entries list
-  - [] 6.2.6 Add active/inactive toggle
-  - [] 6.2.7 Add delete confirmation dialog
+### [x] 6.2 Projects UI
+  - [x] 6.2.1 Create ProjectsIndex page with grouping by client
+  - [x] 6.2.2 Create ProjectForm component
+  - [x] 6.2.3 Create NewProject page (with client pre-selected if from client page)
+  - [x] 6.2.4 Create EditProject page
+  - [x] 6.2.5 Create ProjectShow page with time entries list
+  - [x] 6.2.6 Add active/inactive toggle
+  - [x] 6.2.7 Add delete confirmation dialog
 
 ---
 
 ## Phase 7: Time Entries Feature
 
-### [] 7.1 Time Entries Backend
-  - [] 7.1.1 Create TimeEntriesController with index action (date-grouped, filterable)
-  - [] 7.1.2 Add show action
-  - [] 7.1.3 Add create action
-  - [] 7.1.4 Add update action (only if unbilled)
-  - [] 7.1.5 Add destroy action (only if unbilled)
-  - [] 7.1.6 Add bulk operations endpoint (optional)
-  - [] 7.1.7 Write controller specs
+### [x] 7.1 Time Entries Backend
+  - [x] 7.1.1 Create TimeEntriesController with index action (date-grouped, filterable)
+  - [x] 7.1.2 Add show action
+  - [x] 7.1.3 Add create action
+  - [x] 7.1.4 Add update action (only if unbilled)
+  - [x] 7.1.5 Add destroy action (only if unbilled)
+  - [x] 7.1.6 Add bulk operations endpoint (optional)
+  - [x] 7.1.7 Write controller specs
 
 ### [] 7.2 Time Entries UI
   - [] 7.2.1 Create TimeEntriesIndex page with date grouping

@@ -31,7 +31,8 @@ interface PageProps {
 }
 
 export default function NewProject() {
-  const { project, clients, preselected_client_id, flash } = usePage<PageProps>().props;
+  const { project, clients, preselected_client_id, flash } =
+    usePage<PageProps>().props;
 
   useEffect(() => {
     if (flash.notice) {
@@ -53,8 +54,18 @@ export default function NewProject() {
             onClick={() => router.visit("/projects")}
             className="flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 mb-4"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back to Projects
           </button>
@@ -62,7 +73,11 @@ export default function NewProject() {
           <p className="text-stone-500 mt-1">Add a new project to track time</p>
         </div>
 
-        <ProjectForm project={project} clients={clients} preselectedClientId={preselected_client_id} />
+        <ProjectForm
+          project={project}
+          clients={clients}
+          preselectedClientId={preselected_client_id}
+        />
       </div>
     </>
   );

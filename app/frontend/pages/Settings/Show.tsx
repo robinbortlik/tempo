@@ -33,7 +33,9 @@ interface PageProps {
 export default function SettingsShow() {
   const { settings, flash } = usePage<PageProps>().props;
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(settings.logo_url);
+  const [logoPreview, setLogoPreview] = useState<string | null>(
+    settings.logo_url
+  );
   const [emailError, setEmailError] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -136,11 +138,16 @@ export default function SettingsShow() {
         <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
           {/* Business Details Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-6">Business Details</h3>
+            <h3 className="font-semibold text-stone-900 mb-6">
+              Business Details
+            </h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="company_name" className="block text-sm font-medium text-stone-600 mb-1.5">
+                  <Label
+                    htmlFor="company_name"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
                     Company Name
                   </Label>
                   <Input
@@ -152,7 +159,10 @@ export default function SettingsShow() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email" className="block text-sm font-medium text-stone-600 mb-1.5">
+                  <Label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
                     Email
                   </Label>
                   <Input
@@ -161,7 +171,9 @@ export default function SettingsShow() {
                     value={data.email}
                     onChange={handleEmailChange}
                     className={`w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 ${
-                      emailError ? "border-red-500 focus-visible:ring-red-500" : ""
+                      emailError
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
                     }`}
                   />
                   {emailError && (
@@ -171,7 +183,10 @@ export default function SettingsShow() {
               </div>
 
               <div>
-                <Label htmlFor="address" className="block text-sm font-medium text-stone-600 mb-1.5">
+                <Label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
                   Address
                 </Label>
                 <Textarea
@@ -185,7 +200,10 @@ export default function SettingsShow() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="phone" className="block text-sm font-medium text-stone-600 mb-1.5">
+                  <Label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
                     Phone
                   </Label>
                   <Input
@@ -197,7 +215,10 @@ export default function SettingsShow() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="vat_id" className="block text-sm font-medium text-stone-600 mb-1.5">
+                  <Label
+                    htmlFor="vat_id"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
                     VAT ID
                   </Label>
                   <Input
@@ -211,14 +232,19 @@ export default function SettingsShow() {
               </div>
 
               <div>
-                <Label htmlFor="company_registration" className="block text-sm font-medium text-stone-600 mb-1.5">
+                <Label
+                  htmlFor="company_registration"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
                   Company Registration
                 </Label>
                 <Input
                   id="company_registration"
                   type="text"
                   value={data.company_registration}
-                  onChange={(e) => setData("company_registration", e.target.value)}
+                  onChange={(e) =>
+                    setData("company_registration", e.target.value)
+                  }
                   className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono"
                 />
               </div>
@@ -230,7 +256,10 @@ export default function SettingsShow() {
             <h3 className="font-semibold text-stone-900 mb-6">Bank Details</h3>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="bank_name" className="block text-sm font-medium text-stone-600 mb-1.5">
+                <Label
+                  htmlFor="bank_name"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
                   Bank Name
                 </Label>
                 <Input
@@ -244,7 +273,10 @@ export default function SettingsShow() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="bank_account" className="block text-sm font-medium text-stone-600 mb-1.5">
+                  <Label
+                    htmlFor="bank_account"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
                     IBAN
                   </Label>
                   <Input
@@ -256,7 +288,10 @@ export default function SettingsShow() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="bank_swift" className="block text-sm font-medium text-stone-600 mb-1.5">
+                  <Label
+                    htmlFor="bank_swift"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
                     SWIFT/BIC
                   </Label>
                   <Input
@@ -300,7 +335,8 @@ export default function SettingsShow() {
               </div>
               <div className="flex-1">
                 <p className="text-sm text-stone-600 mb-3">
-                  Upload your company logo to display on invoices. Recommended size: 200x200px.
+                  Upload your company logo to display on invoices. Recommended
+                  size: 200x200px.
                 </p>
                 <input
                   ref={fileInputRef}

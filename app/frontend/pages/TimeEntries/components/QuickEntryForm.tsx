@@ -1,0 +1,154 @@
+import { router } from "@inertiajs/react";
+import { FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import ProjectSelector from "./ProjectSelector";
+
+interface Project {
+  id: number;
+  name: string;
+  effective_hourly_rate: number;
+}
+
+interface Client {
+  id: number;
+  name: string;
+  currency: string | null;
+}
+
+interface ClientGroup {
+  client: Client;
+  projects: Project[];
+}
+
+interface QuickEntryFormProps {
+  projects: ClientGroup[];
+}
+
+export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
+  const today = new Date().toISOString().split("T")[0];
+  const [date, setDate] = useState(today);
+  const [projectId, setProjectId] = useState("");
+  const [hours, setHours] = useState("");
+  const [description, setDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    router.post(
+      "/time_entries",
+      {
+        time_entry: {
+          date,
+          project_id: parseInt(projectId),
+          hours: parseFloat(hours),
+          description,
+        },
+      },
+      {
+        onSuccess: () => {
+          // Reset form on success
+          setDate(today);
+          setProjectId("");
+          setHours("");
+          setDescription("");
+        },
+        onFinish: () => {
+          setIsSubmitting(false);
+        },
+      }
+    );
+  };
+
+  const isValid = date && projectId && hours && parseFloat(hours) > 0;
+
+  return (
+    <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
+      <h3 className="font-semibold text-stone-900 mb-4">Quick Entry</h3>
+      <form onSubmit={handleSubmit} className="flex gap-4">
+        <div className="w-40">
+          <label
+            htmlFor="Date"
+            className="block text-sm font-medium text-stone-600 mb-1.5"
+          >
+            Date
+          </label>
+          <input
+            id="Date"
+            name="Date"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+          />
+        </div>
+        <div className="w-64">
+          <label
+            htmlFor="Project"
+            className="block text-sm font-medium text-stone-600 mb-1.5"
+          >
+            Project
+          </label>
+          <ProjectSelector
+            id="Project"
+            projects={projects}
+            value={projectId}
+            onChange={setProjectId}
+            required
+            className="w-full"
+          />
+        </div>
+        <div className="w-24">
+          <label
+            htmlFor="Hours"
+            className="block text-sm font-medium text-stone-600 mb-1.5"
+          >
+            Hours
+          </label>
+          <Input
+            id="Hours"
+            name="Hours"
+            type="number"
+            step="0.25"
+            min="0.25"
+            max="24"
+            value={hours}
+            onChange={(e) => setHours(e.target.value)}
+            required
+            className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
+            placeholder="8"
+          />
+        </div>
+        <div className="flex-1">
+          <label
+            htmlFor="Description"
+            className="block text-sm font-medium text-stone-600 mb-1.5"
+          >
+            Description
+          </label>
+          <Input
+            id="Description"
+            name="Description"
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
+            placeholder="What did you work on?"
+          />
+        </div>
+        <div className="flex items-end">
+          <Button
+            type="submit"
+            disabled={!isValid || isSubmitting}
+            className="px-6 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
+          >
+            {isSubmitting ? "Adding..." : "Add Entry"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}

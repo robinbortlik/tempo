@@ -38,7 +38,12 @@ function formatRate(rate: number | null, currency: string | null): string {
   return `${symbol}${rate}/hr`;
 }
 
-export default function ProjectForm({ project, clients, preselectedClientId, isEdit = false }: ProjectFormProps) {
+export default function ProjectForm({
+  project,
+  clients,
+  preselectedClientId,
+  isEdit = false,
+}: ProjectFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const initialClientId = project.client_id || preselectedClientId || null;
@@ -50,7 +55,9 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
     active: project.active ?? true,
   });
 
-  const selectedClient = clients.find((c) => c.id.toString() === data.client_id);
+  const selectedClient = clients.find(
+    (c) => c.id.toString() === data.client_id
+  );
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -84,7 +91,10 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
         <h3 className="font-semibold text-stone-900 mb-6">Project Details</h3>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="name" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="name"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Project Name *
             </Label>
             <Input
@@ -99,7 +109,10 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
           </div>
 
           <div>
-            <Label htmlFor="client_id" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="client_id"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Client *
             </Label>
             <select
@@ -113,7 +126,8 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
-                  {client.hourly_rate && ` (${formatRate(client.hourly_rate, client.currency)})`}
+                  {client.hourly_rate &&
+                    ` (${formatRate(client.hourly_rate, client.currency)})`}
                 </option>
               ))}
             </select>
@@ -127,7 +141,10 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
               onChange={(e) => setData("active", e.target.checked)}
               className="w-4 h-4 rounded border-stone-300 text-stone-900 focus:ring-stone-500"
             />
-            <Label htmlFor="active" className="text-sm font-medium text-stone-600">
+            <Label
+              htmlFor="active"
+              className="text-sm font-medium text-stone-600"
+            >
               Active project
             </Label>
           </div>
@@ -139,7 +156,10 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
         <h3 className="font-semibold text-stone-900 mb-6">Billing Details</h3>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="hourly_rate" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="hourly_rate"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Custom Hourly Rate
             </Label>
             <Input
@@ -150,14 +170,32 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
               value={data.hourly_rate}
               onChange={(e) => setData("hourly_rate", e.target.value)}
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
-              placeholder={selectedClient?.hourly_rate ? `Client rate: ${formatRate(selectedClient.hourly_rate, selectedClient.currency)}` : "Enter rate"}
+              placeholder={
+                selectedClient?.hourly_rate
+                  ? `Client rate: ${formatRate(selectedClient.hourly_rate, selectedClient.currency)}`
+                  : "Enter rate"
+              }
             />
             <p className="mt-1.5 text-sm text-stone-500">
               {selectedClient ? (
                 data.hourly_rate ? (
-                  <>Custom rate will be used instead of client rate ({formatRate(selectedClient.hourly_rate, selectedClient.currency)})</>
+                  <>
+                    Custom rate will be used instead of client rate (
+                    {formatRate(
+                      selectedClient.hourly_rate,
+                      selectedClient.currency
+                    )}
+                    )
+                  </>
                 ) : (
-                  <>Leave empty to use the client&apos;s default rate ({formatRate(selectedClient.hourly_rate, selectedClient.currency)})</>
+                  <>
+                    Leave empty to use the client&apos;s default rate (
+                    {formatRate(
+                      selectedClient.hourly_rate,
+                      selectedClient.currency
+                    )}
+                    )
+                  </>
                 )
               ) : (
                 "Select a client first to see their default rate"
@@ -172,7 +210,11 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
         <Button
           type="button"
           variant="outline"
-          onClick={() => router.visit(isEdit && project.id ? `/projects/${project.id}` : "/projects")}
+          onClick={() =>
+            router.visit(
+              isEdit && project.id ? `/projects/${project.id}` : "/projects"
+            )
+          }
           className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
         >
           Cancel
@@ -182,7 +224,11 @@ export default function ProjectForm({ project, clients, preselectedClientId, isE
           disabled={isSubmitting || !data.name || !data.client_id}
           className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
         >
-          {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : "Create Project"}
+          {isSubmitting
+            ? "Saving..."
+            : isEdit
+              ? "Save Changes"
+              : "Create Project"}
         </Button>
       </div>
     </form>

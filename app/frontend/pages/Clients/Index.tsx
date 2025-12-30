@@ -89,14 +89,26 @@ export default function ClientsIndex() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-stone-900">Clients</h1>
-            <p className="text-stone-500 mt-1">Manage your client relationships</p>
+            <p className="text-stone-500 mt-1">
+              Manage your client relationships
+            </p>
           </div>
           <Button
             onClick={() => router.visit("/clients/new")}
             className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             Add Client
           </Button>
@@ -107,17 +119,28 @@ export default function ClientsIndex() {
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
                 <TableHead className="px-6 py-4 font-medium">Client</TableHead>
-                <TableHead className="px-6 py-4 font-medium">Currency</TableHead>
-                <TableHead className="px-6 py-4 font-medium text-right">Rate</TableHead>
-                <TableHead className="px-6 py-4 font-medium text-right">Unbilled</TableHead>
-                <TableHead className="px-6 py-4 font-medium text-right">Projects</TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  Currency
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium text-right">
+                  Rate
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium text-right">
+                  Unbilled
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium text-right">
+                  Projects
+                </TableHead>
                 <TableHead className="px-6 py-4"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {clients.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="px-6 py-8 text-center text-stone-500">
+                  <TableCell
+                    colSpan={6}
+                    className="px-6 py-8 text-center text-stone-500"
+                  >
                     No clients yet. Add your first client to get started.
                   </TableCell>
                 </TableRow>
@@ -134,9 +157,13 @@ export default function ClientsIndex() {
                           {getInitials(client.name)}
                         </div>
                         <div>
-                          <div className="font-medium text-stone-900">{client.name}</div>
+                          <div className="font-medium text-stone-900">
+                            {client.name}
+                          </div>
                           {client.email && (
-                            <div className="text-sm text-stone-500">{client.email}</div>
+                            <div className="text-sm text-stone-500">
+                              {client.email}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -155,7 +182,10 @@ export default function ClientsIndex() {
                           </span>
                           <span className="text-stone-400 ml-1">
                             {" \u00B7 "}
-                            {formatCurrency(client.unbilled_amount, client.currency)}
+                            {formatCurrency(
+                              client.unbilled_amount,
+                              client.currency
+                            )}
                           </span>
                         </>
                       ) : (
@@ -167,8 +197,18 @@ export default function ClientsIndex() {
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right">
                       <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </TableCell>

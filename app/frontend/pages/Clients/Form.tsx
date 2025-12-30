@@ -24,7 +24,10 @@ interface ClientFormProps {
   isEdit?: boolean;
 }
 
-export default function ClientForm({ client, isEdit = false }: ClientFormProps) {
+export default function ClientForm({
+  client,
+  isEdit = false,
+}: ClientFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
 
@@ -101,7 +104,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name" className="block text-sm font-medium text-stone-600 mb-1.5">
+              <Label
+                htmlFor="name"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
                 Client Name *
               </Label>
               <Input
@@ -114,7 +120,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
               />
             </div>
             <div>
-              <Label htmlFor="email" className="block text-sm font-medium text-stone-600 mb-1.5">
+              <Label
+                htmlFor="email"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
                 Email
               </Label>
               <Input
@@ -126,12 +135,17 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
                   emailError ? "border-red-500 focus-visible:ring-red-500" : ""
                 }`}
               />
-              {emailError && <p className="mt-1 text-sm text-red-600">{emailError}</p>}
+              {emailError && (
+                <p className="mt-1 text-sm text-red-600">{emailError}</p>
+              )}
             </div>
           </div>
 
           <div>
-            <Label htmlFor="contact_person" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="contact_person"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Contact Person
             </Label>
             <Input
@@ -144,7 +158,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
           </div>
 
           <div>
-            <Label htmlFor="address" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="address"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Address
             </Label>
             <Textarea
@@ -158,7 +175,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="vat_id" className="block text-sm font-medium text-stone-600 mb-1.5">
+              <Label
+                htmlFor="vat_id"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
                 VAT ID
               </Label>
               <Input
@@ -170,14 +190,19 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
               />
             </div>
             <div>
-              <Label htmlFor="company_registration" className="block text-sm font-medium text-stone-600 mb-1.5">
+              <Label
+                htmlFor="company_registration"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
                 Company Registration
               </Label>
               <Input
                 id="company_registration"
                 type="text"
                 value={data.company_registration}
-                onChange={(e) => setData("company_registration", e.target.value)}
+                onChange={(e) =>
+                  setData("company_registration", e.target.value)
+                }
                 className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono"
               />
             </div>
@@ -191,7 +216,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="currency" className="block text-sm font-medium text-stone-600 mb-1.5">
+              <Label
+                htmlFor="currency"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
                 Currency
               </Label>
               <select
@@ -208,7 +236,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
               </select>
             </div>
             <div>
-              <Label htmlFor="hourly_rate" className="block text-sm font-medium text-stone-600 mb-1.5">
+              <Label
+                htmlFor="hourly_rate"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
                 Hourly Rate
               </Label>
               <Input
@@ -224,7 +255,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
           </div>
 
           <div>
-            <Label htmlFor="payment_terms" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="payment_terms"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Payment Terms
             </Label>
             <Input
@@ -238,7 +272,10 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
           </div>
 
           <div>
-            <Label htmlFor="bank_details" className="block text-sm font-medium text-stone-600 mb-1.5">
+            <Label
+              htmlFor="bank_details"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
               Bank Details
             </Label>
             <Textarea
@@ -258,7 +295,11 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
         <Button
           type="button"
           variant="outline"
-          onClick={() => router.visit(isEdit && client.id ? `/clients/${client.id}` : "/clients")}
+          onClick={() =>
+            router.visit(
+              isEdit && client.id ? `/clients/${client.id}` : "/clients"
+            )
+          }
           className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
         >
           Cancel
@@ -268,7 +309,11 @@ export default function ClientForm({ client, isEdit = false }: ClientFormProps) 
           disabled={isSubmitting || !!emailError || !data.name}
           className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
         >
-          {isSubmitting ? "Saving..." : isEdit ? "Save Changes" : "Create Client"}
+          {isSubmitting
+            ? "Saving..."
+            : isEdit
+              ? "Save Changes"
+              : "Create Client"}
         </Button>
       </div>
     </form>

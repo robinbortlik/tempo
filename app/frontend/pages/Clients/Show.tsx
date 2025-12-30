@@ -136,8 +136,18 @@ export default function ClientShow() {
             onClick={() => router.visit("/clients")}
             className="flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 mb-4"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back to Clients
           </button>
@@ -147,7 +157,9 @@ export default function ClientShow() {
                 {getInitials(client.name)}
               </div>
               <div>
-                <h1 className="text-2xl font-semibold text-stone-900">{client.name}</h1>
+                <h1 className="text-2xl font-semibold text-stone-900">
+                  {client.name}
+                </h1>
                 <p className="text-stone-500">
                   {client.email && `${client.email} \u00B7 `}
                   {formatRate(client.hourly_rate, client.currency)}
@@ -163,7 +175,9 @@ export default function ClientShow() {
                 Edit
               </Button>
               <Button
-                onClick={() => router.visit(`/invoices/new?client_id=${client.id}`)}
+                onClick={() =>
+                  router.visit(`/invoices/new?client_id=${client.id}`)
+                }
                 className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
               >
                 Create Invoice
@@ -175,7 +189,12 @@ export default function ClientShow() {
         {/* Share Link */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-5 h-5 text-amber-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -184,8 +203,12 @@ export default function ClientShow() {
               />
             </svg>
             <div>
-              <p className="text-sm font-medium text-amber-800">Client Report Portal</p>
-              <p className="text-sm text-amber-600 font-mono truncate max-w-md">{shareUrl}</p>
+              <p className="text-sm font-medium text-amber-800">
+                Client Report Portal
+              </p>
+              <p className="text-sm text-amber-600 font-mono truncate max-w-md">
+                {shareUrl}
+              </p>
             </div>
           </div>
           <Button
@@ -225,7 +248,9 @@ export default function ClientShow() {
             <div className="grid grid-cols-4 gap-4 mb-8">
               <div className="bg-white rounded-xl border border-stone-200 p-4">
                 <p className="text-sm text-stone-500">Total Hours</p>
-                <p className="text-2xl font-semibold text-stone-900 tabular-nums mt-1">{stats.total_hours}</p>
+                <p className="text-2xl font-semibold text-stone-900 tabular-nums mt-1">
+                  {stats.total_hours}
+                </p>
               </div>
               <div className="bg-white rounded-xl border border-stone-200 p-4">
                 <p className="text-sm text-stone-500">Total Invoiced</p>
@@ -235,7 +260,9 @@ export default function ClientShow() {
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                 <p className="text-sm text-amber-700">Unbilled Hours</p>
-                <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">{stats.unbilled_hours}</p>
+                <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">
+                  {stats.unbilled_hours}
+                </p>
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                 <p className="text-sm text-amber-700">Unbilled Amount</p>
@@ -248,12 +275,16 @@ export default function ClientShow() {
             {/* Client Details */}
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
-                <h3 className="font-semibold text-stone-900 mb-4">Contact Details</h3>
+                <h3 className="font-semibold text-stone-900 mb-4">
+                  Contact Details
+                </h3>
                 <dl className="space-y-3 text-sm">
                   {client.contact_person && (
                     <div className="flex justify-between">
                       <dt className="text-stone-500">Contact Person</dt>
-                      <dd className="text-stone-900">{client.contact_person}</dd>
+                      <dd className="text-stone-900">
+                        {client.contact_person}
+                      </dd>
                     </div>
                   )}
                   {client.email && (
@@ -265,18 +296,24 @@ export default function ClientShow() {
                   {client.address && (
                     <div className="flex justify-between">
                       <dt className="text-stone-500">Address</dt>
-                      <dd className="text-stone-900 text-right whitespace-pre-line">{client.address}</dd>
+                      <dd className="text-stone-900 text-right whitespace-pre-line">
+                        {client.address}
+                      </dd>
                     </div>
                   )}
                 </dl>
               </div>
               <div className="bg-white rounded-xl border border-stone-200 p-6">
-                <h3 className="font-semibold text-stone-900 mb-4">Billing Details</h3>
+                <h3 className="font-semibold text-stone-900 mb-4">
+                  Billing Details
+                </h3>
                 <dl className="space-y-3 text-sm">
                   {client.vat_id && (
                     <div className="flex justify-between">
                       <dt className="text-stone-500">VAT ID</dt>
-                      <dd className="text-stone-900 font-mono">{client.vat_id}</dd>
+                      <dd className="text-stone-900 font-mono">
+                        {client.vat_id}
+                      </dd>
                     </div>
                   )}
                   {client.payment_terms && (
@@ -294,7 +331,9 @@ export default function ClientShow() {
                   {client.hourly_rate && (
                     <div className="flex justify-between">
                       <dt className="text-stone-500">Hourly Rate</dt>
-                      <dd className="text-stone-900 font-medium">{formatRate(client.hourly_rate, client.currency)}</dd>
+                      <dd className="text-stone-900 font-medium">
+                        {formatRate(client.hourly_rate, client.currency)}
+                      </dd>
                     </div>
                   )}
                 </dl>
@@ -308,7 +347,9 @@ export default function ClientShow() {
               <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
                 <p className="text-stone-500 mb-4">No projects yet.</p>
                 <Button
-                  onClick={() => router.visit(`/projects/new?client_id=${client.id}`)}
+                  onClick={() =>
+                    router.visit(`/projects/new?client_id=${client.id}`)
+                  }
                   className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
                 >
                   Add Project
@@ -328,9 +369,14 @@ export default function ClientShow() {
                           className={`w-2 h-2 rounded-full ${project.active ? "bg-emerald-500" : "bg-stone-300"}`}
                         />
                         <div>
-                          <p className="font-medium text-stone-900">{project.name}</p>
+                          <p className="font-medium text-stone-900">
+                            {project.name}
+                          </p>
                           <p className="text-sm text-stone-500">
-                            {formatRate(project.effective_hourly_rate, client.currency)}
+                            {formatRate(
+                              project.effective_hourly_rate,
+                              client.currency
+                            )}
                             {project.hourly_rate && " (custom rate)"}
                           </p>
                         </div>
@@ -341,7 +387,9 @@ export default function ClientShow() {
                             {project.unbilled_hours}h unbilled
                           </span>
                         ) : (
-                          <span className="text-stone-400">No unbilled hours</span>
+                          <span className="text-stone-400">
+                            No unbilled hours
+                          </span>
                         )}
                       </div>
                     </div>
@@ -356,8 +404,8 @@ export default function ClientShow() {
             <div className="bg-white rounded-xl border border-stone-200 p-6">
               <h3 className="font-semibold text-stone-900 mb-4">Danger Zone</h3>
               <p className="text-sm text-stone-500 mb-4">
-                Deleting a client is permanent and cannot be undone. Clients with projects or invoices cannot be
-                deleted.
+                Deleting a client is permanent and cannot be undone. Clients
+                with projects or invoices cannot be deleted.
               </p>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -372,7 +420,8 @@ export default function ClientShow() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete {client.name}?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete the client and all associated data.
+                      This action cannot be undone. This will permanently delete
+                      the client and all associated data.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
