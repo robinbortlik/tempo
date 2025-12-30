@@ -7,6 +7,11 @@ Rails.application.routes.draw do
       patch :toggle_active
     end
   end
+  resources :time_entries do
+    collection do
+      delete :bulk_destroy
+    end
+  end
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
