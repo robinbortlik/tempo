@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   resource :session
   resource :settings, only: [:show, :update]
+  resource :dashboard, only: [:show], controller: "dashboard" do
+    get :time_by_client, on: :member
+    get :time_by_project, on: :member
+    get :earnings_over_time, on: :member
+    get :hours_trend, on: :member
+  end
   resources :clients
   resources :projects do
     member do
