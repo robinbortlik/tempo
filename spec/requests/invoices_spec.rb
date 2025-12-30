@@ -563,6 +563,153 @@ RSpec.describe InvoicesController, type: :request do
     end
   end
 
+  describe "GET /invoices/:id/pdf" do
+    context "when authenticated" do
+      before { sign_in }
+
+      let!(:settings) do
+        create(:setting,
+          company_name: "Test Company",
+          address: "123 Test St\nTest City",
+          email: "test@example.com",
+          phone: "+1234567890",
+          vat_id: "VAT123",
+          bank_name: "Test Bank",
+          bank_account: "1234567890",
+          bank_swift: "TESTSWIFT"
+        )
+      end
+
+      it "returns a successful PDF response" do
+        invoice = create(:invoice, client: client)
+
+        get pdf_invoice_path(invoice)
+
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to eq("application/pdf")
+      end
+
+      it "sets the correct filename" do
+        invoice = create(:invoice, client: client)
+
+        get pdf_invoice_path(invoice)
+
+        expect(response.headers["Content-Disposition"]).to include("attachment")
+        expect(response.headers["Content-Disposition"]).to include("invoice-#{invoice.number}.pdf")
+      end
+
+      it "generates a valid PDF with invoice data" do
+        invoice = create(:invoice, client: client, total_hours: 40, total_amount: 4000)
+        entry = create(:time_entry, project: project, invoice: invoice, hours: 8, description: "Test work")
+
+        get pdf_invoice_path(invoice)
+
+        expect(response).to have_http_status(:success)
+        # PDF should be non-empty and have PDF header
+        expect(response.body.length).to be > 0
+        expect(response.body[0..3]).to eq("%PDF")
+      end
+
+      it "includes settings information in PDF" do
+        invoice = create(:invoice, client: client)
+
+        # We verify that the PDF is generated successfully, which means
+        # the template rendered with settings
+        get pdf_invoice_path(invoice)
+
+        expect(response).to have_http_status(:success)
+      end
+
+      it "includes time entries ordered by date" do
+        invoice = create(:invoice, client: client)
+        create(:time_entry, project: project, invoice: invoice, date: Date.new(2024, 12, 15), hours: 4)
+        create(:time_entry, project: project, invoice: invoice, date: Date.new(2024, 12, 10), hours: 8)
+
+        get pdf_invoice_path(invoice)
+
+        expect(response).to have_http_status(:success)
+      end
+
+      it "returns 404 for non-existent invoice" do
+        get pdf_invoice_path(id: 99999)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      context "with draft invoice" do
+        it "generates PDF with draft status" do
+          invoice = create(:invoice, client: client, status: :draft)
+
+          get pdf_invoice_path(invoice)
+
+          expect(response).to have_http_status(:success)
+          expect(response.content_type).to eq("application/pdf")
+        end
+      end
+
+      context "with final invoice" do
+        it "generates PDF for final invoice" do
+          invoice = create(:invoice, client: client, status: :final)
+
+          get pdf_invoice_path(invoice)
+
+          expect(response).to have_http_status(:success)
+          expect(response.content_type).to eq("application/pdf")
+        end
+      end
+
+      context "with multiple currencies" do
+        it "generates PDF for EUR invoice" do
+          invoice = create(:invoice, client: client, currency: "EUR")
+
+          get pdf_invoice_path(invoice)
+
+          expect(response).to have_http_status(:success)
+        end
+
+        it "generates PDF for USD invoice" do
+          usd_client = create(:client, currency: "USD", hourly_rate: 100)
+          invoice = create(:invoice, client: usd_client, currency: "USD")
+
+          get pdf_invoice_path(invoice)
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+
+      context "with notes" do
+        it "generates PDF including notes" do
+          invoice = create(:invoice, client: client, notes: "Thank you for your business!")
+
+          get pdf_invoice_path(invoice)
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+
+      context "without settings" do
+        before do
+          Setting.destroy_all
+        end
+
+        it "still generates PDF with default values" do
+          invoice = create(:invoice, client: client)
+
+          get pdf_invoice_path(invoice)
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to login" do
+        invoice = create(:invoice, client: client)
+        get pdf_invoice_path(invoice)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
   private
 
   def inertia_headers

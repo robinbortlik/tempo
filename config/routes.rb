@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :invoices do
     member do
       post :finalize
+      get :pdf
     end
   end
   resources :passwords, param: :token

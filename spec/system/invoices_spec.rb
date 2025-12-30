@@ -232,7 +232,7 @@ RSpec.describe "Invoices", type: :system do
     it "displays action buttons for draft invoice" do
       visit invoice_path(invoice)
 
-      expect(page).to have_button("Download PDF")
+      expect(page).to have_link("Download PDF")
       expect(page).to have_button("Edit")
       expect(page).to have_button("Mark as Final")
       expect(page).to have_button("Delete")
@@ -291,7 +291,7 @@ RSpec.describe "Invoices", type: :system do
       it "does not display edit, finalize, or delete buttons" do
         visit invoice_path(invoice)
 
-        expect(page).to have_button("Download PDF")
+        expect(page).to have_link("Download PDF")
         expect(page).not_to have_button("Edit")
         expect(page).not_to have_button("Mark as Final")
         expect(page).not_to have_button("Delete")

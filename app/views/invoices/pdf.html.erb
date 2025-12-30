@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice <%= @invoice.number %></title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #1c1917;
+      background: white;
+    }
+
+    /* Page setup for print */
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+
+    @media print {
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+
+    /* Layout */
+    .invoice-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* Header section */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #e7e5e4;
+    }
+
+    .company-info {
+      flex: 1;
+    }
+
+    .company-logo {
+      width: 48px;
+      height: 48px;
+      background: #1c1917;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .company-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .company-logo svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .company-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1c1917;
+      margin-bottom: 4px;
+    }
+
+    .company-details {
+      font-size: 11px;
+      color: #78716c;
+      white-space: pre-line;
+    }
+
+    .invoice-title-section {
+      text-align: right;
+    }
+
+    .invoice-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1c1917;
+      letter-spacing: 1px;
+    }
+
+    .invoice-number {
+      font-size: 14px;
+      color: #78716c;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      margin-top: 4px;
+    }
+
+    .invoice-meta {
+      margin-top: 16px;
+    }
+
+    .invoice-meta dl {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .invoice-meta-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      font-size: 11px;
+    }
+
+    .invoice-meta dt {
+      color: #78716c;
+    }
+
+    .invoice-meta dd {
+      color: #1c1917;
+      font-weight: 500;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    /* Client section */
+    .client-section {
+      margin-bottom: 30px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      color: #78716c;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .client-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1c1917;
+      margin-bottom: 4px;
+    }
+
+    .client-details {
+      font-size: 11px;
+      color: #78716c;
+      white-space: pre-line;
+    }
+
+    .client-vat {
+      font-size: 11px;
+      color: #78716c;
+      margin-top: 8px;
+    }
+
+    /* Line items table */
+    .line-items {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .line-items thead {
+      border-bottom: 2px solid #e7e5e4;
+    }
+
+    .line-items th {
+      text-align: left;
+      padding: 12px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #78716c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .line-items th.text-right {
+      text-align: right;
+    }
+
+    .line-items tbody tr {
+      border-bottom: 1px solid #f5f5f4;
+    }
+
+    .line-items tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .line-items td {
+      padding: 12px 8px;
+      font-size: 11px;
+      vertical-align: top;
+    }
+
+    .line-items .date-col {
+      width: 80px;
+      color: #78716c;
+    }
+
+    .line-items .project-col {
+      width: 100px;
+      color: #1c1917;
+      font-weight: 500;
+    }
+
+    .line-items .description-col {
+      color: #44403c;
+    }
+
+    .line-items .hours-col {
+      width: 60px;
+      text-align: right;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .line-items .rate-col {
+      width: 80px;
+      text-align: right;
+      color: #78716c;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .line-items .amount-col {
+      width: 90px;
+      text-align: right;
+      font-weight: 500;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Totals section */
+    .totals-section {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .totals-table {
+      width: 250px;
+    }
+
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 11px;
+    }
+
+    .totals-row dt {
+      color: #78716c;
+    }
+
+    .totals-row dd {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      color: #1c1917;
+    }
+
+    .totals-row.total {
+      border-top: 2px solid #e7e5e4;
+      padding-top: 12px;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .totals-row.total dt,
+    .totals-row.total dd {
+      font-weight: 600;
+      color: #1c1917;
+    }
+
+    /* Notes section */
+    .notes-section {
+      padding-top: 30px;
+      border-top: 1px solid #e7e5e4;
+      margin-bottom: 30px;
+    }
+
+    .notes-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #44403c;
+      margin-bottom: 8px;
+    }
+
+    .notes-content {
+      font-size: 11px;
+      color: #78716c;
+      white-space: pre-line;
+    }
+
+    /* Footer / Payment details */
+    .footer {
+      padding-top: 30px;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .footer-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: #44403c;
+      margin-bottom: 12px;
+    }
+
+    .payment-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .payment-item {
+      font-size: 11px;
+    }
+
+    .payment-label {
+      color: #78716c;
+      margin-bottom: 2px;
+    }
+
+    .payment-value {
+      color: #1c1917;
+      font-weight: 500;
+    }
+
+    .payment-note {
+      margin-top: 16px;
+      font-size: 10px;
+      color: #a8a29e;
+    }
+
+    /* Status badge for draft invoices */
+    .draft-badge {
+      display: inline-block;
+      background: #fef3c7;
+      color: #b45309;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    <!-- Header Section -->
+    <div class="header">
+      <div class="company-info">
+        <div class="company-logo">
+          <% if @settings.logo? %>
+            <img src="<%= url_for(@settings.logo) %>" alt="Company Logo">
+          <% else %>
+            <svg fill="none" stroke="white" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          <% end %>
+        </div>
+        <div class="company-name"><%= @settings.company_name || "Your Company" %></div>
+        <div class="company-details">
+          <%= @settings.address %>
+          <% if @settings.email.present? || @settings.phone.present? %>
+            <br>
+            <%= [@settings.email, @settings.phone].compact.join(" | ") %>
+          <% end %>
+          <% if @settings.vat_id.present? %>
+            <br>VAT: <%= @settings.vat_id %>
+          <% end %>
+          <% if @settings.company_registration.present? %>
+            <br>Reg: <%= @settings.company_registration %>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="invoice-title-section">
+        <div class="invoice-title">
+          INVOICE
+          <% if @invoice.draft? %>
+            <span class="draft-badge">Draft</span>
+          <% end %>
+        </div>
+        <div class="invoice-number">#<%= @invoice.number %></div>
+
+        <div class="invoice-meta">
+          <dl>
+            <div class="invoice-meta-row">
+              <dt>Issue Date:</dt>
+              <dd><%= @invoice.issue_date&.strftime("%b %d, %Y") || "Not set" %></dd>
+            </div>
+            <div class="invoice-meta-row">
+              <dt>Due Date:</dt>
+              <dd><%= @invoice.due_date&.strftime("%b %d, %Y") || "Not set" %></dd>
+            </div>
+            <div class="invoice-meta-row">
+              <dt>Period:</dt>
+              <dd><%= format_period(@invoice.period_start, @invoice.period_end) %></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client Section -->
+    <div class="client-section">
+      <div class="section-label">Bill To</div>
+      <div class="client-name"><%= @invoice.client.name %></div>
+      <% if @invoice.client.address.present? %>
+        <div class="client-details"><%= @invoice.client.address %></div>
+      <% end %>
+      <% if @invoice.client.vat_id.present? %>
+        <div class="client-vat">VAT: <%= @invoice.client.vat_id %></div>
+      <% end %>
+    </div>
+
+    <!-- Line Items Table -->
+    <table class="line-items">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Project</th>
+          <th>Description</th>
+          <th class="text-right">Hours</th>
+          <th class="text-right">Rate</th>
+          <th class="text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @time_entries.each do |entry| %>
+          <tr>
+            <td class="date-col"><%= entry.date.strftime("%b %d") %></td>
+            <td class="project-col"><%= entry.project.name %></td>
+            <td class="description-col"><%= entry.description.presence || "No description" %></td>
+            <td class="hours-col"><%= number_with_precision(entry.hours, precision: 2) %></td>
+            <td class="rate-col"><%= format_currency(entry.project.effective_hourly_rate, @invoice.currency) %></td>
+            <td class="amount-col"><%= format_currency(entry.calculated_amount, @invoice.currency) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <!-- Totals Section -->
+    <div class="totals-section">
+      <dl class="totals-table">
+        <div class="totals-row">
+          <dt>Subtotal (<%= number_with_precision(@invoice.total_hours, precision: 2) %> hrs)</dt>
+          <dd><%= format_currency(@invoice.total_amount, @invoice.currency) %></dd>
+        </div>
+        <div class="totals-row">
+          <dt>VAT (0%)</dt>
+          <dd><%= format_currency(0, @invoice.currency) %></dd>
+        </div>
+        <div class="totals-row total">
+          <dt>Total Due</dt>
+          <dd><%= format_currency(@invoice.total_amount, @invoice.currency) %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Notes Section (if present) -->
+    <% if @invoice.notes.present? %>
+      <div class="notes-section">
+        <div class="notes-title">Notes</div>
+        <div class="notes-content"><%= @invoice.notes %></div>
+      </div>
+    <% end %>
+
+    <!-- Footer / Payment Details -->
+    <div class="footer">
+      <div class="footer-title">Payment Details</div>
+      <div class="payment-details">
+        <% if @settings.bank_name.present? %>
+          <div class="payment-item">
+            <div class="payment-label">Bank</div>
+            <div class="payment-value"><%= @settings.bank_name %></div>
+          </div>
+        <% end %>
+        <% if @settings.bank_account.present? %>
+          <div class="payment-item">
+            <div class="payment-label">Account / IBAN</div>
+            <div class="payment-value"><%= @settings.bank_account %></div>
+          </div>
+        <% end %>
+        <% if @settings.bank_swift.present? %>
+          <div class="payment-item">
+            <div class="payment-label">SWIFT / BIC</div>
+            <div class="payment-value"><%= @settings.bank_swift %></div>
+          </div>
+        <% end %>
+      </div>
+      <div class="payment-note">
+        Please include invoice number <strong>#<%= @invoice.number %></strong> in payment reference.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

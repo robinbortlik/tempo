@@ -1,5 +1,7 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :finalize]
+  include InvoicesHelper
+
+  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :finalize, :pdf]
 
   def index
     render inertia: "Invoices/Index", props: {
@@ -93,6 +95,24 @@ class InvoicesController < ApplicationController
     end
 
     redirect_to invoice_path(@invoice), notice: "Invoice finalized successfully."
+  end
+
+  def pdf
+    @settings = Setting.instance
+    @time_entries = @invoice.time_entries.includes(project: :client).order(date: :asc)
+
+    html = render_to_string(
+      template: "invoices/pdf",
+      layout: false
+    )
+
+    pdf = Grover.new(html, format: "A4").to_pdf
+    filename = "invoice-#{@invoice.number}.pdf"
+
+    send_data pdf,
+              filename: filename,
+              type: "application/pdf",
+              disposition: "attachment"
   end
 
   private
