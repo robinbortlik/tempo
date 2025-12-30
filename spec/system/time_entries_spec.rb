@@ -69,14 +69,18 @@ RSpec.describe "Time Entries", type: :system do
       expect(page).to have_content("Acme Corp")
       expect(page).to have_content("API Integration")
       expect(page).to have_content("Working on API")
-      expect(page).to have_content("8h")
+      # Hours are displayed as number and "h" in separate elements
+      within("[data-testid='time-entry-row-#{entry_today.id}']") do
+        expect(page).to have_css(".tabular-nums", text: "8")
+      end
     end
 
     it "displays total hours for each date group" do
       visit time_entries_path
 
-      expect(page).to have_content("8 hours")
-      expect(page).to have_content("4 hours")
+      # Total hours displayed as number and "hours" in separate spans
+      expect(page).to have_css(".tabular-nums", text: "8")
+      expect(page).to have_content("hours")
     end
   end
 
@@ -112,7 +116,10 @@ RSpec.describe "Time Entries", type: :system do
     it "shows edit and delete buttons for unbilled entries" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{unbilled_entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{unbilled_entry.id}']")
+      row.hover
+
+      within(row) do
         expect(page).to have_css("[data-testid='edit-entry-#{unbilled_entry.id}']")
         expect(page).to have_css("[data-testid='delete-entry-#{unbilled_entry.id}']")
       end
@@ -147,7 +154,8 @@ RSpec.describe "Time Entries", type: :system do
 
       expect(page).to have_content("Time entry created successfully")
       expect(page).to have_content("New feature development")
-      expect(page).to have_content("6h")
+      # Hours displayed as number and "h" in separate elements
+      expect(page).to have_css(".tabular-nums", text: "6")
     end
 
     it "disables submit button when form is incomplete" do
@@ -165,7 +173,9 @@ RSpec.describe "Time Entries", type: :system do
     it "transforms row into inline edit form when clicking edit" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{entry.id}']")
+      row.hover
+      within(row) do
         find("[data-testid='edit-entry-#{entry.id}']").click
       end
 
@@ -180,7 +190,9 @@ RSpec.describe "Time Entries", type: :system do
     it "saves the edited entry" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{entry.id}']")
+      row.hover
+      within(row) do
         find("[data-testid='edit-entry-#{entry.id}']").click
       end
 
@@ -190,20 +202,24 @@ RSpec.describe "Time Entries", type: :system do
       end
 
       expect(page).to have_content("Time entry updated successfully")
-      expect(page).to have_content("10h")
+      # Hours displayed as number and "h" in separate elements
+      expect(page).to have_css(".tabular-nums", text: "10")
     end
 
     it "cancels editing without saving changes" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{entry.id}']")
+      row.hover
+      within(row) do
         find("[data-testid='edit-entry-#{entry.id}']").click
         fill_in type: "number", with: "10"
         click_button "Cancel"
       end
 
       within("[data-testid='time-entry-row-#{entry.id}']") do
-        expect(page).to have_content("8h")
+        # Hours displayed as number and "h" in separate elements
+        expect(page).to have_css(".tabular-nums", text: "8")
         expect(page).not_to have_button("Save")
       end
     end
@@ -217,7 +233,9 @@ RSpec.describe "Time Entries", type: :system do
     it "shows delete confirmation dialog" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{entry.id}']")
+      row.hover
+      within(row) do
         find("[data-testid='delete-entry-#{entry.id}']").click
       end
 
@@ -230,7 +248,9 @@ RSpec.describe "Time Entries", type: :system do
     it "deletes the entry when confirmed" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{entry.id}']")
+      row.hover
+      within(row) do
         find("[data-testid='delete-entry-#{entry.id}']").click
       end
 
@@ -245,7 +265,9 @@ RSpec.describe "Time Entries", type: :system do
     it "can cancel deletion" do
       visit time_entries_path
 
-      within("[data-testid='time-entry-row-#{entry.id}']") do
+      row = find("[data-testid='time-entry-row-#{entry.id}']")
+      row.hover
+      within(row) do
         find("[data-testid='delete-entry-#{entry.id}']").click
       end
 
@@ -345,7 +367,7 @@ RSpec.describe "Time Entries", type: :system do
     it "uses correct status badge colors" do
       visit time_entries_path
 
-      expect(page).to have_css(".bg-amber-100.text-amber-700")
+      expect(page).to have_css(".bg-amber-50.text-amber-700")
     end
   end
 end

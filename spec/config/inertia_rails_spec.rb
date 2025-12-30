@@ -33,13 +33,13 @@ RSpec.describe 'InertiaRails Configuration', type: :request do
     it 'includes component name in Inertia response' do
       get root_path, headers: { 'X-Inertia' => 'true', 'X-Inertia-Version' => ViteRuby.digest }
       json_response = JSON.parse(response.body)
-      expect(json_response['component']).to eq('Home')
+      expect(json_response['component']).to eq('Dashboard/Index')
     end
 
     it 'includes props in Inertia response' do
       get root_path, headers: { 'X-Inertia' => 'true', 'X-Inertia-Version' => ViteRuby.digest }
       json_response = JSON.parse(response.body)
-      expect(json_response['props']).to include('message')
+      expect(json_response['props']).to include('stats', 'charts')
     end
 
     it 'includes url in Inertia response' do

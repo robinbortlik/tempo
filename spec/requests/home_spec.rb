@@ -9,14 +9,15 @@ RSpec.describe 'Home', type: :request do
       expect(response).to have_http_status(:success)
     end
 
-    it 'renders the Home Inertia component' do
+    it 'renders the Dashboard Inertia component' do
       get root_path
-      expect(response.body).to include('Home')
+      expect(response.body).to include('Dashboard/Index')
     end
 
-    it 'includes the message prop' do
-      get root_path
-      expect(response.body).to include('Time tracking')
+    it 'includes the stats and charts props' do
+      get root_path, headers: { 'X-Inertia' => 'true', 'X-Inertia-Version' => ViteRuby.digest }
+      json_response = JSON.parse(response.body)
+      expect(json_response['props']).to include('stats', 'charts')
     end
 
     it 'uses the inertia layout' do
