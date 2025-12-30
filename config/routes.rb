@@ -12,6 +12,11 @@ Rails.application.routes.draw do
       delete :bulk_destroy
     end
   end
+  resources :invoices do
+    member do
+      post :finalize
+    end
+  end
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
