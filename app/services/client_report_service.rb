@@ -1,0 +1,152 @@
+# Generates report data for a client's time entries, grouped by project
+# Used for the public client report portal accessible via share_token
+class ClientReportService
+  attr_reader :client, :year, :month
+
+  def initialize(client:, year: nil, month: nil)
+    @client = client
+    @year = (year || Date.current.year).to_i
+    @month = month&.to_i # nil means all months in the year
+  end
+
+  # Returns the complete report data structure
+  def report
+    {
+      client: client_data,
+      period: period_data,
+      unbilled: unbilled_data,
+      invoiced: invoiced_data
+    }
+  end
+
+  # Returns unbilled entries for the period, grouped by project
+  def unbilled_entries
+    @unbilled_entries ||= fetch_entries(:unbilled)
+  end
+
+  # Returns invoiced entries for the period, grouped by project
+  def invoiced_entries
+    @invoiced_entries ||= fetch_entries(:invoiced)
+  end
+
+  # Returns unbilled section data with project groups and totals
+  def unbilled_data
+    {
+      project_groups: build_project_groups(unbilled_entries),
+      total_hours: unbilled_entries.sum(&:hours),
+      total_amount: unbilled_entries.sum { |e| e.calculated_amount || 0 }
+    }
+  end
+
+  # Returns invoiced section data with project groups, totals, and invoice summaries
+  def invoiced_data
+    {
+      project_groups: build_project_groups(invoiced_entries),
+      total_hours: invoiced_entries.sum(&:hours),
+      total_amount: invoiced_entries.sum { |e| e.calculated_amount || 0 },
+      invoices: invoices_in_period
+    }
+  end
+
+  private
+
+  def fetch_entries(status)
+    TimeEntry
+      .joins(:project)
+      .where(projects: { client_id: client.id })
+      .where(status: status)
+      .for_date_range(period_start, period_end)
+      .includes(project: :client)
+      .order(date: :desc)
+  end
+
+  def build_project_groups(entries)
+    entries.group_by(&:project).map do |project, project_entries|
+      {
+        project: {
+          id: project.id,
+          name: project.name,
+          effective_hourly_rate: project.effective_hourly_rate
+        },
+        entries: project_entries.map { |entry| entry_data(entry) },
+        total_hours: project_entries.sum(&:hours),
+        total_amount: project_entries.sum { |e| e.calculated_amount || 0 }
+      }
+    end
+  end
+
+  def entry_data(entry)
+    {
+      id: entry.id,
+      date: entry.date,
+      hours: entry.hours,
+      description: entry.description,
+      calculated_amount: entry.calculated_amount
+    }
+  end
+
+  def invoices_in_period
+    Invoice
+      .where(client: client)
+      .where(status: :final)
+      .where("(period_start <= ? AND period_end >= ?) OR (period_start >= ? AND period_start <= ?)",
+             period_end, period_start, period_start, period_end)
+      .order(issue_date: :desc)
+      .map do |invoice|
+        {
+          id: invoice.id,
+          number: invoice.number,
+          issue_date: invoice.issue_date,
+          period_start: invoice.period_start,
+          period_end: invoice.period_end,
+          total_hours: invoice.total_hours,
+          total_amount: invoice.total_amount
+        }
+      end
+  end
+
+  def client_data
+    {
+      id: client.id,
+      name: client.name,
+      currency: client.currency
+    }
+  end
+
+  def period_data
+    {
+      year: year,
+      month: month,
+      available_years: available_years
+    }
+  end
+
+  def available_years
+    # Get years that have any time entries for this client
+    years_with_entries = TimeEntry
+      .joins(:project)
+      .where(projects: { client_id: client.id })
+      .distinct
+      .pluck(Arel.sql("strftime('%Y', date)"))
+      .map(&:to_i)
+
+    # Always include current year
+    (years_with_entries + [Date.current.year]).uniq.sort.reverse
+  end
+
+  def period_start
+    if month
+      Date.new(year, month, 1)
+    else
+      Date.new(year, 1, 1)
+    end
+  end
+
+  def period_end
+    if month
+      Date.new(year, month, 1).end_of_month
+    else
+      Date.new(year, 12, 31)
+    end
+  end
+end

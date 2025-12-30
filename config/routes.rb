@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Public client report portal (no authentication required)
+  get "reports/:share_token", to: "reports#show", as: :report
+
   resource :session
   resource :settings, only: [:show, :update]
   resource :dashboard, only: [:show], controller: "dashboard" do
