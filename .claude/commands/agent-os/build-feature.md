@@ -168,10 +168,6 @@ feat: Add specification for [feature-name]
 - Generated spec.md with full specification
 - Created tasks.md with implementation breakdown
 - Verified specification against requirements
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -246,10 +242,6 @@ feat: Complete [feature-name] implementation
 - All tasks implemented and verified
 - Tests passing: [X/Y]
 - See agent-os/specs/[spec-folder] for full documentation
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
