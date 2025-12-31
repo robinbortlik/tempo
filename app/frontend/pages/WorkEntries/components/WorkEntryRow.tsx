@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import StatusBadge from "./StatusBadge";
+import EntryTypeBadge from "./EntryTypeBadge";
 import ProjectSelector from "./ProjectSelector";
 
 interface Project {
@@ -22,10 +23,12 @@ interface ClientGroup {
   projects: Project[];
 }
 
-interface TimeEntry {
+interface WorkEntry {
   id: number;
   date: string;
-  hours: number;
+  hours: number | null;
+  amount: number | null;
+  entry_type: "time" | "fixed";
   description: string | null;
   status: "unbilled" | "invoiced";
   calculated_amount: number;
@@ -36,48 +39,57 @@ interface TimeEntry {
   client_currency: string | null;
 }
 
-interface TimeEntryRowProps {
-  entry: TimeEntry;
+interface WorkEntryRowProps {
+  entry: WorkEntry;
   projects: ClientGroup[];
   onDelete: (id: number) => void;
   isFirst?: boolean;
   isLast?: boolean;
 }
 
-function formatHours(hours: number): string {
+function formatHours(hours: number | null): string {
+  if (hours === null) return "0";
   return hours % 1 === 0 ? `${Math.floor(hours)}` : `${hours.toFixed(1)}`;
 }
 
-export default function TimeEntryRow({
+function formatCurrency(amount: number, currency?: string | null): string {
+  const currencySymbol = currency === "EUR" ? "\u20AC" : "$";
+  return `${currencySymbol}${amount.toLocaleString()}`;
+}
+
+export default function WorkEntryRow({
   entry,
   projects,
   onDelete,
   isFirst = false,
   isLast = false,
-}: TimeEntryRowProps) {
+}: WorkEntryRowProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editData, setEditData] = useState({
     date: entry.date,
     project_id: entry.project_id.toString(),
-    hours: entry.hours.toString(),
+    hours: entry.hours?.toString() || "",
+    amount: entry.amount?.toString() || "",
     description: entry.description || "",
   });
 
   const isInvoiced = entry.status === "invoiced";
+  const isTimeEntry = entry.entry_type === "time";
 
   const handleSave = (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     router.patch(
-      `/time_entries/${entry.id}`,
+      `/work_entries/${entry.id}`,
       {
-        time_entry: {
+        work_entry: {
           date: editData.date,
           project_id: parseInt(editData.project_id),
-          hours: parseFloat(editData.hours),
           description: editData.description,
+          hours: editData.hours ? parseFloat(editData.hours) : null,
+          amount: editData.amount ? parseFloat(editData.amount) : null,
         },
       },
       {
@@ -95,11 +107,17 @@ export default function TimeEntryRow({
     setEditData({
       date: entry.date,
       project_id: entry.project_id.toString(),
-      hours: entry.hours.toString(),
+      hours: entry.hours?.toString() || "",
+      amount: entry.amount?.toString() || "",
       description: entry.description || "",
     });
     setIsEditing(false);
   };
+
+  // Validation: at least hours or amount must be provided
+  const hasHours = editData.hours && parseFloat(editData.hours) > 0;
+  const hasAmount = editData.amount && parseFloat(editData.amount) > 0;
+  const isValid = hasHours || hasAmount;
 
   if (isEditing) {
     return (
@@ -109,9 +127,8 @@ export default function TimeEntryRow({
           flex items-center px-5 py-4 gap-4 bg-amber-50/50 border border-amber-200/50
           ${isFirst ? "rounded-t-xl" : ""}
           ${isLast ? "rounded-b-xl" : ""}
-          ${!isFirst && !isLast ? "" : ""}
         `}
-        data-testid={`time-entry-row-${entry.id}`}
+        data-testid={`work-entry-row-${entry.id}`}
       >
         <div className="w-32">
           <input
@@ -122,7 +139,7 @@ export default function TimeEntryRow({
             className="w-full px-3 py-2 bg-white border border-stone-200 rounded-lg text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-400 transition-all"
           />
         </div>
-        <div className="w-48">
+        <div className="w-44">
           <ProjectSelector
             projects={projects}
             value={editData.project_id}
@@ -137,14 +154,27 @@ export default function TimeEntryRow({
           <Input
             type="number"
             step="0.25"
-            min="0.25"
+            min="0"
             max="24"
             value={editData.hours}
             onChange={(e) =>
               setEditData({ ...editData, hours: e.target.value })
             }
-            required
             className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
+            placeholder="Hours"
+          />
+        </div>
+        <div className="w-24">
+          <Input
+            type="number"
+            step="0.01"
+            min="0"
+            value={editData.amount}
+            onChange={(e) =>
+              setEditData({ ...editData, amount: e.target.value })
+            }
+            className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
+            placeholder="Amount"
           />
         </div>
         <div className="flex-1">
@@ -161,7 +191,7 @@ export default function TimeEntryRow({
         <div className="flex items-center gap-2">
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isValid}
             className="px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors"
           >
             {isSubmitting ? "Saving..." : "Save"}
@@ -191,7 +221,7 @@ export default function TimeEntryRow({
         ${!isFirst ? "-mt-px" : ""}
         ${isInvoiced ? "bg-stone-50/50" : ""}
       `}
-      data-testid={`time-entry-row-${entry.id}`}
+      data-testid={`work-entry-row-${entry.id}`}
     >
       <div className="flex items-center px-5 py-4">
         {/* Left section: Project info and description */}
@@ -244,22 +274,33 @@ export default function TimeEntryRow({
           )}
         </div>
 
-        {/* Right section: Status, Hours, Actions */}
-        <div className="flex items-center gap-5 ml-6">
+        {/* Right section: Entry Type, Status, Hours/Amount, Actions */}
+        <div className="flex items-center gap-4 ml-6">
+          {/* Entry type badge */}
+          <EntryTypeBadge entryType={entry.entry_type} />
+
           {/* Status badge */}
           <StatusBadge status={entry.status} />
 
-          {/* Hours display */}
+          {/* Hours or Amount display */}
           <div
             className={`
-              flex items-baseline gap-1
+              flex items-baseline gap-1 min-w-[80px] justify-end
               ${isInvoiced ? "opacity-60" : ""}
             `}
           >
-            <span className="text-2xl font-bold tabular-nums tracking-tight text-stone-900">
-              {formatHours(entry.hours)}
-            </span>
-            <span className="text-sm font-medium text-stone-400">h</span>
+            {isTimeEntry ? (
+              <>
+                <span className="text-2xl font-bold tabular-nums tracking-tight text-stone-900">
+                  {formatHours(entry.hours)}
+                </span>
+                <span className="text-sm font-medium text-stone-400">h</span>
+              </>
+            ) : (
+              <span className="text-xl font-bold tabular-nums tracking-tight text-stone-900">
+                {formatCurrency(entry.calculated_amount, entry.client_currency)}
+              </span>
+            )}
           </div>
 
           {/* Actions */}

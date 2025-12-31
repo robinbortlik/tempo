@@ -33,10 +33,12 @@ interface ClientGroup {
   projects: Project[];
 }
 
-interface TimeEntry {
+interface WorkEntry {
   id: number;
   date: string;
-  hours: number;
+  hours: number | null;
+  amount: number | null;
+  entry_type: "time" | "fixed";
   description: string | null;
   status: "unbilled" | "invoiced";
   calculated_amount: number;
@@ -51,7 +53,15 @@ interface DateGroupData {
   date: string;
   formatted_date: string;
   total_hours: number;
-  entries: TimeEntry[];
+  total_amount: number;
+  entries: WorkEntry[];
+}
+
+interface Summary {
+  total_hours: number;
+  total_amount: number;
+  time_entries_count: number;
+  fixed_entries_count: number;
 }
 
 interface Filters {
@@ -59,6 +69,7 @@ interface Filters {
   end_date: string | null;
   client_id: number | null;
   project_id: number | null;
+  entry_type: string | null;
 }
 
 interface PageProps {
@@ -66,6 +77,7 @@ interface PageProps {
   projects: ClientGroup[];
   clients: { id: number; name: string }[];
   filters: Filters;
+  summary: Summary;
   flash: {
     alert?: string;
     notice?: string;
@@ -73,8 +85,8 @@ interface PageProps {
   [key: string]: unknown;
 }
 
-export default function TimeEntriesIndex() {
-  const { date_groups, projects, clients, filters, flash } =
+export default function WorkEntriesIndex() {
+  const { date_groups, projects, clients, filters, summary, flash } =
     usePage<PageProps>().props;
   const [deleteEntryId, setDeleteEntryId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -96,12 +108,16 @@ export default function TimeEntriesIndex() {
     if (deleteEntryId === null) return;
 
     setIsDeleting(true);
-    router.delete(`/time_entries/${deleteEntryId}`, {
+    router.delete(`/work_entries/${deleteEntryId}`, {
       onFinish: () => {
         setIsDeleting(false);
         setDeleteEntryId(null);
       },
     });
+  };
+
+  const formatCurrency = (amount: number) => {
+    return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const totalEntries = date_groups.reduce(
@@ -111,16 +127,16 @@ export default function TimeEntriesIndex() {
 
   return (
     <>
-      <Head title="Time Entries" />
+      <Head title="Log Work" />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">
-              Time Entries
-            </h1>
-            <p className="text-stone-500 mt-1">Track your work</p>
+            <h1 className="text-2xl font-semibold text-stone-900">Log Work</h1>
+            <p className="text-stone-500 mt-1">
+              Track your time and fixed-price work
+            </p>
           </div>
         </div>
 
@@ -128,10 +144,46 @@ export default function TimeEntriesIndex() {
 
         <FilterBar clients={clients} projects={projects} filters={filters} />
 
+        {/* Summary Stats Bar */}
+        {totalEntries > 0 && (
+          <div className="bg-stone-50 rounded-xl border border-stone-200 p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-8">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-stone-500">
+                    Total Hours:
+                  </span>
+                  <span className="text-lg font-bold text-stone-900 tabular-nums">
+                    {summary.total_hours.toFixed(1)}h
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-stone-500">
+                    Total Amount:
+                  </span>
+                  <span className="text-lg font-bold text-stone-900 tabular-nums">
+                    {formatCurrency(summary.total_amount)}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 text-sm text-stone-500">
+                <span>
+                  {summary.time_entries_count} time{" "}
+                  {summary.time_entries_count === 1 ? "entry" : "entries"}
+                </span>
+                <span>
+                  {summary.fixed_entries_count} fixed{" "}
+                  {summary.fixed_entries_count === 1 ? "entry" : "entries"}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {totalEntries === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
             <p className="text-stone-500">
-              No time entries found. Add your first entry above.
+              No work entries found. Add your first entry above.
             </p>
           </div>
         ) : (
@@ -154,10 +206,10 @@ export default function TimeEntriesIndex() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Time Entry?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Work Entry?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              time entry.
+              work entry.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

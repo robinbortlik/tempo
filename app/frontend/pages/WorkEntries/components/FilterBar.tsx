@@ -27,6 +27,7 @@ interface Filters {
   end_date: string | null;
   client_id: number | null;
   project_id: number | null;
+  entry_type: string | null;
 }
 
 interface FilterBarProps {
@@ -46,6 +47,7 @@ export default function FilterBar({
   const [projectId, setProjectId] = useState(
     filters.project_id?.toString() || ""
   );
+  const [entryType, setEntryType] = useState(filters.entry_type || "");
 
   // Get projects for selected client (or all projects if no client selected)
   const availableProjects = clientId
@@ -58,8 +60,9 @@ export default function FilterBar({
     if (endDate) params.end_date = endDate;
     if (clientId) params.client_id = clientId;
     if (projectId) params.project_id = projectId;
+    if (entryType) params.entry_type = entryType;
 
-    router.get("/time_entries", params, { preserveState: true });
+    router.get("/work_entries", params, { preserveState: true });
   };
 
   const handleClearFilters = () => {
@@ -67,10 +70,11 @@ export default function FilterBar({
     setEndDate("");
     setClientId("");
     setProjectId("");
-    router.get("/time_entries", {}, { preserveState: true });
+    setEntryType("");
+    router.get("/work_entries", {}, { preserveState: true });
   };
 
-  const hasFilters = startDate || endDate || clientId || projectId;
+  const hasFilters = startDate || endDate || clientId || projectId || entryType;
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
@@ -162,6 +166,24 @@ export default function FilterBar({
                 </option>
               ))
             )}
+          </select>
+        </div>
+        <div className="w-36">
+          <label
+            htmlFor="filter-entry-type"
+            className="block text-sm font-medium text-stone-600 mb-1.5"
+          >
+            Entry Type
+          </label>
+          <select
+            id="filter-entry-type"
+            value={entryType}
+            onChange={(e) => setEntryType(e.target.value)}
+            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+          >
+            <option value="">All Types</option>
+            <option value="time">Time</option>
+            <option value="fixed">Fixed</option>
           </select>
         </div>
         <Button

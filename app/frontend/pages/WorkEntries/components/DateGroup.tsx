@@ -1,4 +1,4 @@
-import TimeEntryRow from "./TimeEntryRow";
+import WorkEntryRow from "./WorkEntryRow";
 
 interface Project {
   id: number;
@@ -17,10 +17,12 @@ interface ClientGroup {
   projects: Project[];
 }
 
-interface TimeEntry {
+interface WorkEntry {
   id: number;
   date: string;
-  hours: number;
+  hours: number | null;
+  amount: number | null;
+  entry_type: "time" | "fixed";
   description: string | null;
   status: "unbilled" | "invoiced";
   calculated_amount: number;
@@ -35,7 +37,8 @@ interface DateGroupData {
   date: string;
   formatted_date: string;
   total_hours: number;
-  entries: TimeEntry[];
+  total_amount: number;
+  entries: WorkEntry[];
 }
 
 interface DateGroupProps {
@@ -113,7 +116,7 @@ export default function DateGroup({
         {/* Entries list */}
         <div className="ml-4 space-y-2">
           {group.entries.map((entry, index) => (
-            <TimeEntryRow
+            <WorkEntryRow
               key={entry.id}
               entry={entry}
               projects={projects}

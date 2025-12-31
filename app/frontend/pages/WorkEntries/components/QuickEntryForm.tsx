@@ -30,6 +30,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   const [date, setDate] = useState(today);
   const [projectId, setProjectId] = useState("");
   const [hours, setHours] = useState("");
+  const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,13 +39,14 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
     setIsSubmitting(true);
 
     router.post(
-      "/time_entries",
+      "/work_entries",
       {
-        time_entry: {
+        work_entry: {
           date,
           project_id: parseInt(projectId),
-          hours: parseFloat(hours),
           description,
+          hours: hours ? parseFloat(hours) : null,
+          amount: amount ? parseFloat(amount) : null,
         },
       },
       {
@@ -53,6 +55,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
           setDate(today);
           setProjectId("");
           setHours("");
+          setAmount("");
           setDescription("");
         },
         onFinish: () => {
@@ -62,7 +65,10 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
     );
   };
 
-  const isValid = date && projectId && hours && parseFloat(hours) > 0;
+  // Valid if date, project selected, and at least one of hours or amount is filled
+  const hasHours = hours && parseFloat(hours) > 0;
+  const hasAmount = amount && parseFloat(amount) > 0;
+  const isValid = date && projectId && (hasHours || hasAmount);
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
@@ -113,13 +119,31 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             name="Hours"
             type="number"
             step="0.25"
-            min="0.25"
+            min="0"
             max="24"
             value={hours}
             onChange={(e) => setHours(e.target.value)}
-            required
             className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
             placeholder="8"
+          />
+        </div>
+        <div className="w-28">
+          <label
+            htmlFor="Amount"
+            className="block text-sm font-medium text-stone-600 mb-1.5"
+          >
+            Amount
+          </label>
+          <Input
+            id="Amount"
+            name="Amount"
+            type="number"
+            step="0.01"
+            min="0"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
+            placeholder="$500"
           />
         </div>
         <div className="flex-1">
