@@ -34,4 +34,43 @@ RSpec.describe InvoiceLineItemsController, type: :request do
       expect(work_entry.invoice_id).to be_nil
     end
   end
+
+  describe "reorder" do
+    let!(:item1) { create(:invoice_line_item, invoice: invoice, description: "First", position: 0) }
+    let!(:item2) { create(:invoice_line_item, invoice: invoice, description: "Second", position: 1) }
+
+    it "swaps positions when moving item down" do
+      patch reorder_invoice_line_item_path(invoice, item1), params: { direction: "down" }
+
+      expect(response).to redirect_to(invoice_path(invoice))
+      expect(item1.reload.position).to eq(1)
+      expect(item2.reload.position).to eq(0)
+    end
+
+    it "swaps positions when moving item up" do
+      patch reorder_invoice_line_item_path(invoice, item2), params: { direction: "up" }
+
+      expect(response).to redirect_to(invoice_path(invoice))
+      expect(item1.reload.position).to eq(1)
+      expect(item2.reload.position).to eq(0)
+    end
+
+    it "handles edge case when item is already at top" do
+      patch reorder_invoice_line_item_path(invoice, item1), params: { direction: "up" }
+
+      expect(response).to redirect_to(invoice_path(invoice))
+      # Positions should remain unchanged
+      expect(item1.reload.position).to eq(0)
+      expect(item2.reload.position).to eq(1)
+    end
+
+    it "handles edge case when item is already at bottom" do
+      patch reorder_invoice_line_item_path(invoice, item2), params: { direction: "down" }
+
+      expect(response).to redirect_to(invoice_path(invoice))
+      # Positions should remain unchanged
+      expect(item1.reload.position).to eq(0)
+      expect(item2.reload.position).to eq(1)
+    end
+  end
 end

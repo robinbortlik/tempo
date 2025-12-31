@@ -191,4 +191,40 @@ describe("WorkEntryRow", () => {
 
     expect(screen.getByText("Time")).toBeInTheDocument();
   });
+
+  it("handles string hours values from backend (decimal serialization)", () => {
+    // Rails returns decimal values as strings, test that Number() conversion works
+    const entryWithStringHours = {
+      ...mockTimeEntry,
+      hours: "8.5" as unknown as number, // Simulating Rails returning string
+    };
+
+    render(
+      <WorkEntryRow
+        entry={entryWithStringHours}
+        projects={mockProjects}
+        onDelete={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText("8.5")).toBeInTheDocument();
+  });
+
+  it("handles string amount values from backend (decimal serialization)", () => {
+    // Rails returns decimal values as strings, test that Number() conversion works
+    const entryWithStringAmount = {
+      ...mockFixedEntry,
+      amount: "500.00" as unknown as number, // Simulating Rails returning string
+    };
+
+    render(
+      <WorkEntryRow
+        entry={entryWithStringAmount}
+        projects={mockProjects}
+        onDelete={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText("$500")).toBeInTheDocument();
+  });
 });
