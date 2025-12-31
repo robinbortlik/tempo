@@ -7,6 +7,8 @@ interface LineItem {
   quantity: number | null;
   unit_price: number | null;
   amount: number;
+  vat_rate: number;
+  vat_amount?: number;
   position: number;
   work_entry_ids?: number[];
 }
@@ -76,6 +78,9 @@ export default function LineItemDisplay({
           </td>
         </>
       )}
+      <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-500">
+        {lineItem.vat_rate}%
+      </td>
       <td className="px-4 py-3 text-right tabular-nums text-stone-900 font-medium w-28">
         {formatCurrency(lineItem.amount, currency)}
       </td>

@@ -33,6 +33,7 @@ const mockLineItems = [
     quantity: 20,
     unit_price: 150,
     amount: 3000,
+    vat_rate: 21,
     position: 0,
     project_id: 1,
     project_name: "Website Redesign",
@@ -45,6 +46,7 @@ const mockLineItems = [
     quantity: null,
     unit_price: null,
     amount: 500,
+    vat_rate: 21,
     position: 1,
     project_id: 1,
     project_name: "Website Redesign",
@@ -121,6 +123,7 @@ describe("LineItemEditor", () => {
     quantity: null,
     unit_price: null,
     amount: 500,
+    vat_rate: 21,
     position: 0,
     work_entry_ids: [],
   };
@@ -159,6 +162,7 @@ describe("LineItemEditor", () => {
     expect(onSave).toHaveBeenCalledWith({
       description: "Updated description",
       amount: 750,
+      vat_rate: 21,
     });
   });
 
@@ -192,6 +196,7 @@ describe("LineItemDisplay", () => {
     quantity: null,
     unit_price: null,
     amount: 500,
+    vat_rate: 21,
     position: 0,
     work_entry_ids: [1],
   };

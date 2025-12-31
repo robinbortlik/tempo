@@ -17,6 +17,7 @@ interface Client {
   payment_terms: string | null;
   hourly_rate: number | null;
   currency: string | null;
+  default_vat_rate: number | null;
 }
 
 interface ClientFormProps {
@@ -42,6 +43,7 @@ export default function ClientForm({
     payment_terms: client.payment_terms || "",
     hourly_rate: client.hourly_rate?.toString() || "",
     currency: client.currency || "",
+    default_vat_rate: client.default_vat_rate?.toString() || "",
   });
 
   const validateEmail = (email: string): boolean => {
@@ -80,6 +82,7 @@ export default function ClientForm({
         payment_terms: data.payment_terms,
         hourly_rate: data.hourly_rate ? parseFloat(data.hourly_rate) : null,
         currency: data.currency,
+        default_vat_rate: data.default_vat_rate ? parseFloat(data.default_vat_rate) : null,
       },
     };
 
@@ -214,7 +217,7 @@ export default function ClientForm({
       <div className="bg-white rounded-xl border border-stone-200 p-6">
         <h3 className="font-semibold text-stone-900 mb-6">Billing Details</h3>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <Label
                 htmlFor="currency"
@@ -251,6 +254,29 @@ export default function ClientForm({
                 onChange={(e) => setData("hourly_rate", e.target.value)}
                 className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
               />
+            </div>
+            <div>
+              <Label
+                htmlFor="default_vat_rate"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
+                Default VAT Rate
+              </Label>
+              <div className="relative">
+                <Input
+                  id="default_vat_rate"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  value={data.default_vat_rate}
+                  onChange={(e) => setData("default_vat_rate", e.target.value)}
+                  className="w-full px-3 py-2.5 pr-8 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500">
+                  %
+                </span>
+              </div>
             </div>
           </div>
 

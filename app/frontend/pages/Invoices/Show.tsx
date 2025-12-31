@@ -24,6 +24,8 @@ interface LineItem {
   quantity: number | null;
   unit_price: number | null;
   amount: number;
+  vat_rate: number;
+  vat_amount?: number;
   position: number;
   work_entry_ids: number[];
 }
@@ -38,6 +40,10 @@ interface Invoice {
   period_end: string;
   total_hours: number;
   total_amount: number;
+  subtotal: number;
+  total_vat: number;
+  grand_total: number;
+  vat_totals_by_rate: Record<string, number>;
   currency: string;
   notes: string | null;
   client_id: number;
@@ -45,6 +51,7 @@ interface Invoice {
   client_address: string | null;
   client_email: string | null;
   client_vat_id: string | null;
+  client_default_vat_rate: number | null;
 }
 
 interface Settings {
@@ -165,7 +172,7 @@ export default function InvoiceShow() {
     setEditingLineItemId(id);
   };
 
-  const handleSaveLineItem = (id: number, data: { description: string; amount: number }) => {
+  const handleSaveLineItem = (id: number, data: { description: string; amount: number; vat_rate: number }) => {
     router.patch(
       `/invoices/${invoice.id}/line_items/${id}`,
       { line_item: data },
@@ -218,7 +225,7 @@ export default function InvoiceShow() {
     setIsAddingLineItem(true);
   };
 
-  const handleSaveNewLineItem = (data: { description: string; amount: number }) => {
+  const handleSaveNewLineItem = (data: { description: string; amount: number; vat_rate: number }) => {
     router.post(
       `/invoices/${invoice.id}/line_items`,
       { line_item: { ...data, line_type: "fixed" } },
@@ -241,7 +248,6 @@ export default function InvoiceShow() {
   const calculatedTotalHours = line_items
     .filter((item) => item.line_type === "time_aggregate")
     .reduce((sum, item) => sum + (item.quantity || 0), 0);
-  const calculatedTotalAmount = line_items.reduce((sum, item) => sum + item.amount, 0);
 
   return (
     <>
@@ -482,6 +488,7 @@ export default function InvoiceShow() {
                   <th className="pb-3 font-medium">Description</th>
                   <th className="pb-3 font-medium text-right w-16">Hours</th>
                   <th className="pb-3 font-medium text-right w-24">Rate</th>
+                  <th className="pb-3 font-medium text-right w-16">VAT</th>
                   <th className="pb-3 font-medium text-right w-28">Amount</th>
                   {isDraft && <th className="pb-3 font-medium w-36"></th>}
                 </tr>
@@ -495,10 +502,11 @@ export default function InvoiceShow() {
                   if (isEditing) {
                     return (
                       <tr key={item.id}>
-                        <td colSpan={isDraft ? 5 : 4} className="py-2">
+                        <td colSpan={isDraft ? 6 : 5} className="py-2">
                           <LineItemEditor
                             lineItem={item}
                             currency={invoice.currency}
+                            defaultVatRate={invoice.client_default_vat_rate}
                             onSave={(data) => handleSaveLineItem(item.id, data)}
                             onCancel={() => setEditingLineItemId(null)}
                           />
@@ -535,9 +543,11 @@ export default function InvoiceShow() {
                     quantity: null,
                     unit_price: null,
                     amount: 0,
+                    vat_rate: invoice.client_default_vat_rate || 0,
                     position: line_items.length,
                   }}
                   currency={invoice.currency}
+                  defaultVatRate={invoice.client_default_vat_rate}
                   onSave={handleSaveNewLineItem}
                   onCancel={() => setIsAddingLineItem(false)}
                 />
@@ -581,19 +591,36 @@ export default function InvoiceShow() {
                   {calculatedTotalHours > 0 && ` (${formatHours(calculatedTotalHours)} hrs)`}
                 </dt>
                 <dd className="tabular-nums text-stone-900">
-                  {formatCurrency(calculatedTotalAmount, invoice.currency)}
+                  {formatCurrency(invoice.subtotal, invoice.currency)}
                 </dd>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-stone-500">VAT (0%)</dt>
-                <dd className="tabular-nums text-stone-900">
-                  {formatCurrency(0, invoice.currency)}
-                </dd>
-              </div>
+              {/* VAT breakdown by rate */}
+              {Object.entries(invoice.vat_totals_by_rate || {})
+                .filter(([rate, amount]) => parseFloat(rate) > 0 || amount > 0)
+                .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
+                .map(([rate, amount]) => (
+                  <div key={rate} className="flex justify-between">
+                    <dt className="text-stone-500">VAT {parseFloat(rate)}%</dt>
+                    <dd className="tabular-nums text-stone-900">
+                      {formatCurrency(amount, invoice.currency)}
+                    </dd>
+                  </div>
+                ))}
+              {/* Show 0% VAT line only if all items are 0% */}
+              {Object.keys(invoice.vat_totals_by_rate || {}).length === 0 ||
+              (Object.keys(invoice.vat_totals_by_rate || {}).length === 1 &&
+                Object.keys(invoice.vat_totals_by_rate)[0] === "0") ? (
+                <div className="flex justify-between">
+                  <dt className="text-stone-500">VAT (0%)</dt>
+                  <dd className="tabular-nums text-stone-900">
+                    {formatCurrency(0, invoice.currency)}
+                  </dd>
+                </div>
+              ) : null}
               <div className="flex justify-between pt-3 border-t border-stone-200 text-lg">
                 <dt className="font-semibold text-stone-900">Total Due</dt>
                 <dd className="tabular-nums font-semibold text-stone-900">
-                  {formatCurrency(calculatedTotalAmount, invoice.currency)}
+                  {formatCurrency(invoice.grand_total, invoice.currency)}
                 </dd>
               </div>
             </dl>

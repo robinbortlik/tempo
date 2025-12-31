@@ -10,6 +10,7 @@ interface LineItem {
   quantity: number | null;
   unit_price: number | null;
   amount: number;
+  vat_rate: number;
   position: number;
   work_entry_ids?: number[];
 }
@@ -17,22 +18,25 @@ interface LineItem {
 interface LineItemEditorProps {
   lineItem: LineItem;
   currency: string;
-  onSave: (data: { description: string; amount: number }) => void;
+  defaultVatRate?: number | null;
+  onSave: (data: { description: string; amount: number; vat_rate: number }) => void;
   onCancel: () => void;
 }
 
 export default function LineItemEditor({
   lineItem,
   currency,
+  defaultVatRate,
   onSave,
   onCancel,
 }: LineItemEditorProps) {
   const [description, setDescription] = useState(lineItem.description);
   const [amount, setAmount] = useState(lineItem.amount);
-  const [errors, setErrors] = useState<{ description?: string; amount?: string }>({});
+  const [vatRate, setVatRate] = useState(lineItem.vat_rate ?? defaultVatRate ?? 0);
+  const [errors, setErrors] = useState<{ description?: string; amount?: string; vatRate?: string }>({});
 
   const validate = () => {
-    const newErrors: { description?: string; amount?: string } = {};
+    const newErrors: { description?: string; amount?: string; vatRate?: string } = {};
 
     if (!description.trim()) {
       newErrors.description = "Description is required";
@@ -42,6 +46,10 @@ export default function LineItemEditor({
       newErrors.amount = "Amount must be non-negative";
     }
 
+    if (vatRate < 0 || vatRate > 100) {
+      newErrors.vatRate = "VAT rate must be between 0 and 100";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -49,7 +57,7 @@ export default function LineItemEditor({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      onSave({ description: description.trim(), amount });
+      onSave({ description: description.trim(), amount, vat_rate: vatRate });
     }
   };
 
@@ -82,30 +90,59 @@ export default function LineItemEditor({
         )}
       </div>
 
-      <div>
-        <Label htmlFor="edit-amount" className="block text-sm font-medium text-stone-600 mb-1">
-          Amount
-        </Label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500">
-            {currencySymbol}
-          </span>
-          <Input
-            id="edit-amount"
-            type="number"
-            step="0.01"
-            min="0"
-            value={amount}
-            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-            className={`w-full pl-8 ${errors.amount ? "border-red-500" : ""}`}
-            aria-describedby={errors.amount ? "amount-error" : undefined}
-          />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="edit-amount" className="block text-sm font-medium text-stone-600 mb-1">
+            Amount
+          </Label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-500">
+              {currencySymbol}
+            </span>
+            <Input
+              id="edit-amount"
+              type="number"
+              step="0.01"
+              min="0"
+              value={amount}
+              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+              className={`w-full pl-8 ${errors.amount ? "border-red-500" : ""}`}
+              aria-describedby={errors.amount ? "amount-error" : undefined}
+            />
+          </div>
+          {errors.amount && (
+            <p id="amount-error" className="mt-1 text-sm text-red-500">
+              {errors.amount}
+            </p>
+          )}
         </div>
-        {errors.amount && (
-          <p id="amount-error" className="mt-1 text-sm text-red-500">
-            {errors.amount}
-          </p>
-        )}
+
+        <div>
+          <Label htmlFor="edit-vat-rate" className="block text-sm font-medium text-stone-600 mb-1">
+            VAT Rate
+          </Label>
+          <div className="relative">
+            <Input
+              id="edit-vat-rate"
+              type="number"
+              step="0.01"
+              min="0"
+              max="100"
+              value={vatRate}
+              onChange={(e) => setVatRate(parseFloat(e.target.value) || 0)}
+              className={`w-full pr-8 ${errors.vatRate ? "border-red-500" : ""}`}
+              aria-describedby={errors.vatRate ? "vat-rate-error" : undefined}
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500">
+              %
+            </span>
+          </div>
+          {errors.vatRate && (
+            <p id="vat-rate-error" className="mt-1 text-sm text-red-500">
+              {errors.vatRate}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
