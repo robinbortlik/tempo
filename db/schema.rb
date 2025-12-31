@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_30_000348) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_31_111432) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -54,6 +54,29 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_000348) do
     t.datetime "updated_at", null: false
     t.string "vat_id"
     t.index ["share_token"], name: "index_clients_on_share_token", unique: true
+  end
+
+  create_table "invoice_line_item_work_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "invoice_line_item_id", null: false
+    t.datetime "updated_at", null: false
+    t.integer "work_entry_id", null: false
+    t.index ["invoice_line_item_id", "work_entry_id"], name: "index_line_item_work_entries_uniqueness", unique: true
+    t.index ["invoice_line_item_id"], name: "index_invoice_line_item_work_entries_on_invoice_line_item_id"
+    t.index ["work_entry_id"], name: "index_invoice_line_item_work_entries_on_work_entry_id"
+  end
+
+  create_table "invoice_line_items", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.integer "invoice_id", null: false
+    t.integer "line_type", default: 0, null: false
+    t.integer "position", null: false
+    t.decimal "quantity", precision: 8, scale: 2
+    t.decimal "unit_price", precision: 10, scale: 2
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_line_items_on_invoice_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -108,22 +131,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_000348) do
     t.string "vat_id"
   end
 
-  create_table "time_entries", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.date "date", null: false
-    t.text "description"
-    t.decimal "hours", precision: 6, scale: 2, null: false
-    t.integer "invoice_id"
-    t.integer "project_id", null: false
-    t.integer "status", default: 0, null: false
-    t.datetime "updated_at", null: false
-    t.index ["date"], name: "index_time_entries_on_date"
-    t.index ["invoice_id"], name: "index_time_entries_on_invoice_id"
-    t.index ["project_id", "date"], name: "index_time_entries_on_project_id_and_date"
-    t.index ["project_id"], name: "index_time_entries_on_project_id"
-    t.index ["status"], name: "index_time_entries_on_status"
-  end
-
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -132,10 +139,32 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_000348) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "work_entries", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 2
+    t.datetime "created_at", null: false
+    t.date "date", null: false
+    t.text "description"
+    t.integer "entry_type", default: 0, null: false
+    t.decimal "hours", precision: 6, scale: 2
+    t.integer "invoice_id"
+    t.integer "project_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_work_entries_on_date"
+    t.index ["entry_type"], name: "index_work_entries_on_entry_type"
+    t.index ["invoice_id"], name: "index_work_entries_on_invoice_id"
+    t.index ["project_id", "date"], name: "index_work_entries_on_project_id_and_date"
+    t.index ["project_id"], name: "index_work_entries_on_project_id"
+    t.index ["status"], name: "index_work_entries_on_status"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "invoice_line_item_work_entries", "invoice_line_items"
+  add_foreign_key "invoice_line_item_work_entries", "work_entries"
+  add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoices", "clients"
   add_foreign_key "projects", "clients"
   add_foreign_key "sessions", "users"
-  add_foreign_key "time_entries", "projects"
+  add_foreign_key "work_entries", "projects"
 end

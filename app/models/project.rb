@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   # Associations
   belongs_to :client
-  has_many :time_entries, dependent: :destroy
+  has_many :work_entries, dependent: :destroy
 
   # Validations
   validates :name, presence: true

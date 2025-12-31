@@ -7,16 +7,27 @@ RSpec.describe Invoice, type: :model do
       expect(association.macro).to eq(:belongs_to)
     end
 
-    it "has many time_entries" do
-      association = described_class.reflect_on_association(:time_entries)
+    it "has many work_entries" do
+      association = described_class.reflect_on_association(:work_entries)
       expect(association.macro).to eq(:has_many)
     end
 
-    it "nullifies time_entries when destroyed" do
+    it "has many line_items" do
+      association = described_class.reflect_on_association(:line_items)
+      expect(association.macro).to eq(:has_many)
+    end
+
+    it "nullifies work_entries when destroyed" do
       invoice = create(:invoice)
-      time_entry = create(:time_entry, invoice: invoice)
-      expect { invoice.destroy }.not_to change(TimeEntry, :count)
-      expect(time_entry.reload.invoice_id).to be_nil
+      work_entry = create(:work_entry, invoice: invoice)
+      expect { invoice.destroy }.not_to change(WorkEntry, :count)
+      expect(work_entry.reload.invoice_id).to be_nil
+    end
+
+    it "destroys line_items when destroyed" do
+      invoice = create(:invoice)
+      line_item = create(:invoice_line_item, invoice: invoice)
+      expect { invoice.destroy }.to change(InvoiceLineItem, :count).by(-1)
     end
 
     it "is destroyed when client is destroyed" do
@@ -262,7 +273,7 @@ RSpec.describe Invoice, type: :model do
     let(:project) { create(:project, client: client, hourly_rate: 120.00) }
     let(:invoice) { create(:invoice, client: client) }
 
-    context "with no time entries" do
+    context "with no work entries" do
       it "sets totals to zero" do
         invoice.calculate_totals
         expect(invoice.total_hours).to eq(0)
@@ -270,18 +281,18 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    context "with time entries" do
+    context "with work entries" do
       before do
-        create(:time_entry, invoice: invoice, project: project, hours: 8)
-        create(:time_entry, invoice: invoice, project: project, hours: 4.5)
+        create(:work_entry, invoice: invoice, project: project, hours: 8)
+        create(:work_entry, invoice: invoice, project: project, hours: 4.5)
       end
 
-      it "calculates total_hours from time entries" do
+      it "calculates total_hours from work entries" do
         invoice.calculate_totals
         expect(invoice.total_hours).to eq(12.5)
       end
 
-      it "calculates total_amount from time entries" do
+      it "calculates total_amount from work entries" do
         invoice.calculate_totals
         # 8 hours * 120 + 4.5 hours * 120 = 960 + 540 = 1500
         expect(invoice.total_amount).to eq(1500.00)
@@ -293,13 +304,26 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    context "with time entries without hourly rate" do
+    context "with line_items present" do
+      before do
+        create(:invoice_line_item, :time_aggregate, invoice: invoice, quantity: 10, amount: 1200)
+        create(:invoice_line_item, :fixed, invoice: invoice, amount: 500)
+      end
+
+      it "uses line_items for totals instead of work_entries" do
+        invoice.calculate_totals
+        expect(invoice.total_hours).to eq(10)
+        expect(invoice.total_amount).to eq(1700)
+      end
+    end
+
+    context "with work entries without hourly rate" do
       let(:client_no_rate) { create(:client, hourly_rate: nil) }
       let(:project_no_rate) { create(:project, client: client_no_rate, hourly_rate: nil) }
       let(:invoice_no_rate) { create(:invoice, client: client_no_rate) }
 
       before do
-        create(:time_entry, invoice: invoice_no_rate, project: project_no_rate, hours: 8)
+        create(:work_entry, invoice: invoice_no_rate, project: project_no_rate, hours: 8)
       end
 
       it "treats nil amounts as zero" do
@@ -316,7 +340,7 @@ RSpec.describe Invoice, type: :model do
     let(:invoice) { create(:invoice, client: client) }
 
     before do
-      create(:time_entry, invoice: invoice, project: project, hours: 10)
+      create(:work_entry, invoice: invoice, project: project, hours: 10)
     end
 
     it "calculates and saves totals" do

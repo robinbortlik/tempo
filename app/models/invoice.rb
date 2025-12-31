@@ -1,7 +1,11 @@
 class Invoice < ApplicationRecord
   # Associations
   belongs_to :client
-  has_many :time_entries, dependent: :nullify
+  has_many :work_entries, dependent: :nullify
+  has_many :line_items, class_name: "InvoiceLineItem", dependent: :destroy
+
+  # Alias for backwards compatibility during migration
+  alias_method :time_entries, :work_entries
 
   # Enums
   enum :status, { draft: 0, final: 1 }
@@ -23,10 +27,16 @@ class Invoice < ApplicationRecord
   scope :for_year, ->(year) { where("number LIKE ?", "#{year}-%") }
   scope :for_client, ->(client) { where(client: client) }
 
-  # Calculates and updates total_hours and total_amount from associated time_entries
+  # Calculates and updates total_hours and total_amount
+  # Uses line_items if present, otherwise falls back to work_entries
   def calculate_totals
-    self.total_hours = time_entries.sum(:hours)
-    self.total_amount = time_entries.sum { |entry| entry.calculated_amount || 0 }
+    if line_items.any?
+      self.total_hours = line_items.time_aggregate.sum(:quantity) || 0
+      self.total_amount = line_items.sum(:amount)
+    else
+      self.total_hours = work_entries.sum(:hours) || 0
+      self.total_amount = work_entries.sum { |entry| entry.calculated_amount || 0 }
+    end
     self
   end
 
