@@ -26,6 +26,11 @@ Rails.application.routes.draw do
       post :finalize
       get :pdf
     end
+    resources :line_items, controller: "invoice_line_items", only: [:create, :update, :destroy] do
+      member do
+        patch :reorder
+      end
+    end
   end
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -14,33 +14,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import LineItemEditor from "./components/LineItemEditor";
+import LineItemDisplay from "./components/LineItemDisplay";
 
-interface TimeEntry {
+interface LineItem {
   id: number;
-  date: string;
-  hours: number;
+  line_type: "time_aggregate" | "fixed";
   description: string;
-  calculated_amount: number;
-  project_id: number;
-  project_name: string;
-  effective_hourly_rate: number;
-}
-
-interface ProjectGroup {
-  project: {
-    id: number;
-    name: string;
-    effective_hourly_rate: number;
-  };
-  entries: {
-    id: number;
-    date: string;
-    hours: number;
-    description: string;
-    calculated_amount: number;
-  }[];
-  total_hours: number;
-  total_amount: number;
+  quantity: number | null;
+  unit_price: number | null;
+  amount: number;
+  position: number;
+  work_entry_ids: number[];
 }
 
 interface Invoice {
@@ -64,8 +49,7 @@ interface Invoice {
 
 interface PageProps {
   invoice: Invoice;
-  time_entries: TimeEntry[];
-  project_groups: ProjectGroup[];
+  line_items: LineItem[];
   flash: {
     alert?: string;
     notice?: string;
@@ -108,6 +92,10 @@ function formatPeriod(start: string, end: string): string {
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
 }
 
+function formatHours(hours: number): string {
+  return hours % 1 === 0 ? hours.toString() : hours.toFixed(1);
+}
+
 function StatusBadge({ status }: { status: "draft" | "final" }) {
   if (status === "draft") {
     return (
@@ -124,10 +112,12 @@ function StatusBadge({ status }: { status: "draft" | "final" }) {
 }
 
 export default function InvoiceShow() {
-  const { invoice, time_entries, project_groups, flash } =
-    usePage<PageProps>().props;
+  const { invoice, line_items, flash } = usePage<PageProps>().props;
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [editingLineItemId, setEditingLineItemId] = useState<number | null>(null);
+  const [lineItemToRemove, setLineItemToRemove] = useState<number | null>(null);
+  const [isAddingLineItem, setIsAddingLineItem] = useState(false);
 
   useEffect(() => {
     if (flash.notice) {
@@ -156,7 +146,87 @@ export default function InvoiceShow() {
     });
   };
 
+  const handleEditLineItem = (id: number) => {
+    setEditingLineItemId(id);
+  };
+
+  const handleSaveLineItem = (id: number, data: { description: string; amount: number }) => {
+    router.patch(
+      `/invoices/${invoice.id}/line_items/${id}`,
+      { line_item: data },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setEditingLineItemId(null);
+          toast.success("Line item updated");
+        },
+        onError: () => {
+          toast.error("Failed to update line item");
+        },
+      }
+    );
+  };
+
+  const handleRemoveLineItem = (id: number) => {
+    setLineItemToRemove(id);
+  };
+
+  const confirmRemoveLineItem = () => {
+    if (lineItemToRemove === null) return;
+
+    router.delete(`/invoices/${invoice.id}/line_items/${lineItemToRemove}`, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setLineItemToRemove(null);
+        toast.success("Line item removed");
+      },
+      onError: () => {
+        toast.error("Failed to remove line item");
+      },
+    });
+  };
+
+  const handleMoveLineItem = (id: number, direction: "up" | "down") => {
+    router.patch(
+      `/invoices/${invoice.id}/line_items/${id}/reorder`,
+      { direction },
+      {
+        preserveScroll: true,
+        onError: () => {
+          toast.error("Failed to reorder line item");
+        },
+      }
+    );
+  };
+
+  const handleAddLineItem = () => {
+    setIsAddingLineItem(true);
+  };
+
+  const handleSaveNewLineItem = (data: { description: string; amount: number }) => {
+    router.post(
+      `/invoices/${invoice.id}/line_items`,
+      { line_item: { ...data, line_type: "fixed" } },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsAddingLineItem(false);
+          toast.success("Line item added");
+        },
+        onError: () => {
+          toast.error("Failed to add line item");
+        },
+      }
+    );
+  };
+
   const isDraft = invoice.status === "draft";
+
+  // Calculate totals from line items
+  const calculatedTotalHours = line_items
+    .filter((item) => item.line_type === "time_aggregate")
+    .reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const calculatedTotalAmount = line_items.reduce((sum, item) => sum + item.amount, 0);
 
   return (
     <>
@@ -242,7 +312,7 @@ export default function InvoiceShow() {
                         <AlertDialogTitle>Finalize Invoice?</AlertDialogTitle>
                         <AlertDialogDescription>
                           This will mark the invoice as final and lock all
-                          associated time entries as invoiced. This action cannot
+                          associated work entries as invoiced. This action cannot
                           be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
@@ -276,7 +346,7 @@ export default function InvoiceShow() {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           This will permanently delete the invoice and unassociate
-                          all time entries. The time entries will become unbilled
+                          all work entries. The work entries will become unbilled
                           again.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
@@ -368,53 +438,113 @@ export default function InvoiceShow() {
           </div>
 
           {/* Line Items */}
-          <table className="w-full mb-8">
-            <thead>
-              <tr className="text-left text-sm text-stone-500 border-b border-stone-200">
-                <th className="pb-3 font-medium">Date</th>
-                <th className="pb-3 font-medium">Description</th>
-                <th className="pb-3 font-medium text-right">Hours</th>
-                <th className="pb-3 font-medium text-right">Rate</th>
-                <th className="pb-3 font-medium text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {time_entries.map((entry, index) => (
-                <tr
-                  key={entry.id}
-                  className={
-                    index < time_entries.length - 1
-                      ? "border-b border-stone-100"
-                      : ""
-                  }
-                >
-                  <td className="py-3 text-stone-500">
-                    {formatDate(entry.date).replace(/,\s*\d{4}$/, "")}
-                  </td>
-                  <td className="py-3 text-stone-900">
-                    {entry.description || "No description"} ({entry.project_name})
-                  </td>
-                  <td className="py-3 text-right tabular-nums">{entry.hours}</td>
-                  <td className="py-3 text-right tabular-nums text-stone-500">
-                    {formatCurrency(entry.effective_hourly_rate, invoice.currency)}
-                  </td>
-                  <td className="py-3 text-right tabular-nums font-medium">
-                    {formatCurrency(entry.calculated_amount, invoice.currency)}
-                  </td>
+          <div className="mb-8">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-sm text-stone-500 border-b border-stone-200">
+                  <th className="pb-3 font-medium">Description</th>
+                  <th className="pb-3 font-medium text-right w-16">Hours</th>
+                  <th className="pb-3 font-medium text-right w-24">Rate</th>
+                  <th className="pb-3 font-medium text-right w-28">Amount</th>
+                  {isDraft && <th className="pb-3 font-medium w-36"></th>}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-sm">
+                {line_items.map((item, index) => {
+                  const isEditing = editingLineItemId === item.id;
+                  const isFirst = index === 0;
+                  const isLast = index === line_items.length - 1;
+
+                  if (isEditing) {
+                    return (
+                      <tr key={item.id}>
+                        <td colSpan={isDraft ? 5 : 4} className="py-2">
+                          <LineItemEditor
+                            lineItem={item}
+                            currency={invoice.currency}
+                            onSave={(data) => handleSaveLineItem(item.id, data)}
+                            onCancel={() => setEditingLineItemId(null)}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return (
+                    <LineItemDisplay
+                      key={item.id}
+                      lineItem={item}
+                      currency={invoice.currency}
+                      isDraft={isDraft}
+                      isFirst={isFirst}
+                      isLast={isLast}
+                      onEdit={handleEditLineItem}
+                      onRemove={handleRemoveLineItem}
+                      onMoveUp={(id) => handleMoveLineItem(id, "up")}
+                      onMoveDown={(id) => handleMoveLineItem(id, "down")}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+
+            {/* Add Line Item Form */}
+            {isAddingLineItem && (
+              <div className="mt-4">
+                <LineItemEditor
+                  lineItem={{
+                    line_type: "fixed",
+                    description: "",
+                    quantity: null,
+                    unit_price: null,
+                    amount: 0,
+                    position: line_items.length,
+                  }}
+                  currency={invoice.currency}
+                  onSave={handleSaveNewLineItem}
+                  onCancel={() => setIsAddingLineItem(false)}
+                />
+              </div>
+            )}
+
+            {/* Add Line Item Button */}
+            {isDraft && !isAddingLineItem && (
+              <div className="mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleAddLineItem}
+                  className="flex items-center gap-2 text-sm"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Add Line Item
+                </Button>
+              </div>
+            )}
+          </div>
 
           {/* Totals */}
           <div className="flex justify-end">
             <dl className="w-64 space-y-2 text-sm">
               <div className="flex justify-between">
                 <dt className="text-stone-500">
-                  Subtotal ({invoice.total_hours} hrs)
+                  Subtotal
+                  {calculatedTotalHours > 0 && ` (${formatHours(calculatedTotalHours)} hrs)`}
                 </dt>
                 <dd className="tabular-nums text-stone-900">
-                  {formatCurrency(invoice.total_amount, invoice.currency)}
+                  {formatCurrency(calculatedTotalAmount, invoice.currency)}
                 </dd>
               </div>
               <div className="flex justify-between">
@@ -426,7 +556,7 @@ export default function InvoiceShow() {
               <div className="flex justify-between pt-3 border-t border-stone-200 text-lg">
                 <dt className="font-semibold text-stone-900">Total Due</dt>
                 <dd className="tabular-nums font-semibold text-stone-900">
-                  {formatCurrency(invoice.total_amount, invoice.currency)}
+                  {formatCurrency(calculatedTotalAmount, invoice.currency)}
                 </dd>
               </div>
             </dl>
@@ -449,6 +579,30 @@ export default function InvoiceShow() {
           </div>
         </div>
       </div>
+
+      {/* Remove Line Item Confirmation Dialog */}
+      <AlertDialog open={lineItemToRemove !== null} onOpenChange={() => setLineItemToRemove(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Line Item?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove the line item from the invoice. Associated work
+              entries will be unlinked and become unbilled again.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setLineItemToRemove(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemoveLineItem}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

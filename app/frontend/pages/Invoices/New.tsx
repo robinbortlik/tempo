@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
-import InvoicePreview from "./components/InvoicePreview";
+import InvoicePreview, { LineItem } from "./components/InvoicePreview";
 
 interface Client {
   id: number;
@@ -13,25 +13,6 @@ interface Client {
   currency: string;
   hourly_rate: number | null;
   has_unbilled_entries: boolean;
-}
-
-interface TimeEntry {
-  id: number;
-  date: string;
-  hours: number;
-  description: string;
-  calculated_amount: number;
-}
-
-interface ProjectGroup {
-  project: {
-    id: number;
-    name: string;
-    effective_hourly_rate: number;
-  };
-  entries: TimeEntry[];
-  total_hours: number;
-  total_amount: number;
 }
 
 interface PreviewData {
@@ -44,11 +25,11 @@ interface PreviewData {
   period_end: string;
   issue_date: string;
   due_date: string;
-  project_groups: ProjectGroup[];
+  line_items: LineItem[];
   total_hours: number;
   total_amount: number;
   currency: string;
-  time_entry_ids: number[];
+  work_entry_ids: number[];
 }
 
 interface PageProps {
@@ -108,20 +89,6 @@ export default function NewInvoice() {
     }
   }, [flash.notice, flash.alert]);
 
-  // Fetch preview data when form values change
-  const fetchPreview = () => {
-    if (data.client_id && data.period_start && data.period_end) {
-      const params = new URLSearchParams({
-        client_id: data.client_id,
-        period_start: data.period_start,
-        period_end: data.period_end,
-        issue_date: data.issue_date,
-        due_date: data.due_date,
-      });
-      router.get(`/invoices/new?${params.toString()}`, {}, { preserveState: true, preserveScroll: true });
-    }
-  };
-
   const handleClientChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setData("client_id", e.target.value);
     // Trigger preview fetch after state update
@@ -166,7 +133,8 @@ export default function NewInvoice() {
       return;
     }
 
-    if (!preview || preview.project_groups.length === 0) {
+    const lineItems = preview?.line_items || [];
+    if (lineItems.length === 0) {
       toast.error("No unbilled entries found for the selected period");
       return;
     }
@@ -191,6 +159,8 @@ export default function NewInvoice() {
   };
 
   const selectedClient = clients.find((c) => c.id.toString() === data.client_id);
+  const lineItems = preview?.line_items || [];
+  const hasLineItems = lineItems.length > 0;
 
   return (
     <>
@@ -220,7 +190,7 @@ export default function NewInvoice() {
           </button>
           <h1 className="text-2xl font-semibold text-stone-900">New Invoice</h1>
           <p className="text-stone-500 mt-1">
-            Create a new invoice from unbilled time entries
+            Create a new invoice from unbilled work entries
           </p>
         </div>
 
@@ -343,7 +313,7 @@ export default function NewInvoice() {
               <div className="flex gap-3">
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !data.client_id || !preview || preview.project_groups.length === 0}
+                  disabled={isSubmitting || !data.client_id || !hasLineItems}
                   className="flex-1 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "Creating..." : "Create Draft"}
@@ -354,7 +324,7 @@ export default function NewInvoice() {
             {/* Right: Preview */}
             <div className="col-span-2">
               <InvoicePreview
-                projectGroups={preview?.project_groups || []}
+                lineItems={lineItems}
                 totalHours={preview?.total_hours || 0}
                 totalAmount={preview?.total_amount || 0}
                 currency={selectedClient?.currency || preview?.currency || "EUR"}

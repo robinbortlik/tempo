@@ -61,15 +61,6 @@ function formatCurrency(amount: number, currency: string | null): string {
   return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
 function formatPeriod(start: string, end: string): string {
   const startDate = new Date(start);
   const endDate = new Date(end);
@@ -101,7 +92,7 @@ function StatusBadge({ status }: { status: "draft" | "final" }) {
 }
 
 export default function InvoicesIndex() {
-  const { invoices, clients, filters, flash } = usePage<PageProps>().props;
+  const { invoices, filters, flash } = usePage<PageProps>().props;
   const [activeTab, setActiveTab] = useState<string>(filters.status || "all");
 
   useEffect(() => {

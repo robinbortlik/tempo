@@ -5,16 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
+import LineItemEditor from "./components/LineItemEditor";
+import LineItemDisplay from "./components/LineItemDisplay";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-interface TimeEntry {
+interface LineItem {
   id: number;
-  date: string;
-  hours: number;
+  line_type: "time_aggregate" | "fixed";
   description: string;
-  calculated_amount: number;
-  project_id: number;
-  project_name: string;
-  effective_hourly_rate: number;
+  quantity: number | null;
+  unit_price: number | null;
+  amount: number;
+  position: number;
+  work_entry_ids: number[];
 }
 
 interface Invoice {
@@ -35,7 +47,7 @@ interface Invoice {
 
 interface PageProps {
   invoice: Invoice;
-  time_entries: TimeEntry[];
+  line_items: LineItem[];
   flash: {
     alert?: string;
     notice?: string;
@@ -54,14 +66,6 @@ function formatCurrency(amount: number, currency: string | null): string {
   return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 function formatPeriod(start: string, end: string): string {
   const startDate = new Date(start);
   const endDate = new Date(end);
@@ -77,9 +81,16 @@ function formatPeriod(start: string, end: string): string {
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
 }
 
+function formatHours(hours: number): string {
+  return hours % 1 === 0 ? hours.toString() : hours.toFixed(1);
+}
+
 export default function EditInvoice() {
-  const { invoice, time_entries, flash } = usePage<PageProps>().props;
+  const { invoice, line_items, flash } = usePage<PageProps>().props;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingLineItemId, setEditingLineItemId] = useState<number | null>(null);
+  const [lineItemToRemove, setLineItemToRemove] = useState<number | null>(null);
+  const [isAddingLineItem, setIsAddingLineItem] = useState(false);
 
   const { data, setData } = useForm({
     issue_date: invoice.issue_date,
@@ -114,26 +125,85 @@ export default function EditInvoice() {
     );
   };
 
-  // Group entries by project
-  const entriesByProject = time_entries.reduce(
-    (acc, entry) => {
-      if (!acc[entry.project_name]) {
-        acc[entry.project_name] = {
-          entries: [],
-          total_hours: 0,
-          total_amount: 0,
-        };
+  const handleEditLineItem = (id: number) => {
+    setEditingLineItemId(id);
+  };
+
+  const handleSaveLineItem = (id: number, itemData: { description: string; amount: number }) => {
+    router.patch(
+      `/invoices/${invoice.id}/line_items/${id}`,
+      { line_item: itemData },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setEditingLineItemId(null);
+          toast.success("Line item updated");
+        },
+        onError: () => {
+          toast.error("Failed to update line item");
+        },
       }
-      acc[entry.project_name].entries.push(entry);
-      acc[entry.project_name].total_hours += entry.hours;
-      acc[entry.project_name].total_amount += entry.calculated_amount;
-      return acc;
-    },
-    {} as Record<
-      string,
-      { entries: TimeEntry[]; total_hours: number; total_amount: number }
-    >
-  );
+    );
+  };
+
+  const handleRemoveLineItem = (id: number) => {
+    setLineItemToRemove(id);
+  };
+
+  const confirmRemoveLineItem = () => {
+    if (lineItemToRemove === null) return;
+
+    router.delete(`/invoices/${invoice.id}/line_items/${lineItemToRemove}`, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setLineItemToRemove(null);
+        toast.success("Line item removed");
+      },
+      onError: () => {
+        toast.error("Failed to remove line item");
+      },
+    });
+  };
+
+  const handleMoveLineItem = (id: number, direction: "up" | "down") => {
+    router.patch(
+      `/invoices/${invoice.id}/line_items/${id}/reorder`,
+      { direction },
+      {
+        preserveScroll: true,
+        onError: () => {
+          toast.error("Failed to reorder line item");
+        },
+      }
+    );
+  };
+
+  const handleAddLineItem = () => {
+    setIsAddingLineItem(true);
+  };
+
+  const handleSaveNewLineItem = (itemData: { description: string; amount: number }) => {
+    router.post(
+      `/invoices/${invoice.id}/line_items`,
+      { line_item: { ...itemData, line_type: "fixed" } },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setIsAddingLineItem(false);
+          toast.success("Line item added");
+        },
+        onError: () => {
+          toast.error("Failed to add line item");
+        },
+      }
+    );
+  };
+
+  // Calculate totals from line items
+  const calculatedTotalHours = line_items
+    .filter((item) => item.line_type === "time_aggregate")
+    .reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const calculatedTotalAmount = line_items.reduce((sum, item) => sum + item.amount, 0);
 
   return (
     <>
@@ -277,80 +347,132 @@ export default function EditInvoice() {
               </div>
             </div>
 
-            {/* Right: Preview */}
+            {/* Right: Line Items */}
             <div className="col-span-2">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-stone-900">
-                    Invoice Entries
+                    Invoice Line Items
                   </h3>
                   <div className="text-sm text-stone-500">
-                    {invoice.total_hours} hours {"\u00B7"}{" "}
-                    {formatCurrency(invoice.total_amount, invoice.currency)}
+                    {calculatedTotalHours > 0 && (
+                      <>
+                        {formatHours(calculatedTotalHours)} hours {"\u00B7"}{" "}
+                      </>
+                    )}
+                    {formatCurrency(calculatedTotalAmount, invoice.currency)}
                   </div>
                 </div>
 
-                {/* Entries grouped by project */}
+                {/* Line Items */}
                 <div className="border border-stone-200 rounded-lg overflow-hidden">
-                  {Object.entries(entriesByProject).map(
-                    ([projectName, group], groupIndex) => (
-                      <div key={projectName}>
-                        <div
-                          className={`px-4 py-3 bg-stone-50 flex items-center justify-between ${
-                            groupIndex > 0 ? "border-t border-stone-200" : ""
-                          }`}
-                        >
-                          <span className="font-medium text-stone-700">
-                            {projectName}
-                          </span>
-                          <span className="text-sm text-stone-500">
-                            {group.total_hours}h {"\u00B7"}{" "}
-                            {formatCurrency(group.total_amount, invoice.currency)}
-                          </span>
-                        </div>
-                        <table className="w-full text-sm">
-                          <tbody>
-                            {group.entries.map((entry, entryIndex) => (
-                              <tr
-                                key={entry.id}
-                                className={
-                                  entryIndex < group.entries.length - 1
-                                    ? "border-b border-stone-100"
-                                    : ""
-                                }
-                              >
-                                <td className="px-4 py-3 text-stone-500 w-24">
-                                  {formatDate(entry.date)}
-                                </td>
-                                <td className="px-4 py-3 text-stone-700">
-                                  {entry.description || "No description"}
-                                </td>
-                                <td className="px-4 py-3 text-right tabular-nums w-16">
-                                  {entry.hours}h
-                                </td>
-                                <td className="px-4 py-3 text-right tabular-nums text-stone-500 w-24">
-                                  {formatCurrency(
-                                    entry.calculated_amount,
-                                    invoice.currency
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )
-                  )}
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-stone-500 bg-stone-50 border-b border-stone-200">
+                        <th className="px-4 py-3 font-medium">Description</th>
+                        <th className="px-4 py-3 font-medium text-right w-16">Hours</th>
+                        <th className="px-4 py-3 font-medium text-right w-24">Rate</th>
+                        <th className="px-4 py-3 font-medium text-right w-28">Amount</th>
+                        <th className="px-4 py-3 font-medium w-36"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {line_items.map((item, index) => {
+                        const isEditing = editingLineItemId === item.id;
+                        const isFirst = index === 0;
+                        const isLast = index === line_items.length - 1;
+
+                        if (isEditing) {
+                          return (
+                            <tr key={item.id}>
+                              <td colSpan={5} className="py-2">
+                                <LineItemEditor
+                                  lineItem={item}
+                                  currency={invoice.currency}
+                                  onSave={(itemData) => handleSaveLineItem(item.id, itemData)}
+                                  onCancel={() => setEditingLineItemId(null)}
+                                />
+                              </td>
+                            </tr>
+                          );
+                        }
+
+                        return (
+                          <LineItemDisplay
+                            key={item.id}
+                            lineItem={item}
+                            currency={invoice.currency}
+                            isDraft={true}
+                            isFirst={isFirst}
+                            isLast={isLast}
+                            onEdit={handleEditLineItem}
+                            onRemove={handleRemoveLineItem}
+                            onMoveUp={(id) => handleMoveLineItem(id, "up")}
+                            onMoveDown={(id) => handleMoveLineItem(id, "down")}
+                          />
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
+
+                {/* Add Line Item Form */}
+                {isAddingLineItem && (
+                  <div className="mt-4">
+                    <LineItemEditor
+                      lineItem={{
+                        line_type: "fixed",
+                        description: "",
+                        quantity: null,
+                        unit_price: null,
+                        amount: 0,
+                        position: line_items.length,
+                      }}
+                      currency={invoice.currency}
+                      onSave={handleSaveNewLineItem}
+                      onCancel={() => setIsAddingLineItem(false)}
+                    />
+                  </div>
+                )}
+
+                {/* Add Line Item Button */}
+                {!isAddingLineItem && (
+                  <div className="mt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleAddLineItem}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      Add Line Item
+                    </Button>
+                  </div>
+                )}
 
                 {/* Totals */}
                 <div className="mt-6 pt-6 border-t border-stone-200">
                   <div className="flex justify-end">
                     <dl className="w-64 space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <dt className="text-stone-500">Subtotal</dt>
+                        <dt className="text-stone-500">
+                          Subtotal
+                          {calculatedTotalHours > 0 && ` (${formatHours(calculatedTotalHours)} hrs)`}
+                        </dt>
                         <dd className="tabular-nums text-stone-900">
-                          {formatCurrency(invoice.total_amount, invoice.currency)}
+                          {formatCurrency(calculatedTotalAmount, invoice.currency)}
                         </dd>
                       </div>
                       <div className="flex justify-between">
@@ -362,7 +484,7 @@ export default function EditInvoice() {
                       <div className="flex justify-between pt-2 border-t border-stone-200">
                         <dt className="font-semibold text-stone-900">Total</dt>
                         <dd className="tabular-nums font-semibold text-stone-900">
-                          {formatCurrency(invoice.total_amount, invoice.currency)}
+                          {formatCurrency(calculatedTotalAmount, invoice.currency)}
                         </dd>
                       </div>
                     </dl>
@@ -373,6 +495,30 @@ export default function EditInvoice() {
           </div>
         </form>
       </div>
+
+      {/* Remove Line Item Confirmation Dialog */}
+      <AlertDialog open={lineItemToRemove !== null} onOpenChange={() => setLineItemToRemove(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Line Item?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove the line item from the invoice. Associated work
+              entries will be unlinked and become unbilled again.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setLineItemToRemove(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemoveLineItem}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
