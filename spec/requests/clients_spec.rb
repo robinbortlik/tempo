@@ -25,7 +25,7 @@ RSpec.describe ClientsController, type: :request do
       it "returns all clients with computed fields" do
         client = create(:client, name: "Acme Corp", currency: "EUR", hourly_rate: 100)
         project = create(:project, client: client, hourly_rate: 100)
-        create(:time_entry, project: project, hours: 5, status: :unbilled)
+        create(:work_entry, project: project, hours: 5, status: :unbilled)
 
         get clients_path, headers: inertia_headers
 
@@ -126,12 +126,12 @@ RSpec.describe ClientsController, type: :request do
       it "returns recent time entries" do
         client = create(:client)
         project = create(:project, client: client, name: "Project Alpha")
-        entry = create(:time_entry, project: project, date: Date.current, hours: 8, description: "Work")
+        entry = create(:work_entry, project: project, date: Date.current, hours: 8, description: "Work")
 
         get client_path(client), headers: inertia_headers
 
         json_response = JSON.parse(response.body)
-        entries = json_response['props']['recent_time_entries']
+        entries = json_response['props']['recent_work_entries']
 
         expect(entries.length).to eq(1)
         expect(entries.first['hours']).to eq("8.0")
@@ -142,8 +142,8 @@ RSpec.describe ClientsController, type: :request do
       it "returns client stats" do
         client = create(:client, hourly_rate: 100)
         project = create(:project, client: client, hourly_rate: 100)
-        create(:time_entry, project: project, hours: 10, status: :unbilled)
-        create(:time_entry, project: project, hours: 5, status: :invoiced)
+        create(:work_entry, project: project, hours: 10, status: :unbilled)
+        create(:work_entry, project: project, hours: 5, status: :invoiced)
         create(:invoice, client: client, status: :final, total_amount: 500)
 
         get client_path(client), headers: inertia_headers

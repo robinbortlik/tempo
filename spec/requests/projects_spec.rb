@@ -25,7 +25,7 @@ RSpec.describe ProjectsController, type: :request do
       it "returns all projects grouped by client" do
         client = create(:client, name: "Acme Corp", currency: "EUR")
         project = create(:project, client: client, name: "Website Redesign", hourly_rate: 100, active: true)
-        create(:time_entry, project: project, hours: 5, status: :unbilled)
+        create(:work_entry, project: project, hours: 5, status: :unbilled)
 
         get projects_path, headers: inertia_headers
 
@@ -154,12 +154,12 @@ RSpec.describe ProjectsController, type: :request do
 
       it "returns associated time entries" do
         project = create(:project)
-        entry = create(:time_entry, project: project, date: Date.current, hours: 8, description: "Development work")
+        entry = create(:work_entry, project: project, date: Date.current, hours: 8, description: "Development work")
 
         get project_path(project), headers: inertia_headers
 
         json_response = JSON.parse(response.body)
-        entries = json_response['props']['time_entries']
+        entries = json_response['props']['work_entries']
 
         expect(entries.length).to eq(1)
         expect(entries.first['hours']).to eq("8.0")
@@ -170,8 +170,8 @@ RSpec.describe ProjectsController, type: :request do
       it "returns project stats" do
         client = create(:client, hourly_rate: 100)
         project = create(:project, client: client, hourly_rate: 100)
-        create(:time_entry, project: project, hours: 10, status: :unbilled)
-        create(:time_entry, project: project, hours: 5, status: :invoiced)
+        create(:work_entry, project: project, hours: 10, status: :unbilled)
+        create(:work_entry, project: project, hours: 5, status: :invoiced)
 
         get project_path(project), headers: inertia_headers
 
@@ -565,19 +565,19 @@ RSpec.describe ProjectsController, type: :request do
       context "when project has unbilled time entries" do
         it "deletes the project and its time entries" do
           project = create(:project)
-          create(:time_entry, project: project, status: :unbilled)
+          create(:work_entry, project: project, status: :unbilled)
 
           expect {
             delete project_path(project)
           }.to change(Project, :count).by(-1)
-            .and change(TimeEntry, :count).by(-1)
+            .and change(WorkEntry, :count).by(-1)
         end
       end
 
       context "when project has invoiced time entries" do
         it "does not delete the project" do
           project = create(:project)
-          create(:time_entry, project: project, status: :invoiced)
+          create(:work_entry, project: project, status: :invoiced)
 
           expect {
             delete project_path(project)
@@ -586,7 +586,7 @@ RSpec.describe ProjectsController, type: :request do
 
         it "redirects to project show with error message" do
           project = create(:project)
-          create(:time_entry, project: project, status: :invoiced)
+          create(:work_entry, project: project, status: :invoiced)
 
           delete project_path(project)
 

@@ -75,8 +75,8 @@ RSpec.describe "Projects", type: :system do
 
       context "with unbilled time entries" do
         before do
-          create(:time_entry, project: project1, hours: 8, status: :unbilled)
-          create(:time_entry, project: project1, hours: 4, status: :unbilled)
+          create(:work_entry, project: project1, hours: 8, status: :unbilled)
+          create(:work_entry, project: project1, hours: 4, status: :unbilled)
         end
 
         it "shows unbilled hours for projects" do
@@ -204,8 +204,8 @@ RSpec.describe "Projects", type: :system do
     end
 
     context "with time entries" do
-      let!(:entry1) { create(:time_entry, project: project, date: Date.current, hours: 8, description: "Working on API", status: :unbilled) }
-      let!(:entry2) { create(:time_entry, project: project, date: Date.yesterday, hours: 4, description: "Code review", status: :invoiced) }
+      let!(:entry1) { create(:work_entry, project: project, date: Date.current, hours: 8, description: "Working on API", status: :unbilled) }
+      let!(:entry2) { create(:work_entry, project: project, date: Date.yesterday, hours: 4, description: "Code review", status: :invoiced) }
 
       it "displays time entries in the table" do
         visit project_path(project)
@@ -345,7 +345,7 @@ RSpec.describe "Projects", type: :system do
 
     context "with invoiced time entries" do
       before do
-        create(:time_entry, project: project, status: :invoiced)
+        create(:work_entry, project: project, status: :invoiced)
       end
 
       it "shows error when trying to delete project with invoiced entries" do

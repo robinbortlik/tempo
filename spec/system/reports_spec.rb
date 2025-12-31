@@ -73,8 +73,8 @@ RSpec.describe "Client Report Portal", type: :system do
   describe "summary cards" do
     context "with unbilled entries" do
       before do
-        create(:time_entry, project: project, date: Date.current, hours: 8, description: "Development work", status: :unbilled)
-        create(:time_entry, project: project, date: Date.current - 1.day, hours: 4, description: "Code review", status: :unbilled)
+        create(:work_entry, project: project, date: Date.current, hours: 8, description: "Development work", status: :unbilled)
+        create(:work_entry, project: project, date: Date.current - 1.day, hours: 4, description: "Code review", status: :unbilled)
       end
 
       it "displays unbilled hours and amount" do
@@ -89,7 +89,7 @@ RSpec.describe "Client Report Portal", type: :system do
     context "with invoiced entries" do
       before do
         invoice = create(:invoice, :final, client: client, period_start: Date.current.beginning_of_month, period_end: Date.current.end_of_month, total_hours: 40, total_amount: 4800)
-        create(:time_entry, :invoiced, project: project, date: Date.current, hours: 40, invoice: invoice)
+        create(:work_entry, :invoiced, project: project, date: Date.current, hours: 40, invoice: invoice)
       end
 
       it "displays invoiced total" do
@@ -102,7 +102,7 @@ RSpec.describe "Client Report Portal", type: :system do
 
   describe "unbilled section" do
     before do
-      create(:time_entry, project: project, date: Date.current, hours: 8, description: "OAuth implementation", status: :unbilled)
+      create(:work_entry, project: project, date: Date.current, hours: 8, description: "OAuth implementation", status: :unbilled)
     end
 
     it "displays unbilled work header with amber indicator" do
@@ -155,7 +155,7 @@ RSpec.describe "Client Report Portal", type: :system do
 
   describe "collapsible project groups" do
     before do
-      create(:time_entry, project: project, date: Date.current, hours: 8, description: "Development", status: :unbilled)
+      create(:work_entry, project: project, date: Date.current, hours: 8, description: "Development", status: :unbilled)
     end
 
     it "shows project entries when expanded" do
@@ -169,7 +169,7 @@ RSpec.describe "Client Report Portal", type: :system do
   describe "empty state" do
     it "shows message when no entries exist for period" do
       # Create entry in different year
-      create(:time_entry, project: project, date: Date.new(2020, 1, 1), hours: 8, status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2020, 1, 1), hours: 8, status: :unbilled)
 
       visit report_path(client.share_token, year: Date.current.year)
 
@@ -190,7 +190,7 @@ RSpec.describe "Client Report Portal", type: :system do
   describe "currency formatting" do
     context "with EUR currency" do
       it "displays Euro symbol" do
-        create(:time_entry, project: project, date: Date.current, hours: 10, status: :unbilled)
+        create(:work_entry, project: project, date: Date.current, hours: 10, status: :unbilled)
 
         visit report_path(client.share_token)
 
@@ -204,7 +204,7 @@ RSpec.describe "Client Report Portal", type: :system do
       let!(:usd_project) { create(:project, client: usd_client, name: "US Project") }
 
       it "displays Dollar symbol" do
-        create(:time_entry, project: usd_project, date: Date.current, hours: 10, status: :unbilled)
+        create(:work_entry, project: usd_project, date: Date.current, hours: 10, status: :unbilled)
 
         visit report_path(usd_client.share_token)
 
@@ -215,7 +215,7 @@ RSpec.describe "Client Report Portal", type: :system do
 
   describe "date formatting" do
     before do
-      create(:time_entry, project: project, date: Date.new(2024, 12, 25), hours: 8, description: "Christmas work", status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 25), hours: 8, description: "Christmas work", status: :unbilled)
     end
 
     it "formats dates in readable format" do
@@ -227,7 +227,7 @@ RSpec.describe "Client Report Portal", type: :system do
 
   describe "page styling" do
     before do
-      create(:time_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
+      create(:work_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
     end
 
     it "uses correct styling classes" do

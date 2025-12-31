@@ -45,7 +45,7 @@ RSpec.describe DashboardController, type: :request do
         let(:project) { create(:project, client: client, hourly_rate: 100) }
 
         before do
-          create(:time_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
+          create(:work_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
         end
 
         it "returns correct hours_this_week" do
@@ -93,7 +93,7 @@ RSpec.describe DashboardController, type: :request do
       it "returns JSON data" do
         client = create(:client, name: "Test Client")
         project = create(:project, client: client)
-        create(:time_entry, project: project, hours: 8)
+        create(:work_entry, project: project, hours: 8)
 
         get time_by_client_dashboard_path, as: :json
 
@@ -121,7 +121,7 @@ RSpec.describe DashboardController, type: :request do
 
       it "returns JSON data" do
         project = create(:project, name: "Test Project")
-        create(:time_entry, project: project, hours: 10)
+        create(:work_entry, project: project, hours: 10)
 
         get time_by_project_dashboard_path, as: :json
 
@@ -182,7 +182,7 @@ RSpec.describe DashboardController, type: :request do
 
       it "returns JSON data with monthly hours" do
         project = create(:project)
-        create(:time_entry, project: project, date: Date.current, hours: 40)
+        create(:work_entry, project: project, date: Date.current, hours: 40)
 
         get hours_trend_dashboard_path, as: :json
 

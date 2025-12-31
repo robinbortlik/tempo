@@ -112,8 +112,8 @@ RSpec.describe "Invoices", type: :system do
   end
 
   describe "creating a new invoice" do
-    let!(:time_entry1) do
-      create(:time_entry,
+    let!(:work_entry1) do
+      create(:work_entry,
         project: project,
         date: Date.current,
         hours: 8,
@@ -122,8 +122,8 @@ RSpec.describe "Invoices", type: :system do
       )
     end
 
-    let!(:time_entry2) do
-      create(:time_entry,
+    let!(:work_entry2) do
+      create(:work_entry,
         project: project,
         date: Date.current - 1.day,
         hours: 4,
@@ -210,8 +210,8 @@ RSpec.describe "Invoices", type: :system do
       )
     end
 
-    let!(:time_entry) do
-      create(:time_entry,
+    let!(:work_entry) do
+      create(:work_entry,
         project: project,
         invoice: invoice,
         date: Date.new(2024, 12, 20),
@@ -315,8 +315,8 @@ RSpec.describe "Invoices", type: :system do
       )
     end
 
-    let!(:time_entry) do
-      create(:time_entry,
+    let!(:work_entry) do
+      create(:work_entry,
         project: project,
         invoice: invoice,
         date: Date.new(2024, 12, 20),
@@ -384,8 +384,8 @@ RSpec.describe "Invoices", type: :system do
       )
     end
 
-    let!(:time_entry) do
-      create(:time_entry,
+    let!(:work_entry) do
+      create(:work_entry,
         project: project,
         invoice: invoice,
         hours: 8,
@@ -445,8 +445,8 @@ RSpec.describe "Invoices", type: :system do
       )
     end
 
-    let!(:time_entry) do
-      create(:time_entry,
+    let!(:work_entry) do
+      create(:work_entry,
         project: project,
         invoice: invoice,
         hours: 8,

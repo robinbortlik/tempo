@@ -45,7 +45,7 @@ RSpec.describe ReportsController, type: :request do
       end
 
       it "returns unbilled entries data" do
-        create(:time_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
+        create(:work_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
 
         get report_path(client.share_token), headers: inertia_headers
 
@@ -57,7 +57,7 @@ RSpec.describe ReportsController, type: :request do
       end
 
       it "returns invoiced entries data" do
-        create(:time_entry, project: project, date: Date.current, hours: 4, status: :invoiced)
+        create(:work_entry, project: project, date: Date.current, hours: 4, status: :invoiced)
 
         get report_path(client.share_token), headers: inertia_headers
 
@@ -71,8 +71,8 @@ RSpec.describe ReportsController, type: :request do
 
     context "with year filter" do
       it "filters entries by year" do
-        create(:time_entry, project: project, date: Date.new(2024, 6, 15), hours: 8, status: :unbilled)
-        create(:time_entry, project: project, date: Date.new(2023, 6, 15), hours: 4, status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2024, 6, 15), hours: 8, status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2023, 6, 15), hours: 4, status: :unbilled)
 
         get report_path(client.share_token, year: 2024), headers: inertia_headers
 
@@ -87,8 +87,8 @@ RSpec.describe ReportsController, type: :request do
 
     context "with month filter" do
       it "filters entries by month" do
-        create(:time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
-        create(:time_entry, project: project, date: Date.new(2024, 11, 15), hours: 4, status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2024, 11, 15), hours: 4, status: :unbilled)
 
         get report_path(client.share_token, year: 2024, month: 12), headers: inertia_headers
 
@@ -105,8 +105,8 @@ RSpec.describe ReportsController, type: :request do
     context "with project groups" do
       it "groups entries by project with subtotals" do
         project2 = create(:project, client: client, name: "Project Beta", hourly_rate: 150)
-        create(:time_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
-        create(:time_entry, project: project2, date: Date.current, hours: 4, status: :unbilled)
+        create(:work_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
+        create(:work_entry, project: project2, date: Date.current, hours: 4, status: :unbilled)
 
         get report_path(client.share_token), headers: inertia_headers
 
@@ -121,7 +121,7 @@ RSpec.describe ReportsController, type: :request do
       end
 
       it "includes entry details in project groups" do
-        entry = create(:time_entry, project: project, date: Date.current, hours: 8, description: "Test work", status: :unbilled)
+        entry = create(:work_entry, project: project, date: Date.current, hours: 8, description: "Test work", status: :unbilled)
 
         get report_path(client.share_token), headers: inertia_headers
 

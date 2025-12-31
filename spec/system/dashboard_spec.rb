@@ -55,8 +55,8 @@ RSpec.describe "Dashboard", type: :system do
 
     context "with unbilled entries" do
       before do
-        create(:time_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
-        create(:time_entry, project: project, date: Date.current.beginning_of_week, hours: 4, status: :unbilled)
+        create(:work_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
+        create(:work_entry, project: project, date: Date.current.beginning_of_week, hours: 4, status: :unbilled)
       end
 
       it "displays hours this week in stat card" do
@@ -86,7 +86,7 @@ RSpec.describe "Dashboard", type: :system do
 
     context "navigating from dashboard" do
       before do
-        create(:time_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
+        create(:work_entry, project: project, date: Date.current, hours: 8, status: :unbilled)
       end
 
       it "can navigate to create invoice from table" do
@@ -120,8 +120,8 @@ RSpec.describe "Dashboard", type: :system do
     let!(:usd_project) { create(:project, client: usd_client, hourly_rate: 150) }
 
     before do
-      create(:time_entry, project: eur_project, date: Date.current, hours: 10, status: :unbilled) # 1000 EUR
-      create(:time_entry, project: usd_project, date: Date.current, hours: 10, status: :unbilled) # 1500 USD
+      create(:work_entry, project: eur_project, date: Date.current, hours: 10, status: :unbilled) # 1000 EUR
+      create(:work_entry, project: usd_project, date: Date.current, hours: 10, status: :unbilled) # 1500 USD
     end
 
     it "displays amounts for multiple currencies" do

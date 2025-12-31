@@ -120,12 +120,12 @@ RSpec.describe InvoicesController, type: :request do
 
       it "returns associated time entries" do
         invoice = create(:invoice, client: client)
-        entry = create(:time_entry, project: project, invoice: invoice, status: :invoiced)
+        entry = create(:work_entry, project: project, invoice: invoice, status: :invoiced)
 
         get invoice_path(invoice), headers: inertia_headers
 
         json_response = JSON.parse(response.body)
-        entries = json_response['props']['time_entries']
+        entries = json_response['props']['work_entries']
 
         expect(entries.length).to eq(1)
         expect(entries.first['id']).to eq(entry.id)
@@ -133,7 +133,7 @@ RSpec.describe InvoicesController, type: :request do
 
       it "returns project groups" do
         invoice = create(:invoice, client: client)
-        create(:time_entry, project: project, invoice: invoice, hours: 8, status: :invoiced)
+        create(:work_entry, project: project, invoice: invoice, hours: 8, status: :invoiced)
 
         get invoice_path(invoice), headers: inertia_headers
 
@@ -187,7 +187,7 @@ RSpec.describe InvoicesController, type: :request do
       end
 
       it "returns preview data when client and dates provided" do
-        create(:time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
 
         get new_invoice_path(
           client_id: client.id,
@@ -255,7 +255,7 @@ RSpec.describe InvoicesController, type: :request do
 
       context "with valid params and unbilled entries" do
         before do
-          create(:time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+          create(:work_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
         end
 
         it "creates a new invoice" do
@@ -288,7 +288,7 @@ RSpec.describe InvoicesController, type: :request do
         end
 
         it "associates time entries with the invoice" do
-          entry = TimeEntry.first
+          entry = WorkEntry.first
 
           post invoices_path, params: {
             invoice: {
@@ -460,7 +460,7 @@ RSpec.describe InvoicesController, type: :request do
 
         it "unassociates time entries and marks them as unbilled" do
           invoice = create(:invoice, client: client, status: :draft)
-          entry = create(:time_entry, project: project, invoice: invoice, status: :unbilled)
+          entry = create(:work_entry, project: project, invoice: invoice, status: :unbilled)
 
           delete invoice_path(invoice)
 
@@ -515,7 +515,7 @@ RSpec.describe InvoicesController, type: :request do
 
         it "marks all associated time entries as invoiced" do
           invoice = create(:invoice, client: client, status: :draft)
-          entry = create(:time_entry, project: project, invoice: invoice, status: :unbilled)
+          entry = create(:work_entry, project: project, invoice: invoice, status: :unbilled)
 
           post finalize_invoice_path(invoice)
 
@@ -600,7 +600,7 @@ RSpec.describe InvoicesController, type: :request do
 
       it "generates a valid PDF with invoice data" do
         invoice = create(:invoice, client: client, total_hours: 40, total_amount: 4000)
-        entry = create(:time_entry, project: project, invoice: invoice, hours: 8, description: "Test work")
+        entry = create(:work_entry, project: project, invoice: invoice, hours: 8, description: "Test work")
 
         get pdf_invoice_path(invoice)
 
@@ -622,8 +622,8 @@ RSpec.describe InvoicesController, type: :request do
 
       it "includes time entries ordered by date" do
         invoice = create(:invoice, client: client)
-        create(:time_entry, project: project, invoice: invoice, date: Date.new(2024, 12, 15), hours: 4)
-        create(:time_entry, project: project, invoice: invoice, date: Date.new(2024, 12, 10), hours: 8)
+        create(:work_entry, project: project, invoice: invoice, date: Date.new(2024, 12, 15), hours: 4)
+        create(:work_entry, project: project, invoice: invoice, date: Date.new(2024, 12, 10), hours: 8)
 
         get pdf_invoice_path(invoice)
 
