@@ -62,4 +62,16 @@ RSpec.describe InvoiceLineItem, type: :model do
       expect(invoice.line_items.to_a).to eq([item1, item2, item3])
     end
   end
+
+  describe "vat_rate column" do
+    it "accepts and persists vat_rate decimal value" do
+      item = create(:invoice_line_item, vat_rate: 21.00)
+      expect(item.reload.vat_rate).to eq(21.00)
+    end
+
+    it "defaults to 0 for new records" do
+      item = create(:invoice_line_item)
+      expect(item.vat_rate).to eq(0)
+    end
+  end
 end

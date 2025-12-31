@@ -124,6 +124,19 @@ RSpec.describe Client, type: :model do
         expect(new_client.errors[:share_token]).to include("has already been taken")
       end
     end
+
+    describe "default_vat_rate" do
+      it "accepts and persists default_vat_rate decimal value" do
+        client = create(:client, default_vat_rate: 21.00)
+        expect(client.reload.default_vat_rate).to eq(21.00)
+      end
+
+      it "allows nil default_vat_rate" do
+        client = create(:client, default_vat_rate: nil)
+        expect(client).to be_valid
+        expect(client.default_vat_rate).to be_nil
+      end
+    end
   end
 
   describe "share_token generation" do

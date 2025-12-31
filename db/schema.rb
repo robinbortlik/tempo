@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_31_111432) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_31_162742) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -46,6 +46,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_31_111432) do
     t.string "contact_person"
     t.datetime "created_at", null: false
     t.string "currency"
+    t.decimal "default_vat_rate", precision: 5, scale: 2
     t.string "email"
     t.decimal "hourly_rate", precision: 10, scale: 2
     t.string "name", null: false
@@ -76,6 +77,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_31_111432) do
     t.decimal "quantity", precision: 8, scale: 2
     t.decimal "unit_price", precision: 10, scale: 2
     t.datetime "updated_at", null: false
+    t.decimal "vat_rate", precision: 5, scale: 2, default: "0.0", null: false
     t.index ["invoice_id"], name: "index_invoice_line_items_on_invoice_id"
   end
 
