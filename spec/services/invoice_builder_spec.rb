@@ -384,4 +384,66 @@ RSpec.describe InvoiceBuilder do
       end
     end
   end
+
+  describe "VAT rate inheritance" do
+    let(:client_with_vat) { create(:client, hourly_rate: 100, currency: "EUR", default_vat_rate: 21.00) }
+    let(:project_with_vat) { create(:project, client: client_with_vat, hourly_rate: 100) }
+
+    before do
+      create(:work_entry, :time_entry, project: project_with_vat, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+    end
+
+    it "creates line items with client's default_vat_rate" do
+      builder = described_class.new(
+        client_id: client_with_vat.id,
+        period_start: period_start,
+        period_end: period_end
+      )
+
+      result = builder.create_draft
+      invoice = result[:invoice]
+
+      expect(invoice.line_items.first.vat_rate).to eq(21.00)
+    end
+
+    it "uses 0% when client has no default VAT rate" do
+      client.update!(default_vat_rate: nil)
+      create(:work_entry, :time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+
+      builder = described_class.new(
+        client_id: client.id,
+        period_start: period_start,
+        period_end: period_end
+      )
+
+      result = builder.create_draft
+      invoice = result[:invoice]
+
+      expect(invoice.line_items.first.vat_rate).to eq(0)
+    end
+
+    it "includes vat_rate in preview data" do
+      builder = described_class.new(
+        client_id: client_with_vat.id,
+        period_start: period_start,
+        period_end: period_end
+      )
+
+      preview = builder.preview
+
+      expect(preview[:line_items].first[:vat_rate]).to eq(21.0)
+    end
+
+    it "includes default_vat_rate in client_data" do
+      builder = described_class.new(
+        client_id: client_with_vat.id,
+        period_start: period_start,
+        period_end: period_end
+      )
+
+      preview = builder.preview
+
+      expect(preview[:client][:default_vat_rate]).to eq(21.00)
+    end
+  end
 end

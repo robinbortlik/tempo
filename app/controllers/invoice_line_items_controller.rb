@@ -72,7 +72,7 @@ class InvoiceLineItemsController < ApplicationController
   end
 
   def line_item_params
-    params.require(:line_item).permit(:description, :amount, :line_type, :quantity, :unit_price)
+    params.require(:line_item).permit(:description, :amount, :line_type, :quantity, :unit_price, :vat_rate)
   end
 
   def swap_positions(item1, item2)

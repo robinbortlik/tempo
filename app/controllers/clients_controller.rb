@@ -72,7 +72,8 @@ class ClientsController < ApplicationController
       :bank_details,
       :payment_terms,
       :hourly_rate,
-      :currency
+      :currency,
+      :default_vat_rate
     )
   end
 
@@ -104,6 +105,7 @@ class ClientsController < ApplicationController
       payment_terms: client.payment_terms,
       hourly_rate: client.hourly_rate,
       currency: client.currency,
+      default_vat_rate: client.default_vat_rate,
       share_token: client.share_token
     }
   end
@@ -120,7 +122,8 @@ class ClientsController < ApplicationController
       bank_details: "",
       payment_terms: "",
       hourly_rate: nil,
-      currency: ""
+      currency: "",
+      default_vat_rate: nil
     }
   end
 

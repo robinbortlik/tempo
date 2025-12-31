@@ -97,7 +97,8 @@ class InvoiceBuilder
       email: client.email,
       vat_id: client.vat_id,
       currency: client.currency,
-      hourly_rate: client.hourly_rate
+      hourly_rate: client.hourly_rate,
+      default_vat_rate: client.default_vat_rate
     }
   end
 
@@ -128,6 +129,7 @@ class InvoiceBuilder
         quantity: total_hours_for_project.to_f,
         unit_price: rate.to_f,
         amount: total_for_project.to_f,
+        vat_rate: (client.default_vat_rate || 0).to_f,
         position: position,
         project_id: project.id,
         project_name: project.name,
@@ -144,6 +146,7 @@ class InvoiceBuilder
         quantity: nil,
         unit_price: nil,
         amount: (entry.amount || 0).to_f,
+        vat_rate: (client.default_vat_rate || 0).to_f,
         position: position,
         project_id: entry.project_id,
         project_name: entry.project.name,
@@ -171,6 +174,7 @@ class InvoiceBuilder
         quantity: total_hours_for_project,
         unit_price: rate,
         amount: total_for_project,
+        vat_rate: client.default_vat_rate || 0,
         position: position
       )
 
@@ -191,6 +195,7 @@ class InvoiceBuilder
         quantity: nil,
         unit_price: nil,
         amount: entry.amount || 0,
+        vat_rate: client.default_vat_rate || 0,
         position: position
       )
 

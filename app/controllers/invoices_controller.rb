@@ -185,13 +185,18 @@ class InvoicesController < ApplicationController
       period_end: invoice.period_end,
       total_hours: invoice.total_hours&.to_f,
       total_amount: invoice.total_amount&.to_f,
+      subtotal: invoice.subtotal.to_f,
+      total_vat: invoice.total_vat.to_f,
+      grand_total: invoice.grand_total.to_f,
+      vat_totals_by_rate: invoice.vat_totals_by_rate.transform_keys(&:to_f).transform_values(&:to_f),
       currency: invoice.currency,
       notes: invoice.notes,
       client_id: invoice.client_id,
       client_name: invoice.client.name,
       client_address: invoice.client.address,
       client_email: invoice.client.email,
-      client_vat_id: invoice.client.vat_id
+      client_vat_id: invoice.client.vat_id,
+      client_default_vat_rate: invoice.client.default_vat_rate&.to_f
     }
   end
 
@@ -204,6 +209,8 @@ class InvoicesController < ApplicationController
         quantity: item.quantity&.to_f,
         unit_price: item.unit_price&.to_f,
         amount: item.amount.to_f,
+        vat_rate: item.vat_rate.to_f,
+        vat_amount: item.vat_amount.to_f,
         position: item.position,
         work_entry_ids: item.work_entries.map(&:id)
       }
@@ -268,6 +275,7 @@ class InvoicesController < ApplicationController
         name: client.name,
         currency: client.currency,
         hourly_rate: client.hourly_rate,
+        default_vat_rate: client.default_vat_rate&.to_f,
         has_unbilled_entries: unbilled_entries_count(client) > 0
       }
     end
