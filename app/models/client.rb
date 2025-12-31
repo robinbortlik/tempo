@@ -14,6 +14,7 @@ class Client < ApplicationRecord
   validates :share_token, presence: true, uniqueness: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" },
                     allow_blank: true
+  validates :default_vat_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }, allow_nil: true
 
   private
 

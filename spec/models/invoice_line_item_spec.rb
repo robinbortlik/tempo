@@ -74,4 +74,36 @@ RSpec.describe InvoiceLineItem, type: :model do
       expect(item.vat_rate).to eq(0)
     end
   end
+
+  describe "vat_rate validation" do
+    it "rejects vat_rate greater than 100" do
+      item = build(:invoice_line_item, vat_rate: 101)
+      expect(item).not_to be_valid
+      expect(item.errors[:vat_rate]).to include("must be less than or equal to 100")
+    end
+
+    it "rejects negative vat_rate" do
+      item = build(:invoice_line_item, vat_rate: -1)
+      expect(item).not_to be_valid
+      expect(item.errors[:vat_rate]).to include("must be greater than or equal to 0")
+    end
+  end
+
+  describe "#vat_amount" do
+    it "calculates VAT correctly (100.00 amount with 21% rate = 21.00)" do
+      item = build(:invoice_line_item, amount: 100.00, vat_rate: 21.00)
+      expect(item.vat_amount).to eq(21.00)
+    end
+
+    it "rounds to 2 decimal places" do
+      item = build(:invoice_line_item, amount: 33.33, vat_rate: 21.00)
+      # 33.33 * 0.21 = 6.9993, should round to 7.00
+      expect(item.vat_amount).to eq(7.00)
+    end
+
+    it "returns 0 for 0% VAT rate" do
+      item = build(:invoice_line_item, amount: 100.00, vat_rate: 0)
+      expect(item.vat_amount).to eq(0)
+    end
+  end
 end

@@ -11,7 +11,13 @@ class InvoiceLineItem < ApplicationRecord
   validates :description, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :vat_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
 
   # Default scope - order by position
   default_scope { order(:position) }
+
+  # Calculates the VAT amount for this line item
+  def vat_amount
+    (amount * (vat_rate / 100)).round(2)
+  end
 end

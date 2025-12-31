@@ -32,12 +32,34 @@ class Invoice < ApplicationRecord
   def calculate_totals
     if line_items.any?
       self.total_hours = line_items.time_aggregate.sum(:quantity) || 0
-      self.total_amount = line_items.sum(:amount)
+      self.total_amount = grand_total
     else
       self.total_hours = work_entries.sum(:hours) || 0
       self.total_amount = work_entries.sum { |entry| entry.calculated_amount || 0 }
     end
     self
+  end
+
+  # Sum of all line item amounts (before VAT)
+  def subtotal
+    line_items.sum(:amount)
+  end
+
+  # Sum of all line item VAT amounts
+  def total_vat
+    line_items.sum(&:vat_amount)
+  end
+
+  # Subtotal plus total VAT
+  def grand_total
+    subtotal + total_vat
+  end
+
+  # Groups VAT amounts by rate, returning a hash like { 21.0 => 105.00, 0.0 => 0.00 }
+  def vat_totals_by_rate
+    line_items.group_by(&:vat_rate).transform_values do |items|
+      items.sum(&:vat_amount)
+    end
   end
 
   # Calculates and saves totals

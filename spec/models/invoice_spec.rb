@@ -351,6 +351,45 @@ RSpec.describe Invoice, type: :model do
     end
   end
 
+  describe "VAT calculation methods" do
+    let(:invoice) { create(:invoice) }
+
+    before do
+      create(:invoice_line_item, invoice: invoice, amount: 500.00, vat_rate: 21.00, position: 0)
+      create(:invoice_line_item, invoice: invoice, amount: 300.00, vat_rate: 21.00, position: 1)
+      create(:invoice_line_item, invoice: invoice, amount: 200.00, vat_rate: 0.00, position: 2)
+    end
+
+    describe "#subtotal" do
+      it "sums all line item amounts" do
+        expect(invoice.subtotal).to eq(1000.00)
+      end
+    end
+
+    describe "#total_vat" do
+      it "sums all line item VAT amounts" do
+        # 500 * 0.21 = 105, 300 * 0.21 = 63, 200 * 0 = 0
+        expect(invoice.total_vat).to eq(168.00)
+      end
+    end
+
+    describe "#grand_total" do
+      it "returns subtotal plus total VAT" do
+        expect(invoice.grand_total).to eq(1168.00)
+      end
+    end
+
+    describe "#vat_totals_by_rate" do
+      it "groups VAT amounts correctly" do
+        totals = invoice.vat_totals_by_rate
+        # Keys are BigDecimals, so use to_f for comparison
+        totals_by_float = totals.transform_keys(&:to_f)
+        expect(totals_by_float[21.0]).to eq(168.00)
+        expect(totals_by_float[0.0]).to eq(0.00)
+      end
+    end
+  end
+
   describe "factory" do
     it "creates a valid invoice" do
       invoice = build(:invoice)
