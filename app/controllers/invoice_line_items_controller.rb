@@ -80,8 +80,9 @@ class InvoiceLineItemsController < ApplicationController
     pos2 = item2.position
 
     InvoiceLineItem.transaction do
-      # Use a temporary position to avoid unique constraint issues if any
-      item1.update!(position: -1)
+      # Use a high temporary position to avoid unique constraint issues
+      temp_position = [pos1, pos2].max + 1000
+      item1.update!(position: temp_position)
       item2.update!(position: pos1)
       item1.update!(position: pos2)
     end

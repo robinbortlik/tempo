@@ -35,7 +35,8 @@ function formatCurrency(amount: number, currency: string | null): string {
 }
 
 function formatHours(hours: number): string {
-  return hours % 1 === 0 ? hours.toString() : hours.toFixed(1);
+  const numHours = Number(hours) || 0;
+  return numHours % 1 === 0 ? numHours.toString() : numHours.toFixed(1);
 }
 
 export default function LineItemDisplay({

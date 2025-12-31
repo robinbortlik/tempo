@@ -154,7 +154,7 @@ export default function WorkEntriesIndex() {
                     Total Hours:
                   </span>
                   <span className="text-lg font-bold text-stone-900 tabular-nums">
-                    {summary.total_hours.toFixed(1)}h
+                    {Number(summary.total_hours || 0).toFixed(1)}h
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -162,18 +162,18 @@ export default function WorkEntriesIndex() {
                     Total Amount:
                   </span>
                   <span className="text-lg font-bold text-stone-900 tabular-nums">
-                    {formatCurrency(summary.total_amount)}
+                    {formatCurrency(Number(summary.total_amount || 0))}
                   </span>
                 </div>
               </div>
               <div className="flex items-center gap-6 text-sm text-stone-500">
                 <span>
-                  {summary.time_entries_count} time{" "}
-                  {summary.time_entries_count === 1 ? "entry" : "entries"}
+                  {summary.time_entries_count || 0} time{" "}
+                  {(summary.time_entries_count || 0) === 1 ? "entry" : "entries"}
                 </span>
                 <span>
-                  {summary.fixed_entries_count} fixed{" "}
-                  {summary.fixed_entries_count === 1 ? "entry" : "entries"}
+                  {summary.fixed_entries_count || 0} fixed{" "}
+                  {(summary.fixed_entries_count || 0) === 1 ? "entry" : "entries"}
                 </span>
               </div>
             </div>

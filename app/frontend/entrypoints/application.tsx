@@ -17,8 +17,8 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-// Import all page components eagerly
-const pages = import.meta.glob("../pages/**/*.tsx", { eager: true });
+// Import all page components eagerly (excluding test files)
+const pages = import.meta.glob(["../pages/**/*.tsx", "!../pages/**/__tests__/**", "!../pages/**/*.test.tsx"], { eager: true });
 
 createInertiaApp({
   resolve: (name) => {

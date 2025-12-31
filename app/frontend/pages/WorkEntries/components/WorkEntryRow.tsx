@@ -49,7 +49,8 @@ interface WorkEntryRowProps {
 
 function formatHours(hours: number | null): string {
   if (hours === null) return "0";
-  return hours % 1 === 0 ? `${Math.floor(hours)}` : `${hours.toFixed(1)}`;
+  const numHours = Number(hours) || 0;
+  return numHours % 1 === 0 ? `${Math.floor(numHours)}` : `${numHours.toFixed(1)}`;
 }
 
 function formatCurrency(amount: number, currency?: string | null): string {

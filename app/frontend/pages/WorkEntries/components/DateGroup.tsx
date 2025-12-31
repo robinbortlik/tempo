@@ -57,8 +57,9 @@ function formatDateDisplay(dateStr: string): string {
 }
 
 function formatTotalHours(hours: number): string {
+  const numHours = Number(hours) || 0;
   const formatted =
-    hours % 1 === 0 ? Math.floor(hours).toString() : hours.toFixed(1);
+    numHours % 1 === 0 ? Math.floor(numHours).toString() : numHours.toFixed(1);
   return formatted;
 }
 
