@@ -11,19 +11,19 @@ class DashboardStatsService
   end
 
   def hours_this_week
-    TimeEntry.for_date_range(Date.current.beginning_of_week, Date.current.end_of_week).sum(:hours).to_f
+    WorkEntry.time.for_date_range(Date.current.beginning_of_week, Date.current.end_of_week).sum(:hours).to_f
   end
 
   def hours_this_month
-    TimeEntry.for_date_range(Date.current.beginning_of_month, Date.current.end_of_month).sum(:hours).to_f
+    WorkEntry.time.for_date_range(Date.current.beginning_of_month, Date.current.end_of_month).sum(:hours).to_f
   end
 
   def unbilled_hours
-    TimeEntry.unbilled.sum(:hours).to_f
+    WorkEntry.time.unbilled.sum(:hours).to_f
   end
 
   def unbilled_amounts_by_currency
-    # Group unbilled time entries by client currency and sum amounts
+    # Group unbilled work entries by client currency and sum amounts
     unbilled_entries_with_amounts.each_with_object(Hash.new(0.0)) do |entry, totals|
       currency = entry.project.client.currency || "EUR"
       totals[currency] += entry.calculated_amount || 0
@@ -35,7 +35,7 @@ class DashboardStatsService
       entries = unbilled_entries_for_client(client)
       projects_with_unbilled = entries.map(&:project).uniq
 
-      total_hours = entries.sum(&:hours)
+      total_hours = entries.select(&:time?).sum { |e| e.hours || 0 }
       total_amount = entries.sum { |e| e.calculated_amount || 0 }
 
       {
@@ -52,8 +52,9 @@ class DashboardStatsService
 
   # Chart data methods
   def time_by_client
-    # Group all time entries by client for pie chart
-    TimeEntry
+    # Group all work entries by client for pie chart
+    WorkEntry
+      .time
       .joins(project: :client)
       .group("clients.id", "clients.name")
       .sum(:hours)
@@ -62,8 +63,9 @@ class DashboardStatsService
   end
 
   def time_by_project
-    # Group all time entries by project for bar chart
-    TimeEntry
+    # Group all work entries by project for bar chart
+    WorkEntry
+      .time
       .joins(:project)
       .group("projects.id", "projects.name")
       .sum(:hours)
@@ -89,10 +91,11 @@ class DashboardStatsService
     # Monthly hours logged for trend chart
     start_date = months.months.ago.beginning_of_month
 
-    TimeEntry
+    WorkEntry
+      .time
       .where("date >= ?", start_date)
       .group_by { |entry| entry.date.beginning_of_month }
-      .transform_values { |entries| entries.sum(&:hours).to_f }
+      .transform_values { |entries| entries.sum { |e| e.hours || 0 }.to_f }
       .then { |data| fill_missing_months(data, months) }
       .map { |month, hours| { month: month.strftime("%b %Y"), hours: hours } }
   end
@@ -100,20 +103,20 @@ class DashboardStatsService
   private
 
   def unbilled_entries_with_amounts
-    @unbilled_entries_with_amounts ||= TimeEntry
+    @unbilled_entries_with_amounts ||= WorkEntry
       .unbilled
       .includes(project: :client)
   end
 
   def clients_with_unbilled_entries
     @clients_with_unbilled_entries ||= Client
-      .joins(projects: :time_entries)
-      .where(time_entries: { status: :unbilled })
+      .joins(projects: :work_entries)
+      .where(work_entries: { status: :unbilled })
       .distinct
   end
 
   def unbilled_entries_for_client(client)
-    TimeEntry
+    WorkEntry
       .unbilled
       .joins(:project)
       .where(projects: { client_id: client.id })

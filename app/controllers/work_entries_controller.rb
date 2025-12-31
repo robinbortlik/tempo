@@ -1,91 +1,92 @@
-class TimeEntriesController < ApplicationController
-  before_action :set_time_entry, only: [:show, :edit, :update, :destroy]
+class WorkEntriesController < ApplicationController
+  before_action :set_work_entry, only: [:show, :edit, :update, :destroy]
 
   def index
-    entries = filtered_time_entries
+    entries = filtered_work_entries
 
-    render inertia: "TimeEntries/Index", props: {
+    render inertia: "WorkEntries/Index", props: {
       date_groups: entries_grouped_by_date(entries),
       projects: projects_grouped_by_client,
       clients: clients_for_filter,
-      filters: current_filters
+      filters: current_filters,
+      summary: calculate_summary(entries)
     }
   end
 
   def show
-    render inertia: "TimeEntries/Show", props: {
-      time_entry: time_entry_json(@time_entry)
+    render inertia: "WorkEntries/Show", props: {
+      work_entry: work_entry_json(@work_entry)
     }
   end
 
   def new
-    render inertia: "TimeEntries/New", props: {
-      time_entry: empty_time_entry_json,
+    render inertia: "WorkEntries/New", props: {
+      work_entry: empty_work_entry_json,
       projects: projects_grouped_by_client,
       preselected_project_id: params[:project_id]&.to_i
     }
   end
 
   def edit
-    render inertia: "TimeEntries/Edit", props: {
-      time_entry: time_entry_json(@time_entry),
+    render inertia: "WorkEntries/Edit", props: {
+      work_entry: work_entry_json(@work_entry),
       projects: projects_grouped_by_client
     }
   end
 
   def create
-    @time_entry = TimeEntry.new(time_entry_params)
+    @work_entry = WorkEntry.new(work_entry_params)
 
-    if @time_entry.save
-      redirect_to time_entries_path, notice: "Time entry created successfully."
+    if @work_entry.save
+      redirect_to work_entries_path, notice: "Work entry created successfully."
     else
-      redirect_to new_time_entry_path(project_id: params[:time_entry][:project_id]), alert: @time_entry.errors.full_messages.first
+      redirect_to new_work_entry_path(project_id: params[:work_entry][:project_id]), alert: @work_entry.errors.full_messages.first
     end
   end
 
   def update
-    if @time_entry.invoiced?
-      redirect_to time_entries_path, alert: "Cannot update an invoiced time entry."
+    if @work_entry.invoiced?
+      redirect_to work_entries_path, alert: "Cannot update an invoiced work entry."
       return
     end
 
-    if @time_entry.update(time_entry_params)
-      redirect_to time_entries_path, notice: "Time entry updated successfully."
+    if @work_entry.update(work_entry_params)
+      redirect_to work_entries_path, notice: "Work entry updated successfully."
     else
-      redirect_to edit_time_entry_path(@time_entry), alert: @time_entry.errors.full_messages.first
+      redirect_to edit_work_entry_path(@work_entry), alert: @work_entry.errors.full_messages.first
     end
   end
 
   def destroy
-    if @time_entry.invoiced?
-      redirect_to time_entries_path, alert: "Cannot delete an invoiced time entry."
+    if @work_entry.invoiced?
+      redirect_to work_entries_path, alert: "Cannot delete an invoiced work entry."
       return
     end
 
-    @time_entry.destroy
-    redirect_to time_entries_path, notice: "Time entry deleted successfully."
+    @work_entry.destroy
+    redirect_to work_entries_path, notice: "Work entry deleted successfully."
   end
 
   def bulk_destroy
     entry_ids = params[:ids] || []
-    entries = TimeEntry.where(id: entry_ids).unbilled
+    entries = WorkEntry.where(id: entry_ids).unbilled
     deleted_count = entries.destroy_all.count
 
-    redirect_to time_entries_path, notice: "#{deleted_count} time #{deleted_count == 1 ? 'entry' : 'entries'} deleted successfully."
+    redirect_to work_entries_path, notice: "#{deleted_count} work #{deleted_count == 1 ? 'entry' : 'entries'} deleted successfully."
   end
 
   private
 
-  def set_time_entry
-    @time_entry = TimeEntry.find(params[:id])
+  def set_work_entry
+    @work_entry = WorkEntry.find(params[:id])
   end
 
-  def time_entry_params
-    params.require(:time_entry).permit(:project_id, :date, :hours, :description)
+  def work_entry_params
+    params.require(:work_entry).permit(:project_id, :date, :hours, :amount, :description)
   end
 
-  def filtered_time_entries
-    entries = TimeEntry.includes(project: :client).order(date: :desc, created_at: :desc)
+  def filtered_work_entries
+    entries = WorkEntry.includes(project: :client).order(date: :desc, created_at: :desc)
 
     if params[:start_date].present? && params[:end_date].present?
       entries = entries.for_date_range(Date.parse(params[:start_date]), Date.parse(params[:end_date]))
@@ -103,7 +104,23 @@ class TimeEntriesController < ApplicationController
       entries = entries.where(project_id: params[:project_id])
     end
 
+    if params[:entry_type].present?
+      entries = entries.by_entry_type(params[:entry_type])
+    end
+
     entries
+  end
+
+  def calculate_summary(entries)
+    time_entries = entries.select(&:time?)
+    fixed_entries = entries.select(&:fixed?)
+
+    {
+      total_hours: time_entries.sum { |e| e.hours || 0 },
+      total_amount: entries.sum { |e| e.calculated_amount || 0 },
+      time_entries_count: time_entries.count,
+      fixed_entries_count: fixed_entries.count
+    }
   end
 
   def entries_grouped_by_date(entries)
@@ -111,8 +128,9 @@ class TimeEntriesController < ApplicationController
       {
         date: date,
         formatted_date: format_date_label(date),
-        total_hours: date_entries.sum(&:hours),
-        entries: date_entries.map { |entry| time_entry_list_json(entry) }
+        total_hours: date_entries.select(&:time?).sum { |e| e.hours || 0 },
+        total_amount: date_entries.sum { |e| e.calculated_amount || 0 },
+        entries: date_entries.map { |entry| work_entry_list_json(entry) }
       }
     end
   end
@@ -129,11 +147,13 @@ class TimeEntriesController < ApplicationController
     end
   end
 
-  def time_entry_list_json(entry)
+  def work_entry_list_json(entry)
     {
       id: entry.id,
       date: entry.date,
       hours: entry.hours,
+      amount: entry.amount,
+      entry_type: entry.entry_type,
       description: entry.description,
       status: entry.status,
       calculated_amount: entry.calculated_amount,
@@ -145,11 +165,13 @@ class TimeEntriesController < ApplicationController
     }
   end
 
-  def time_entry_json(entry)
+  def work_entry_json(entry)
     {
       id: entry.id,
       date: entry.date,
       hours: entry.hours,
+      amount: entry.amount,
+      entry_type: entry.entry_type,
       description: entry.description,
       status: entry.status,
       calculated_amount: entry.calculated_amount,
@@ -163,11 +185,13 @@ class TimeEntriesController < ApplicationController
     }
   end
 
-  def empty_time_entry_json
+  def empty_work_entry_json
     {
       id: nil,
       date: Date.current,
       hours: nil,
+      amount: nil,
+      entry_type: "time",
       description: "",
       project_id: nil
     }
@@ -206,7 +230,8 @@ class TimeEntriesController < ApplicationController
       start_date: params[:start_date],
       end_date: params[:end_date],
       client_id: params[:client_id]&.to_i,
-      project_id: params[:project_id]&.to_i
+      project_id: params[:project_id]&.to_i,
+      entry_type: params[:entry_type]
     }
   end
 end

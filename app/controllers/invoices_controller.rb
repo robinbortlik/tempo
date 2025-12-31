@@ -14,7 +14,8 @@ class InvoicesController < ApplicationController
   def show
     render inertia: "Invoices/Show", props: {
       invoice: invoice_json(@invoice),
-      time_entries: invoice_time_entries_json(@invoice),
+      line_items: invoice_line_items_json(@invoice),
+      work_entries: invoice_work_entries_json(@invoice),
       project_groups: invoice_project_groups(@invoice)
     }
   end
@@ -34,7 +35,8 @@ class InvoicesController < ApplicationController
 
     render inertia: "Invoices/Edit", props: {
       invoice: invoice_json(@invoice),
-      time_entries: invoice_time_entries_json(@invoice)
+      line_items: invoice_line_items_json(@invoice),
+      work_entries: invoice_work_entries_json(@invoice)
     }
   end
 
@@ -76,8 +78,8 @@ class InvoicesController < ApplicationController
       return
     end
 
-    # Unassociate time entries before destroying the invoice
-    @invoice.time_entries.update_all(invoice_id: nil, status: :unbilled)
+    # Unassociate work entries before destroying the invoice
+    @invoice.work_entries.update_all(invoice_id: nil, status: :unbilled)
     @invoice.destroy
 
     redirect_to invoices_path, notice: "Invoice deleted successfully."
@@ -91,7 +93,7 @@ class InvoicesController < ApplicationController
 
     Invoice.transaction do
       @invoice.final!
-      @invoice.time_entries.update_all(status: :invoiced)
+      @invoice.work_entries.update_all(status: :invoiced)
     end
 
     redirect_to invoice_path(@invoice), notice: "Invoice finalized successfully."
@@ -99,7 +101,8 @@ class InvoicesController < ApplicationController
 
   def pdf
     @settings = Setting.instance
-    @time_entries = @invoice.time_entries.includes(project: :client).order(date: :asc)
+    @line_items = @invoice.line_items.includes(:work_entries)
+    @work_entries = @invoice.work_entries.includes(project: :client).order(date: :asc)
 
     html = render_to_string(
       template: "invoices/pdf",
@@ -190,12 +193,29 @@ class InvoicesController < ApplicationController
     }
   end
 
-  def invoice_time_entries_json(invoice)
-    invoice.time_entries.includes(project: :client).order(date: :asc).map do |entry|
+  def invoice_line_items_json(invoice)
+    invoice.line_items.map do |item|
+      {
+        id: item.id,
+        line_type: item.line_type,
+        description: item.description,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        amount: item.amount,
+        position: item.position,
+        work_entry_ids: item.work_entries.map(&:id)
+      }
+    end
+  end
+
+  def invoice_work_entries_json(invoice)
+    invoice.work_entries.includes(project: :client).order(date: :asc).map do |entry|
       {
         id: entry.id,
         date: entry.date,
         hours: entry.hours,
+        amount: entry.amount,
+        entry_type: entry.entry_type,
         description: entry.description,
         calculated_amount: entry.calculated_amount,
         project_id: entry.project_id,
@@ -206,7 +226,7 @@ class InvoicesController < ApplicationController
   end
 
   def invoice_project_groups(invoice)
-    invoice.time_entries.includes(project: :client).order(date: :asc).group_by(&:project).map do |project, entries|
+    invoice.work_entries.includes(project: :client).order(date: :asc).group_by(&:project).map do |project, entries|
       {
         project: {
           id: project.id,
@@ -218,11 +238,13 @@ class InvoicesController < ApplicationController
             id: entry.id,
             date: entry.date,
             hours: entry.hours,
+            amount: entry.amount,
+            entry_type: entry.entry_type,
             description: entry.description,
             calculated_amount: entry.calculated_amount
           }
         end,
-        total_hours: entries.sum(&:hours),
+        total_hours: entries.select(&:time?).sum { |e| e.hours || 0 },
         total_amount: entries.sum { |e| e.calculated_amount || 0 }
       }
     end
@@ -250,7 +272,7 @@ class InvoicesController < ApplicationController
   end
 
   def unbilled_entries_count(client)
-    TimeEntry.joins(:project)
+    WorkEntry.joins(:project)
              .where(projects: { client_id: client.id })
              .unbilled
              .count

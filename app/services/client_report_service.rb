@@ -1,4 +1,4 @@
-# Generates report data for a client's time entries, grouped by project
+# Generates report data for a client's work entries, grouped by project
 # Used for the public client report portal accessible via share_token
 class ClientReportService
   attr_reader :client, :year, :month
@@ -33,7 +33,7 @@ class ClientReportService
   def unbilled_data
     {
       project_groups: build_project_groups(unbilled_entries),
-      total_hours: unbilled_entries.sum(&:hours),
+      total_hours: unbilled_entries.select(&:time?).sum { |e| e.hours || 0 },
       total_amount: unbilled_entries.sum { |e| e.calculated_amount || 0 }
     }
   end
@@ -42,7 +42,7 @@ class ClientReportService
   def invoiced_data
     {
       project_groups: build_project_groups(invoiced_entries),
-      total_hours: invoiced_entries.sum(&:hours),
+      total_hours: invoiced_entries.select(&:time?).sum { |e| e.hours || 0 },
       total_amount: invoiced_entries.sum { |e| e.calculated_amount || 0 },
       invoices: invoices_in_period
     }
@@ -51,7 +51,7 @@ class ClientReportService
   private
 
   def fetch_entries(status)
-    TimeEntry
+    WorkEntry
       .joins(:project)
       .where(projects: { client_id: client.id })
       .where(status: status)
@@ -69,7 +69,7 @@ class ClientReportService
           effective_hourly_rate: project.effective_hourly_rate
         },
         entries: project_entries.map { |entry| entry_data(entry) },
-        total_hours: project_entries.sum(&:hours),
+        total_hours: project_entries.select(&:time?).sum { |e| e.hours || 0 },
         total_amount: project_entries.sum { |e| e.calculated_amount || 0 }
       }
     end
@@ -80,6 +80,8 @@ class ClientReportService
       id: entry.id,
       date: entry.date,
       hours: entry.hours,
+      amount: entry.amount,
+      entry_type: entry.entry_type,
       description: entry.description,
       calculated_amount: entry.calculated_amount
     }
@@ -122,8 +124,8 @@ class ClientReportService
   end
 
   def available_years
-    # Get years that have any time entries for this client
-    years_with_entries = TimeEntry
+    # Get years that have any work entries for this client
+    years_with_entries = WorkEntry
       .joins(:project)
       .where(projects: { client_id: client.id })
       .distinct

@@ -11,7 +11,7 @@ class ClientsController < ApplicationController
     render inertia: "Clients/Show", props: {
       client: client_json(@client),
       projects: projects_json(@client),
-      recent_time_entries: recent_time_entries_json(@client),
+      recent_work_entries: recent_work_entries_json(@client),
       stats: client_stats(@client)
     }
   end
@@ -132,13 +132,13 @@ class ClientsController < ApplicationController
         hourly_rate: project.hourly_rate,
         effective_hourly_rate: project.effective_hourly_rate,
         active: project.active,
-        unbilled_hours: project.time_entries.unbilled.sum(:hours)
+        unbilled_hours: project.work_entries.time.unbilled.sum(:hours)
       }
     end
   end
 
-  def recent_time_entries_json(client)
-    TimeEntry.joins(:project)
+  def recent_work_entries_json(client)
+    WorkEntry.joins(:project)
              .where(projects: { client_id: client.id })
              .order(date: :desc)
              .limit(10)
@@ -148,6 +148,8 @@ class ClientsController < ApplicationController
         id: entry.id,
         date: entry.date,
         hours: entry.hours,
+        amount: entry.amount,
+        entry_type: entry.entry_type,
         description: entry.description,
         status: entry.status,
         project_name: entry.project.name,
@@ -157,26 +159,26 @@ class ClientsController < ApplicationController
   end
 
   def client_stats(client)
-    time_entries = TimeEntry.joins(:project).where(projects: { client_id: client.id })
-    unbilled_entries = time_entries.unbilled
+    work_entries = WorkEntry.joins(:project).where(projects: { client_id: client.id })
+    unbilled_entries = work_entries.unbilled
 
     {
-      total_hours: time_entries.sum(:hours),
+      total_hours: work_entries.time.sum(:hours),
       total_invoiced: client.invoices.final.sum(:total_amount),
-      unbilled_hours: unbilled_entries.sum(:hours),
+      unbilled_hours: unbilled_entries.time.sum(:hours),
       unbilled_amount: unbilled_entries.includes(project: :client).sum { |e| e.calculated_amount || 0 }
     }
   end
 
   def unbilled_hours_for(client)
-    TimeEntry.joins(:project)
+    WorkEntry.time.joins(:project)
              .where(projects: { client_id: client.id })
              .unbilled
              .sum(:hours)
   end
 
   def unbilled_amount_for(client)
-    TimeEntry.joins(:project)
+    WorkEntry.joins(:project)
              .where(projects: { client_id: client.id })
              .unbilled
              .includes(project: :client)

@@ -39,12 +39,12 @@ RSpec.describe ClientReportService do
   describe "#unbilled_entries" do
     context "with month filter" do
       it "returns unbilled entries for the specified month" do
-        entry1 = create(:time_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
-        entry2 = create(:time_entry, project: project, date: Date.new(2024, 12, 20), status: :unbilled)
+        entry1 = create(:work_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
+        entry2 = create(:work_entry, project: project, date: Date.new(2024, 12, 20), status: :unbilled)
         # Entry outside month
-        create(:time_entry, project: project, date: Date.new(2024, 11, 15), status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2024, 11, 15), status: :unbilled)
         # Invoiced entry
-        create(:time_entry, project: project, date: Date.new(2024, 12, 10), status: :invoiced)
+        create(:work_entry, project: project, date: Date.new(2024, 12, 10), status: :invoiced)
 
         service = described_class.new(client: client, year: 2024, month: 12)
 
@@ -54,10 +54,10 @@ RSpec.describe ClientReportService do
 
     context "without month filter (full year)" do
       it "returns unbilled entries for the entire year" do
-        entry1 = create(:time_entry, project: project, date: Date.new(2024, 1, 15), status: :unbilled)
-        entry2 = create(:time_entry, project: project, date: Date.new(2024, 12, 20), status: :unbilled)
+        entry1 = create(:work_entry, project: project, date: Date.new(2024, 1, 15), status: :unbilled)
+        entry2 = create(:work_entry, project: project, date: Date.new(2024, 12, 20), status: :unbilled)
         # Entry from different year
-        create(:time_entry, project: project, date: Date.new(2023, 6, 15), status: :unbilled)
+        create(:work_entry, project: project, date: Date.new(2023, 6, 15), status: :unbilled)
 
         service = described_class.new(client: client, year: 2024)
 
@@ -68,8 +68,8 @@ RSpec.describe ClientReportService do
     it "excludes entries from other clients" do
       other_client = create(:client)
       other_project = create(:project, client: other_client)
-      create(:time_entry, project: other_project, date: Date.new(2024, 12, 15), status: :unbilled)
-      entry = create(:time_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
+      create(:work_entry, project: other_project, date: Date.new(2024, 12, 15), status: :unbilled)
+      entry = create(:work_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
 
       service = described_class.new(client: client, year: 2024, month: 12)
 
@@ -77,9 +77,9 @@ RSpec.describe ClientReportService do
     end
 
     it "returns entries ordered by date descending" do
-      entry1 = create(:time_entry, project: project, date: Date.new(2024, 12, 10), status: :unbilled)
-      entry2 = create(:time_entry, project: project, date: Date.new(2024, 12, 20), status: :unbilled)
-      entry3 = create(:time_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
+      entry1 = create(:work_entry, project: project, date: Date.new(2024, 12, 10), status: :unbilled)
+      entry2 = create(:work_entry, project: project, date: Date.new(2024, 12, 20), status: :unbilled)
+      entry3 = create(:work_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
 
       service = described_class.new(client: client, year: 2024, month: 12)
 
@@ -89,10 +89,10 @@ RSpec.describe ClientReportService do
 
   describe "#invoiced_entries" do
     it "returns invoiced entries for the period" do
-      entry1 = create(:time_entry, project: project, date: Date.new(2024, 12, 15), status: :invoiced)
-      entry2 = create(:time_entry, project: project, date: Date.new(2024, 12, 20), status: :invoiced)
+      entry1 = create(:work_entry, project: project, date: Date.new(2024, 12, 15), status: :invoiced)
+      entry2 = create(:work_entry, project: project, date: Date.new(2024, 12, 20), status: :invoiced)
       # Unbilled entry
-      create(:time_entry, project: project, date: Date.new(2024, 12, 10), status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 10), status: :unbilled)
 
       service = described_class.new(client: client, year: 2024, month: 12)
 
@@ -102,9 +102,9 @@ RSpec.describe ClientReportService do
 
   describe "#unbilled_data" do
     before do
-      create(:time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
-      create(:time_entry, project: project, date: Date.new(2024, 12, 16), hours: 4, status: :unbilled)
-      create(:time_entry, project: project2, date: Date.new(2024, 12, 17), hours: 6, status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 16), hours: 4, status: :unbilled)
+      create(:work_entry, project: project2, date: Date.new(2024, 12, 17), hours: 6, status: :unbilled)
     end
 
     let(:service) { described_class.new(client: client, year: 2024, month: 12) }
@@ -150,8 +150,8 @@ RSpec.describe ClientReportService do
                         period_start: Date.new(2024, 12, 1),
                         period_end: Date.new(2024, 12, 15),
                         total_hours: 20, total_amount: 2000)
-      create(:time_entry, project: project, date: Date.new(2024, 12, 10), hours: 8, status: :invoiced)
-      create(:time_entry, project: project, date: Date.new(2024, 12, 12), hours: 12, status: :invoiced)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 10), hours: 8, status: :invoiced)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 12), hours: 12, status: :invoiced)
     end
 
     let(:service) { described_class.new(client: client, year: 2024, month: 12) }
@@ -220,7 +220,7 @@ RSpec.describe ClientReportService do
     end
 
     it "includes unbilled data" do
-      create(:time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
 
       report = service.report
 
@@ -229,7 +229,7 @@ RSpec.describe ClientReportService do
     end
 
     it "includes invoiced data" do
-      create(:time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :invoiced)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :invoiced)
 
       report = service.report
 
@@ -240,8 +240,8 @@ RSpec.describe ClientReportService do
 
   describe "available_years in period_data" do
     it "includes years with time entries" do
-      create(:time_entry, project: project, date: Date.new(2023, 6, 15), status: :unbilled)
-      create(:time_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2023, 6, 15), status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2024, 12, 15), status: :unbilled)
 
       service = described_class.new(client: client)
       report = service.report
@@ -257,8 +257,8 @@ RSpec.describe ClientReportService do
     end
 
     it "returns years in descending order" do
-      create(:time_entry, project: project, date: Date.new(2022, 6, 15), status: :unbilled)
-      create(:time_entry, project: project, date: Date.new(2023, 6, 15), status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2022, 6, 15), status: :unbilled)
+      create(:work_entry, project: project, date: Date.new(2023, 6, 15), status: :unbilled)
 
       service = described_class.new(client: client)
       years = service.report[:period][:available_years]

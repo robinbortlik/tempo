@@ -7,17 +7,17 @@ RSpec.describe DashboardStatsService do
     it "returns total hours for the current week" do
       project = create(:project)
       # Entry this week
-      create(:time_entry, project: project, date: Date.current, hours: 8)
-      create(:time_entry, project: project, date: Date.current.beginning_of_week, hours: 4)
+      create(:work_entry, project: project, date: Date.current, hours: 8)
+      create(:work_entry, project: project, date: Date.current.beginning_of_week, hours: 4)
       # Entry last week (should be excluded)
-      create(:time_entry, project: project, date: 1.week.ago, hours: 10)
+      create(:work_entry, project: project, date: 1.week.ago, hours: 10)
 
       expect(service.hours_this_week).to eq(12.0)
     end
 
     it "returns 0 when no entries exist this week" do
       project = create(:project)
-      create(:time_entry, project: project, date: 1.week.ago, hours: 8)
+      create(:work_entry, project: project, date: 1.week.ago, hours: 8)
 
       expect(service.hours_this_week).to eq(0.0)
     end
@@ -27,17 +27,17 @@ RSpec.describe DashboardStatsService do
     it "returns total hours for the current month" do
       project = create(:project)
       # Entries this month
-      create(:time_entry, project: project, date: Date.current.beginning_of_month, hours: 8)
-      create(:time_entry, project: project, date: Date.current, hours: 4)
+      create(:work_entry, project: project, date: Date.current.beginning_of_month, hours: 8)
+      create(:work_entry, project: project, date: Date.current, hours: 4)
       # Entry last month (should be excluded)
-      create(:time_entry, project: project, date: 1.month.ago, hours: 10)
+      create(:work_entry, project: project, date: 1.month.ago, hours: 10)
 
       expect(service.hours_this_month).to eq(12.0)
     end
 
     it "returns 0 when no entries exist this month" do
       project = create(:project)
-      create(:time_entry, project: project, date: 1.month.ago, hours: 8)
+      create(:work_entry, project: project, date: 1.month.ago, hours: 8)
 
       expect(service.hours_this_month).to eq(0.0)
     end
@@ -48,16 +48,16 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project)
       project2 = create(:project)
 
-      create(:time_entry, project: project1, hours: 8, status: :unbilled)
-      create(:time_entry, project: project2, hours: 4, status: :unbilled)
-      create(:time_entry, project: project1, hours: 10, status: :invoiced)
+      create(:work_entry, project: project1, hours: 8, status: :unbilled)
+      create(:work_entry, project: project2, hours: 4, status: :unbilled)
+      create(:work_entry, project: project1, hours: 10, status: :invoiced)
 
       expect(service.unbilled_hours).to eq(12.0)
     end
 
     it "returns 0 when all entries are invoiced" do
       project = create(:project)
-      create(:time_entry, project: project, hours: 8, status: :invoiced)
+      create(:work_entry, project: project, hours: 8, status: :invoiced)
 
       expect(service.unbilled_hours).to eq(0.0)
     end
@@ -71,9 +71,9 @@ RSpec.describe DashboardStatsService do
       eur_project = create(:project, client: eur_client, hourly_rate: 100)
       usd_project = create(:project, client: usd_client, hourly_rate: 150)
 
-      create(:time_entry, project: eur_project, hours: 8, status: :unbilled) # 800 EUR
-      create(:time_entry, project: eur_project, hours: 4, status: :unbilled) # 400 EUR
-      create(:time_entry, project: usd_project, hours: 10, status: :unbilled) # 1500 USD
+      create(:work_entry, project: eur_project, hours: 8, status: :unbilled) # 800 EUR
+      create(:work_entry, project: eur_project, hours: 4, status: :unbilled) # 400 EUR
+      create(:work_entry, project: usd_project, hours: 10, status: :unbilled) # 1500 USD
 
       result = service.unbilled_amounts_by_currency
 
@@ -84,7 +84,7 @@ RSpec.describe DashboardStatsService do
     it "defaults to EUR when client has no currency set" do
       client = create(:client, :minimal, name: "Test Client", currency: nil, hourly_rate: 100)
       project = create(:project, client: client, hourly_rate: 100)
-      create(:time_entry, project: project, hours: 8, status: :unbilled)
+      create(:work_entry, project: project, hours: 8, status: :unbilled)
 
       result = service.unbilled_amounts_by_currency
 
@@ -99,8 +99,8 @@ RSpec.describe DashboardStatsService do
       client = create(:client, currency: "EUR", hourly_rate: 100)
       project = create(:project, client: client, hourly_rate: 100)
 
-      create(:time_entry, project: project, hours: 8, status: :unbilled)
-      create(:time_entry, project: project, hours: 10, status: :invoiced)
+      create(:work_entry, project: project, hours: 8, status: :unbilled)
+      create(:work_entry, project: project, hours: 10, status: :invoiced)
 
       result = service.unbilled_amounts_by_currency
 
@@ -116,8 +116,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, client: client1, hourly_rate: 100)
       project2 = create(:project, client: client2, hourly_rate: 150)
 
-      create(:time_entry, project: project1, hours: 8, status: :unbilled)
-      create(:time_entry, project: project2, hours: 10, status: :unbilled)
+      create(:work_entry, project: project1, hours: 8, status: :unbilled)
+      create(:work_entry, project: project2, hours: 10, status: :unbilled)
 
       result = service.unbilled_by_client
 
@@ -137,8 +137,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, client: client1, hourly_rate: 50)
       project2 = create(:project, client: client2, hourly_rate: 200)
 
-      create(:time_entry, project: project1, hours: 8, status: :unbilled) # 400
-      create(:time_entry, project: project2, hours: 8, status: :unbilled) # 1600
+      create(:work_entry, project: project1, hours: 8, status: :unbilled) # 400
+      create(:work_entry, project: project2, hours: 8, status: :unbilled) # 1600
 
       result = service.unbilled_by_client
 
@@ -151,8 +151,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, client: client, hourly_rate: 100)
       project2 = create(:project, client: client, hourly_rate: 150)
 
-      create(:time_entry, project: project1, hours: 10, status: :unbilled) # 1000
-      create(:time_entry, project: project2, hours: 10, status: :unbilled) # 1500
+      create(:work_entry, project: project1, hours: 10, status: :unbilled) # 1000
+      create(:work_entry, project: project2, hours: 10, status: :unbilled) # 1500
 
       result = service.unbilled_by_client.first
 
@@ -166,11 +166,11 @@ RSpec.describe DashboardStatsService do
       project2 = create(:project, client: client, hourly_rate: 100)
       project3 = create(:project, client: client, hourly_rate: 100)
 
-      create(:time_entry, project: project1, hours: 4, status: :unbilled)
-      create(:time_entry, project: project1, hours: 4, status: :unbilled)
-      create(:time_entry, project: project2, hours: 8, status: :unbilled)
+      create(:work_entry, project: project1, hours: 4, status: :unbilled)
+      create(:work_entry, project: project1, hours: 4, status: :unbilled)
+      create(:work_entry, project: project2, hours: 8, status: :unbilled)
       # project3 has no unbilled entries
-      create(:time_entry, project: project3, hours: 8, status: :invoiced)
+      create(:work_entry, project: project3, hours: 8, status: :invoiced)
 
       result = service.unbilled_by_client.first
 
@@ -184,8 +184,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, client: client1)
       project2 = create(:project, client: client2)
 
-      create(:time_entry, project: project1, hours: 8, status: :unbilled)
-      create(:time_entry, project: project2, hours: 8, status: :invoiced)
+      create(:work_entry, project: project1, hours: 8, status: :unbilled)
+      create(:work_entry, project: project2, hours: 8, status: :invoiced)
 
       result = service.unbilled_by_client
 
@@ -202,9 +202,9 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, client: client1)
       project2 = create(:project, client: client2)
 
-      create(:time_entry, project: project1, hours: 8)
-      create(:time_entry, project: project1, hours: 4)
-      create(:time_entry, project: project2, hours: 10)
+      create(:work_entry, project: project1, hours: 8)
+      create(:work_entry, project: project1, hours: 4)
+      create(:work_entry, project: project2, hours: 10)
 
       result = service.time_by_client
 
@@ -224,8 +224,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, client: client1)
       project2 = create(:project, client: client2)
 
-      create(:time_entry, project: project1, hours: 5)
-      create(:time_entry, project: project2, hours: 20)
+      create(:work_entry, project: project1, hours: 5)
+      create(:work_entry, project: project2, hours: 20)
 
       result = service.time_by_client
 
@@ -238,8 +238,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, name: "Project A")
       project2 = create(:project, name: "Project B")
 
-      create(:time_entry, project: project1, hours: 8)
-      create(:time_entry, project: project2, hours: 12)
+      create(:work_entry, project: project1, hours: 8)
+      create(:work_entry, project: project2, hours: 12)
 
       result = service.time_by_project
 
@@ -250,7 +250,7 @@ RSpec.describe DashboardStatsService do
     it "limits to top 10 projects" do
       12.times do |i|
         project = create(:project, name: "Project #{i}")
-        create(:time_entry, project: project, hours: i + 1)
+        create(:work_entry, project: project, hours: i + 1)
       end
 
       result = service.time_by_project
@@ -262,8 +262,8 @@ RSpec.describe DashboardStatsService do
       project1 = create(:project, name: "Small Project")
       project2 = create(:project, name: "Big Project")
 
-      create(:time_entry, project: project1, hours: 5)
-      create(:time_entry, project: project2, hours: 50)
+      create(:work_entry, project: project1, hours: 5)
+      create(:work_entry, project: project2, hours: 50)
 
       result = service.time_by_project
 
@@ -315,8 +315,8 @@ RSpec.describe DashboardStatsService do
     it "returns monthly hours logged" do
       project = create(:project)
 
-      create(:time_entry, project: project, date: 1.month.ago.to_date, hours: 40)
-      create(:time_entry, project: project, date: Date.current, hours: 32)
+      create(:work_entry, project: project, date: 1.month.ago.to_date, hours: 40)
+      create(:work_entry, project: project, date: Date.current, hours: 32)
 
       result = service.hours_trend(months: 3)
 

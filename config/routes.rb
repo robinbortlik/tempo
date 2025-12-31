@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       patch :toggle_active
     end
   end
-  resources :time_entries do
+  resources :work_entries do
     collection do
       delete :bulk_destroy
     end

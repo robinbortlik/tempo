@@ -179,7 +179,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
 
   const mainNavItems = [
     { href: "/", icon: <DashboardIcon />, label: "Dashboard" },
-    { href: "/time_entries", icon: <TimeEntriesIcon />, label: "Time Entries" },
+    { href: "/work_entries", icon: <TimeEntriesIcon />, label: "Log Work" },
     { href: "/clients", icon: <ClientsIcon />, label: "Clients" },
     { href: "/projects", icon: <ProjectsIcon />, label: "Projects" },
     { href: "/invoices", icon: <InvoicesIcon />, label: "Invoices" },

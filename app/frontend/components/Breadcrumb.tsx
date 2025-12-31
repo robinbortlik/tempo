@@ -32,7 +32,8 @@ function generateBreadcrumbs(url: string): BreadcrumbItem[] {
 
   // Route mapping for friendly names
   const routeNames: Record<string, string> = {
-    time_entries: "Time Entries",
+    work_entries: "Log Work",
+    time_entries: "Log Work",
     clients: "Clients",
     projects: "Projects",
     invoices: "Invoices",
