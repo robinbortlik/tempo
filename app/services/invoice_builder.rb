@@ -1,4 +1,4 @@
-# Builds invoice preview data and creates draft invoices from unbilled time entries
+# Builds invoice preview data and creates draft invoices from unbilled work entries
 class InvoiceBuilder
   attr_reader :client, :period_start, :period_end, :issue_date, :due_date, :notes
 
@@ -19,17 +19,19 @@ class InvoiceBuilder
       period_end: period_end,
       issue_date: issue_date,
       due_date: due_date,
+      line_items: build_line_items_preview,
       project_groups: project_groups,
       total_hours: total_hours,
       total_amount: total_amount,
       currency: client.currency,
-      time_entry_ids: unbilled_entries.map(&:id)
+      time_entry_ids: unbilled_entries.map(&:id),
+      work_entry_ids: unbilled_entries.map(&:id)
     }
   end
 
-  # Creates a draft invoice and associates the time entries
+  # Creates a draft invoice and associates the work entries via line items
   def create_draft
-    return { success: false, errors: ["No unbilled time entries found for the specified period"] } if unbilled_entries.empty?
+    return { success: false, errors: ["No unbilled work entries found for the specified period"] } if unbilled_entries.empty?
 
     invoice = Invoice.new(
       client: client,
@@ -44,7 +46,7 @@ class InvoiceBuilder
 
     Invoice.transaction do
       invoice.save!
-      unbilled_entries.update_all(invoice_id: invoice.id)
+      create_line_items(invoice)
       invoice.calculate_totals!
     end
 
@@ -53,9 +55,9 @@ class InvoiceBuilder
     { success: false, errors: e.record.errors.full_messages }
   end
 
-  # Returns unbilled time entries for the client within the date range
+  # Returns unbilled work entries for the client within the date range
   def unbilled_entries
-    @unbilled_entries ||= TimeEntry
+    @unbilled_entries ||= WorkEntry
       .joins(:project)
       .where(projects: { client_id: client.id })
       .where(status: :unbilled)
@@ -65,7 +67,7 @@ class InvoiceBuilder
   end
 
   def total_hours
-    unbilled_entries.sum(&:hours)
+    time_entries.sum { |e| e.hours || 0 }
   end
 
   def total_amount
@@ -99,6 +101,115 @@ class InvoiceBuilder
     }
   end
 
+  # Entries that are time-based (have hours)
+  def time_entries
+    unbilled_entries.select(&:time?)
+  end
+
+  # Entries that are fixed-price (no hours)
+  def fixed_entries
+    unbilled_entries.select(&:fixed?)
+  end
+
+  # Build line items preview data structure
+  def build_line_items_preview
+    items = []
+    position = 0
+
+    # Group time entries by project and create aggregate line items
+    time_entries.group_by(&:project).each do |project, entries|
+      total_hours_for_project = entries.sum { |e| e.hours || 0 }
+      rate = project.effective_hourly_rate || 0
+      total_for_project = entries.sum { |e| e.calculated_amount || 0 }
+
+      items << {
+        line_type: "time_aggregate",
+        description: "#{project.name} - #{format_hours(total_hours_for_project)}h @ #{format_currency(rate)}/h",
+        quantity: total_hours_for_project,
+        unit_price: rate,
+        amount: total_for_project,
+        position: position,
+        project_id: project.id,
+        project_name: project.name,
+        work_entry_ids: entries.map(&:id)
+      }
+      position += 1
+    end
+
+    # Add individual fixed entries
+    fixed_entries.each do |entry|
+      items << {
+        line_type: "fixed",
+        description: entry.description || "Fixed-price item",
+        quantity: nil,
+        unit_price: nil,
+        amount: entry.amount || 0,
+        position: position,
+        project_id: entry.project_id,
+        project_name: entry.project.name,
+        work_entry_ids: [entry.id]
+      }
+      position += 1
+    end
+
+    items
+  end
+
+  # Create actual InvoiceLineItem records and link work entries
+  def create_line_items(invoice)
+    position = 0
+
+    # Group time entries by project and create aggregate line items
+    time_entries.group_by(&:project).each do |project, entries|
+      total_hours_for_project = entries.sum { |e| e.hours || 0 }
+      rate = project.effective_hourly_rate || 0
+      total_for_project = entries.sum { |e| e.calculated_amount || 0 }
+
+      line_item = invoice.line_items.create!(
+        line_type: :time_aggregate,
+        description: "#{project.name} - #{format_hours(total_hours_for_project)}h @ #{format_currency(rate)}/h",
+        quantity: total_hours_for_project,
+        unit_price: rate,
+        amount: total_for_project,
+        position: position
+      )
+
+      # Link work entries to line item and mark as invoiced
+      entries.each do |entry|
+        InvoiceLineItemWorkEntry.create!(invoice_line_item: line_item, work_entry: entry)
+        entry.update!(invoice: invoice, status: :invoiced)
+      end
+
+      position += 1
+    end
+
+    # Add individual fixed entries
+    fixed_entries.each do |entry|
+      line_item = invoice.line_items.create!(
+        line_type: :fixed,
+        description: entry.description || "Fixed-price item",
+        quantity: nil,
+        unit_price: nil,
+        amount: entry.amount || 0,
+        position: position
+      )
+
+      # Link work entry to line item and mark as invoiced
+      InvoiceLineItemWorkEntry.create!(invoice_line_item: line_item, work_entry: entry)
+      entry.update!(invoice: invoice, status: :invoiced)
+
+      position += 1
+    end
+  end
+
+  def format_hours(hours)
+    hours % 1 == 0 ? hours.to_i.to_s : format("%.1f", hours)
+  end
+
+  def format_currency(amount)
+    format("%.2f", amount)
+  end
+
   def project_groups
     unbilled_entries.group_by(&:project).map do |project, entries|
       {
@@ -108,7 +219,7 @@ class InvoiceBuilder
           effective_hourly_rate: project.effective_hourly_rate
         },
         entries: entries.map { |entry| entry_data(entry) },
-        total_hours: entries.sum(&:hours),
+        total_hours: entries.sum { |e| e.hours || 0 },
         total_amount: entries.sum { |e| e.calculated_amount || 0 }
       }
     end
@@ -119,6 +230,8 @@ class InvoiceBuilder
       id: entry.id,
       date: entry.date,
       hours: entry.hours,
+      amount: entry.amount,
+      entry_type: entry.entry_type,
       description: entry.description,
       calculated_amount: entry.calculated_amount
     }
