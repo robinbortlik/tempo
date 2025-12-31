@@ -103,7 +103,7 @@ export default function FilterBar({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
           />
         </div>
         <div className="w-40">
@@ -118,7 +118,7 @@ export default function FilterBar({
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
           />
         </div>
         <div className="w-48">
@@ -135,7 +135,7 @@ export default function FilterBar({
               setClientId(e.target.value);
               setProjectId(""); // Reset project when client changes
             }}
-            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
           >
             <option value="">All Clients</option>
             {clients.map((client) => (
@@ -156,7 +156,7 @@ export default function FilterBar({
             id="filter-project"
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
           >
             <option value="">All Projects</option>
             {availableProjects.map((group) =>
@@ -179,7 +179,7 @@ export default function FilterBar({
             id="filter-entry-type"
             value={entryType}
             onChange={(e) => setEntryType(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
           >
             <option value="">All Types</option>
             <option value="time">Time</option>
@@ -189,7 +189,7 @@ export default function FilterBar({
         <Button
           type="button"
           onClick={handleApplyFilters}
-          className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
+          className="h-10 px-4 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
         >
           Apply Filters
         </Button>

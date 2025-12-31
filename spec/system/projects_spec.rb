@@ -189,10 +189,10 @@ RSpec.describe "Projects", type: :system do
       expect(page).to have_content("Unbilled Amount")
     end
 
-    it "displays empty time entries message" do
+    it "displays empty work entries message" do
       visit project_path(project)
 
-      expect(page).to have_content("No time entries yet")
+      expect(page).to have_content("No work entries yet")
     end
 
     it "navigates back to projects list" do
@@ -357,7 +357,7 @@ RSpec.describe "Projects", type: :system do
           click_button "Delete"
         end
 
-        expect(page).to have_content("Cannot delete project with invoiced time entries")
+        expect(page).to have_content("Cannot delete project with invoiced work entries")
       end
     end
   end

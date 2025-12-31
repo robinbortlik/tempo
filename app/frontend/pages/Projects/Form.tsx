@@ -35,7 +35,7 @@ function formatRate(rate: number | null, currency: string | null): string {
     CZK: "K\u010D",
   };
   const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${rate}/hr`;
+  return `${symbol}${rate.toFixed(2)}`;
 }
 
 export default function ProjectForm({

@@ -34,7 +34,7 @@ interface Project {
   active: boolean;
 }
 
-interface TimeEntry {
+interface WorkEntry {
   id: number;
   date: string;
   hours: number;
@@ -51,7 +51,7 @@ interface Stats {
 
 interface PageProps {
   project: Project;
-  time_entries: TimeEntry[];
+  work_entries: WorkEntry[];
   stats: Stats;
   flash: {
     alert?: string;
@@ -93,7 +93,7 @@ function formatDate(dateString: string): string {
 }
 
 export default function ProjectShow() {
-  const { project, time_entries, stats, flash } = usePage<PageProps>().props;
+  const { project, work_entries, stats, flash } = usePage<PageProps>().props;
   const [isDeleting, setIsDeleting] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
 
@@ -246,10 +246,10 @@ export default function ProjectShow() {
           </div>
         </div>
 
-        {/* Time Entries */}
+        {/* Work Entries */}
         <div className="bg-white rounded-xl border border-stone-200">
           <div className="px-6 py-4 border-b border-stone-200">
-            <h2 className="font-semibold text-stone-900">Time Entries</h2>
+            <h2 className="font-semibold text-stone-900">Work Entries</h2>
           </div>
           <Table>
             <TableHeader>
@@ -268,17 +268,17 @@ export default function ProjectShow() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {time_entries.length === 0 ? (
+              {work_entries.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={5}
                     className="px-6 py-8 text-center text-stone-500"
                   >
-                    No time entries yet.
+                    No work entries yet.
                   </TableCell>
                 </TableRow>
               ) : (
-                time_entries.map((entry) => (
+                work_entries.map((entry) => (
                   <TableRow
                     key={entry.id}
                     className="border-b border-stone-100"

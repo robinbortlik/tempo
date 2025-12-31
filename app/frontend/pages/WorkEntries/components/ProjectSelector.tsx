@@ -38,7 +38,7 @@ export default function ProjectSelector({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={required}
-      className={`px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900 ${className}`}
+      className={`px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900 ${className}`}
     >
       <option value="">Select a project</option>
       {projects.map((group) => (

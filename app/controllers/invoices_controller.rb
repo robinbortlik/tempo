@@ -16,7 +16,8 @@ class InvoicesController < ApplicationController
       invoice: invoice_json(@invoice),
       line_items: invoice_line_items_json(@invoice),
       work_entries: invoice_work_entries_json(@invoice),
-      project_groups: invoice_project_groups(@invoice)
+      project_groups: invoice_project_groups(@invoice),
+      settings: settings_json
     }
   end
 
@@ -101,6 +102,7 @@ class InvoicesController < ApplicationController
 
   def pdf
     @settings = Setting.instance
+    @logo_data_url = logo_as_data_url(@settings)
     @line_items = @invoice.line_items.includes(:work_entries)
     @work_entries = @invoice.work_entries.includes(project: :client).order(date: :asc)
 
@@ -163,8 +165,8 @@ class InvoicesController < ApplicationController
         due_date: invoice.due_date,
         period_start: invoice.period_start,
         period_end: invoice.period_end,
-        total_hours: invoice.total_hours,
-        total_amount: invoice.total_amount,
+        total_hours: invoice.total_hours&.to_f,
+        total_amount: invoice.total_amount&.to_f,
         currency: invoice.currency,
         client_id: invoice.client_id,
         client_name: invoice.client.name
@@ -181,8 +183,8 @@ class InvoicesController < ApplicationController
       due_date: invoice.due_date,
       period_start: invoice.period_start,
       period_end: invoice.period_end,
-      total_hours: invoice.total_hours,
-      total_amount: invoice.total_amount,
+      total_hours: invoice.total_hours&.to_f,
+      total_amount: invoice.total_amount&.to_f,
       currency: invoice.currency,
       notes: invoice.notes,
       client_id: invoice.client_id,
@@ -199,9 +201,9 @@ class InvoicesController < ApplicationController
         id: item.id,
         line_type: item.line_type,
         description: item.description,
-        quantity: item.quantity,
-        unit_price: item.unit_price,
-        amount: item.amount,
+        quantity: item.quantity&.to_f,
+        unit_price: item.unit_price&.to_f,
+        amount: item.amount.to_f,
         position: item.position,
         work_entry_ids: item.work_entries.map(&:id)
       }
@@ -213,14 +215,14 @@ class InvoicesController < ApplicationController
       {
         id: entry.id,
         date: entry.date,
-        hours: entry.hours,
-        amount: entry.amount,
+        hours: entry.hours&.to_f,
+        amount: entry.amount&.to_f,
         entry_type: entry.entry_type,
         description: entry.description,
-        calculated_amount: entry.calculated_amount,
+        calculated_amount: entry.calculated_amount&.to_f,
         project_id: entry.project_id,
         project_name: entry.project.name,
-        effective_hourly_rate: entry.project.effective_hourly_rate
+        effective_hourly_rate: entry.project.effective_hourly_rate&.to_f
       }
     end
   end
@@ -231,21 +233,21 @@ class InvoicesController < ApplicationController
         project: {
           id: project.id,
           name: project.name,
-          effective_hourly_rate: project.effective_hourly_rate
+          effective_hourly_rate: project.effective_hourly_rate&.to_f
         },
         entries: entries.map do |entry|
           {
             id: entry.id,
             date: entry.date,
-            hours: entry.hours,
-            amount: entry.amount,
+            hours: entry.hours&.to_f,
+            amount: entry.amount&.to_f,
             entry_type: entry.entry_type,
             description: entry.description,
-            calculated_amount: entry.calculated_amount
+            calculated_amount: entry.calculated_amount&.to_f
           }
         end,
-        total_hours: entries.select(&:time?).sum { |e| e.hours || 0 },
-        total_amount: entries.sum { |e| e.calculated_amount || 0 }
+        total_hours: entries.select(&:time?).sum { |e| e.hours || 0 }.to_f,
+        total_amount: entries.sum { |e| e.calculated_amount || 0 }.to_f
       }
     end
   end
@@ -301,5 +303,30 @@ class InvoicesController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       nil
     end
+  end
+
+  def settings_json
+    settings = Setting.instance
+    {
+      company_name: settings.company_name,
+      address: settings.address,
+      email: settings.email,
+      phone: settings.phone,
+      vat_id: settings.vat_id,
+      company_registration: settings.company_registration,
+      bank_name: settings.bank_name,
+      bank_account: settings.bank_account,
+      bank_swift: settings.bank_swift,
+      logo_url: settings.logo? ? url_for(settings.logo) : nil
+    }
+  end
+
+  def logo_as_data_url(settings)
+    return nil unless settings.logo?
+
+    blob = settings.logo.blob
+    content_type = blob.content_type
+    base64_data = Base64.strict_encode64(blob.download)
+    "data:#{content_type};base64,#{base64_data}"
   end
 end

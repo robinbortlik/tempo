@@ -189,7 +189,7 @@ export default function ClientsIndex() {
                           </span>
                         </>
                       ) : (
-                        <span className="text-stone-400">-</span>
+                        <span className="text-stone-400">0h</span>
                       )}
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right text-stone-600">

@@ -21,8 +21,8 @@ class InvoiceBuilder
       due_date: due_date,
       line_items: build_line_items_preview,
       project_groups: project_groups,
-      total_hours: total_hours,
-      total_amount: total_amount,
+      total_hours: total_hours.to_f,
+      total_amount: total_amount.to_f,
       currency: client.currency,
       time_entry_ids: unbilled_entries.map(&:id),
       work_entry_ids: unbilled_entries.map(&:id)
@@ -125,9 +125,9 @@ class InvoiceBuilder
       items << {
         line_type: "time_aggregate",
         description: "#{project.name} - #{format_hours(total_hours_for_project)}h @ #{format_currency(rate)}/h",
-        quantity: total_hours_for_project,
-        unit_price: rate,
-        amount: total_for_project,
+        quantity: total_hours_for_project.to_f,
+        unit_price: rate.to_f,
+        amount: total_for_project.to_f,
         position: position,
         project_id: project.id,
         project_name: project.name,
@@ -143,7 +143,7 @@ class InvoiceBuilder
         description: entry.description || "Fixed-price item",
         quantity: nil,
         unit_price: nil,
-        amount: entry.amount || 0,
+        amount: (entry.amount || 0).to_f,
         position: position,
         project_id: entry.project_id,
         project_name: entry.project.name,
@@ -216,11 +216,11 @@ class InvoiceBuilder
         project: {
           id: project.id,
           name: project.name,
-          effective_hourly_rate: project.effective_hourly_rate
+          effective_hourly_rate: project.effective_hourly_rate&.to_f
         },
         entries: entries.map { |entry| entry_data(entry) },
-        total_hours: entries.sum { |e| e.hours || 0 },
-        total_amount: entries.sum { |e| e.calculated_amount || 0 }
+        total_hours: entries.sum { |e| e.hours || 0 }.to_f,
+        total_amount: entries.sum { |e| e.calculated_amount || 0 }.to_f
       }
     end
   end
@@ -229,11 +229,11 @@ class InvoiceBuilder
     {
       id: entry.id,
       date: entry.date,
-      hours: entry.hours,
-      amount: entry.amount,
+      hours: entry.hours&.to_f,
+      amount: entry.amount&.to_f,
       entry_type: entry.entry_type,
       description: entry.description,
-      calculated_amount: entry.calculated_amount
+      calculated_amount: entry.calculated_amount&.to_f
     }
   end
 end

@@ -139,7 +139,7 @@ RSpec.describe "Invoices", type: :system do
 
       expect(page).to have_current_path(new_invoice_path)
       expect(page).to have_content("New Invoice")
-      expect(page).to have_content("Create a new invoice from unbilled time entries")
+      expect(page).to have_content("Create a new invoice from unbilled work entries")
     end
 
     it "displays client selector" do

@@ -316,6 +316,22 @@ export default function ClientShow() {
                       </dd>
                     </div>
                   )}
+                  {client.company_registration && (
+                    <div className="flex justify-between">
+                      <dt className="text-stone-500">Company Registration</dt>
+                      <dd className="text-stone-900 font-mono">
+                        {client.company_registration}
+                      </dd>
+                    </div>
+                  )}
+                  {client.bank_details && (
+                    <div className="flex justify-between">
+                      <dt className="text-stone-500">Bank Details</dt>
+                      <dd className="text-stone-900 text-right whitespace-pre-line">
+                        {client.bank_details}
+                      </dd>
+                    </div>
+                  )}
                   {client.payment_terms && (
                     <div className="flex justify-between">
                       <dt className="text-stone-500">Payment Terms</dt>

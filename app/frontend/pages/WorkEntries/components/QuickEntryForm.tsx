@@ -73,7 +73,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
       <h3 className="font-semibold text-stone-900 mb-4">Quick Entry</h3>
-      <form onSubmit={handleSubmit} className="flex gap-4">
+      <form onSubmit={handleSubmit} className="flex items-end gap-4">
         <div className="w-40">
           <label
             htmlFor="Date"
@@ -88,7 +88,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
           />
         </div>
         <div className="w-64">
@@ -104,7 +104,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             value={projectId}
             onChange={setProjectId}
             required
-            className="w-full"
+            className="w-full h-10"
           />
         </div>
         <div className="w-24">
@@ -123,7 +123,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             max="24"
             value={hours}
             onChange={(e) => setHours(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
+            className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
             placeholder="8"
           />
         </div>
@@ -142,7 +142,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             min="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
+            className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
             placeholder="$500"
           />
         </div>
@@ -159,19 +159,17 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
+            className="h-10 bg-stone-50 border-stone-200 rounded-lg"
             placeholder="What did you work on?"
           />
         </div>
-        <div className="flex items-end">
-          <Button
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            className="px-6 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
-          >
-            {isSubmitting ? "Adding..." : "Add Entry"}
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          disabled={!isValid || isSubmitting}
+          className="h-10 px-6 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
+        >
+          {isSubmitting ? "Adding..." : "Add Entry"}
+        </Button>
       </form>
     </div>
   );

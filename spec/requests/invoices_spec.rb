@@ -341,7 +341,7 @@ RSpec.describe InvoicesController, type: :request do
 
           expect(response).to redirect_to(new_invoice_path(client_id: client.id.to_s, period_start: "2024-12-01", period_end: "2024-12-31"))
           follow_redirect!
-          expect(flash[:alert]).to include("No unbilled time entries")
+          expect(flash[:alert]).to include("No unbilled work entries")
         end
       end
     end

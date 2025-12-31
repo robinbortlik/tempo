@@ -592,7 +592,7 @@ RSpec.describe ProjectsController, type: :request do
 
           expect(response).to redirect_to(project_path(project))
           follow_redirect!
-          expect(flash[:alert]).to eq("Cannot delete project with invoiced time entries.")
+          expect(flash[:alert]).to eq("Cannot delete project with invoiced work entries.")
         end
       end
     end

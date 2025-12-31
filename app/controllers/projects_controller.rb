@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = params[:client_id].present? ? Project.where(client_id: params[:client_id]) : Project.all
-    @projects = @projects.includes(:client, :time_entries)
+    @projects = @projects.includes(:client, :work_entries)
 
     render inertia: "Projects/Index", props: {
       projects: projects_grouped_by_client(@projects),
@@ -15,7 +15,7 @@ class ProjectsController < ApplicationController
   def show
     render inertia: "Projects/Show", props: {
       project: project_json(@project),
-      time_entries: time_entries_json(@project),
+      work_entries: work_entries_json(@project),
       stats: project_stats(@project)
     }
   end
@@ -54,8 +54,8 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    if @project.time_entries.invoiced.exists?
-      redirect_to project_path(@project), alert: "Cannot delete project with invoiced time entries."
+    if @project.work_entries.invoiced.exists?
+      redirect_to project_path(@project), alert: "Cannot delete project with invoiced work entries."
     else
       @project.destroy
       redirect_to projects_path, notice: "Project deleted successfully."
@@ -97,8 +97,8 @@ class ProjectsController < ApplicationController
       hourly_rate: project.hourly_rate,
       effective_hourly_rate: project.effective_hourly_rate,
       active: project.active,
-      unbilled_hours: project.time_entries.unbilled.sum(:hours),
-      time_entries_count: project.time_entries.size
+      unbilled_hours: project.work_entries.unbilled.sum(:hours),
+      work_entries_count: project.work_entries.size
     }
   end
 
@@ -125,8 +125,8 @@ class ProjectsController < ApplicationController
     }
   end
 
-  def time_entries_json(project)
-    project.time_entries
+  def work_entries_json(project)
+    project.work_entries
            .order(date: :desc)
            .limit(50)
            .map do |entry|
@@ -136,19 +136,19 @@ class ProjectsController < ApplicationController
         hours: entry.hours,
         description: entry.description,
         status: entry.status,
-        calculated_amount: entry.calculated_amount
+        calculated_amount: entry.calculated_amount.to_f
       }
     end
   end
 
   def project_stats(project)
-    time_entries = project.time_entries
-    unbilled_entries = time_entries.unbilled
+    work_entries = project.work_entries
+    unbilled_entries = work_entries.unbilled
 
     {
-      total_hours: time_entries.sum(:hours),
+      total_hours: work_entries.sum(:hours),
       unbilled_hours: unbilled_entries.sum(:hours),
-      unbilled_amount: unbilled_entries.sum { |e| e.calculated_amount || 0 }
+      unbilled_amount: unbilled_entries.sum { |e| e.calculated_amount || 0 }.to_f
     }
   end
 

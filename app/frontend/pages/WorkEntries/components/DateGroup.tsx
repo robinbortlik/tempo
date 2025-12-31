@@ -63,6 +63,10 @@ function formatTotalHours(hours: number): string {
   return formatted;
 }
 
+function formatCurrency(amount: number): string {
+  return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 export default function DateGroup({
   group,
   projects,
@@ -93,14 +97,24 @@ export default function DateGroup({
         {/* Separator line */}
         <div className="flex-1 h-px bg-gradient-to-r from-stone-200 to-transparent" />
 
-        {/* Hours summary */}
-        <div className="flex items-baseline gap-1.5 pr-2">
-          <span className="text-2xl font-bold text-stone-900 tabular-nums tracking-tight">
-            {formatTotalHours(group.total_hours)}
-          </span>
-          <span className="text-sm font-medium text-stone-400">
-            {group.total_hours === 1 ? "hour" : "hours"}
-          </span>
+        {/* Hours and amount summary */}
+        <div className="flex items-baseline gap-3 pr-2">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-2xl font-bold text-stone-900 tabular-nums tracking-tight">
+              {formatTotalHours(group.total_hours)}
+            </span>
+            <span className="text-sm font-medium text-stone-400">
+              {group.total_hours === 1 ? "hour" : "hours"}
+            </span>
+          </div>
+          {group.total_amount > 0 && (
+            <>
+              <span className="text-stone-300">·</span>
+              <span className="text-lg font-semibold text-stone-600 tabular-nums">
+                {formatCurrency(group.total_amount)}
+              </span>
+            </>
+          )}
         </div>
       </div>
 

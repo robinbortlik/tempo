@@ -71,7 +71,7 @@ export default function WorkEntryRow({
     date: entry.date,
     project_id: entry.project_id.toString(),
     hours: entry.hours?.toString() || "",
-    amount: entry.amount?.toString() || "",
+    amount: entry.amount?.toString() || (entry.entry_type === "time" && entry.calculated_amount ? entry.calculated_amount.toString() : ""),
     description: entry.description || "",
   });
 
@@ -286,16 +286,21 @@ export default function WorkEntryRow({
           {/* Hours or Amount display */}
           <div
             className={`
-              flex items-baseline gap-1 min-w-[80px] justify-end
+              flex flex-col items-end min-w-[100px]
               ${isInvoiced ? "opacity-60" : ""}
             `}
           >
             {isTimeEntry ? (
               <>
-                <span className="text-2xl font-bold tabular-nums tracking-tight text-stone-900">
-                  {formatHours(entry.hours)}
+                <div className="flex items-baseline gap-1">
+                  <span className="text-2xl font-bold tabular-nums tracking-tight text-stone-900">
+                    {formatHours(entry.hours)}
+                  </span>
+                  <span className="text-sm font-medium text-stone-400">h</span>
+                </div>
+                <span className="text-sm text-stone-500 tabular-nums">
+                  {formatCurrency(entry.calculated_amount, entry.client_currency)}
                 </span>
-                <span className="text-sm font-medium text-stone-400">h</span>
               </>
             ) : (
               <span className="text-xl font-bold tabular-nums tracking-tight text-stone-900">

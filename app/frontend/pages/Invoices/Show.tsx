@@ -47,9 +47,23 @@ interface Invoice {
   client_vat_id: string | null;
 }
 
+interface Settings {
+  company_name: string | null;
+  address: string | null;
+  email: string | null;
+  phone: string | null;
+  vat_id: string | null;
+  company_registration: string | null;
+  bank_name: string | null;
+  bank_account: string | null;
+  bank_swift: string | null;
+  logo_url: string | null;
+}
+
 interface PageProps {
   invoice: Invoice;
   line_items: LineItem[];
+  settings: Settings;
   flash: {
     alert?: string;
     notice?: string;
@@ -113,7 +127,7 @@ function StatusBadge({ status }: { status: "draft" | "final" }) {
 }
 
 export default function InvoiceShow() {
-  const { invoice, line_items, flash } = usePage<PageProps>().props;
+  const { invoice, line_items, settings, flash } = usePage<PageProps>().props;
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [editingLineItemId, setEditingLineItemId] = useState<number | null>(null);
@@ -374,23 +388,45 @@ export default function InvoiceShow() {
           {/* Header */}
           <div className="flex justify-between mb-8 pb-8 border-b border-stone-200">
             <div>
-              <div className="w-12 h-12 bg-stone-900 rounded-lg flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              <div className="w-12 h-12 bg-stone-900 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                {settings.logo_url ? (
+                  <img
+                    src={settings.logo_url}
+                    alt="Company Logo"
+                    className="w-full h-full object-cover"
                   />
-                </svg>
+                ) : (
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                )}
               </div>
-              <p className="font-semibold text-stone-900">Your Company</p>
-              <p className="text-sm text-stone-500">Development Services</p>
+              <p className="font-semibold text-stone-900">
+                {settings.company_name || "Your Company"}
+              </p>
+              {settings.address && (
+                <p className="text-sm text-stone-500 whitespace-pre-line">
+                  {settings.address}
+                </p>
+              )}
+              {(settings.email || settings.phone) && (
+                <p className="text-sm text-stone-500">
+                  {[settings.email, settings.phone].filter(Boolean).join(" | ")}
+                </p>
+              )}
+              {settings.vat_id && (
+                <p className="text-sm text-stone-500">VAT: {settings.vat_id}</p>
+              )}
             </div>
             <div className="text-right">
               <p className="text-3xl font-semibold text-stone-900 font-mono">
@@ -576,7 +612,32 @@ export default function InvoiceShow() {
           {/* Footer */}
           <div className="mt-8 pt-8 border-t border-stone-200 text-sm text-stone-500">
             <p className="font-medium text-stone-700 mb-2">Payment Details</p>
-            <p>Please include invoice number in payment reference.</p>
+            {(settings.bank_name || settings.bank_account || settings.bank_swift) && (
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {settings.bank_name && (
+                  <div>
+                    <p className="text-stone-500">Bank</p>
+                    <p className="text-stone-900 font-medium">{settings.bank_name}</p>
+                  </div>
+                )}
+                {settings.bank_account && (
+                  <div>
+                    <p className="text-stone-500">Account / IBAN</p>
+                    <p className="text-stone-900 font-medium">{settings.bank_account}</p>
+                  </div>
+                )}
+                {settings.bank_swift && (
+                  <div>
+                    <p className="text-stone-500">SWIFT / BIC</p>
+                    <p className="text-stone-900 font-medium">{settings.bank_swift}</p>
+                  </div>
+                )}
+              </div>
+            )}
+            <p>
+              Please include invoice number{" "}
+              <strong>#{invoice.number}</strong> in payment reference.
+            </p>
           </div>
         </div>
       </div>

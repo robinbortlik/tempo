@@ -365,8 +365,8 @@
     <div class="header">
       <div class="company-info">
         <div class="company-logo">
-          <% if @settings.logo? %>
-            <img src="<%= url_for(@settings.logo) %>" alt="Company Logo">
+          <% if @logo_data_url.present? %>
+            <img src="<%= @logo_data_url %>" alt="Company Logo">
           <% else %>
             <svg fill="none" stroke="white" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -442,7 +442,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @time_entries.each do |entry| %>
+        <% @work_entries.each do |entry| %>
           <tr>
             <td class="date-col"><%= entry.date.strftime("%b %d") %></td>
             <td class="project-col"><%= entry.project.name %></td>
