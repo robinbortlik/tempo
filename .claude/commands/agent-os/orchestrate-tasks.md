@@ -2,6 +2,8 @@
 
 Now that we have a spec and tasks list ready for implementation, we will proceed with orchestrating implementation of each task group by a dedicated agent using the following MULTI-PHASE process.
 
+**CRITICAL: Never implement task groups yourself. Always delegate each task group to a separate subagent.**
+
 Follow each of these phases and their individual workflows IN SEQUENCE:
 
 ## Multi-Phase Process
@@ -25,13 +27,23 @@ If you don't have one yet, then run any of these commands first:
 
 In this spec's folder, create this file: `agent-os/specs/[this-spec]/orchestration.yml`.
 
-Populate this file with with the names of each task group found in this spec's `tasks.md` and use this EXACT structure for the content of `orchestration.yml`:
+1. Parse `tasks.md` to extract each task group with:
+   - Task group number and name
+   - Dependencies (from the `**Dependencies:**` line)
+
+2. Populate `orchestration.yml` with the names AND dependencies of each task group:
 
 ```yaml
 task_groups:
   - name: [task-group-name]
+    number: 1
+    dependencies: []  # or list of group numbers, e.g., [1, 2]
   - name: [task-group-name]
+    number: 2
+    dependencies: [1]
   - name: [task-group-name]
+    number: 3
+    dependencies: [2]
   # Repeat for each task group found in tasks.md
 ```
 
@@ -134,9 +146,45 @@ task_groups:
 
 Note: If the `use_claude_code_subagents` flag is enabled, the final `orchestration.yml` would include BOTH `claude_code_subagent` assignments AND `standards` for each task group.
 
+### NEXT: Determine execution strategy based on dependencies
+
+Before delegating, analyze the dependency graph to determine execution order:
+
+**Execution Rules:**
+
+1. **Independent task groups (dependencies: [] or all dependencies completed):** Launch subagents in parallel using multiple Task tool calls in a single message with `run_in_background: true`
+
+2. **Dependent task groups:** Wait for dependencies to complete before launching. Use `TaskOutput` to monitor background agents and determine when to proceed.
+
+**Present execution strategy to user:**
+
+```
+Based on the dependency analysis, here's the execution strategy:
+
+Parallel Execution Groups:
+- Wave 1: [Groups with no dependencies - can start immediately]
+- Wave 2: [Groups that depend only on Wave 1]
+- Wave 3: [Groups that depend on Wave 1 or 2]
+... and so on
+
+Sequential chains:
+- Group X → Group Y → Group Z (must run in order)
+
+Proceed with this execution strategy? [Y/n]
+```
+
 ### NEXT: Delegate task groups implementations to assigned subagents
 
-Loop through each task group in `agent-os/specs/[this-spec]/tasks.md` and delegate its implementation to the assigned subagent specified in `orchestration.yml`.
+**IMPORTANT: Each task group MUST be delegated to its own separate subagent. Never implement multiple task groups in a single subagent call.**
+
+**Orchestration Flow:**
+
+1. Start all task groups with no unmet dependencies (Wave 1) in parallel using `run_in_background: true`
+2. Use `TaskOutput` with `block: true` to wait for Wave 1 completions
+3. When a task group completes, check which dependent groups can now start
+4. Launch newly-unblocked groups (next wave) in parallel
+5. Continue until all task groups are complete
+6. Track any failures and report them to the user
 
 For each delegation, provide the subagent with:
 - The task group (including the parent task and all sub-tasks)
@@ -144,6 +192,7 @@ For each delegation, provide the subagent with:
 - Instruct subagent to:
   - Perform their implementation
   - Check off the task and sub-task(s) in `agent-os/specs/[this-spec]/tasks.md`
+  - Commit the completed task group with a descriptive message
 
 In addition to the above items, also instruct the subagent to closely adhere to the user's standards & preferences as specified in the following files.  To build the list of file references to give to the subagent, follow these instructions:
 
@@ -178,3 +227,28 @@ The compiled list of standards should look something like this, where each file 
 
 
 Provide all of the above to the subagent when delegating tasks for it to implement.
+
+### FINAL: Verification after all task groups complete
+
+IF ALL task groups in tasks.md are marked complete with `- [x]`, delegate to the **implementation-verifier** subagent:
+
+```
+Verify implementation for spec: agent-os/specs/[this-spec]
+
+Instructions:
+1. Run all final verifications according to your built-in workflow
+2. Produce the final verification report in agent-os/specs/[this-spec]/verification/final-verification.md
+```
+
+## Summary
+
+| Phase | Action |
+|-------|--------|
+| 1 | Get tasks.md and create orchestration.yml with task groups and dependencies |
+| 2 | User assigns subagents to each task group |
+| 3 | User assigns standards to each task group |
+| 4 | Determine execution strategy (parallel waves based on dependencies) |
+| 5 | Delegate each task group to its own subagent, respecting dependencies |
+| 6 | Run implementation-verifier for final report |
+
+**Key Principle:** This command is an ORCHESTRATOR. It delegates work to subagents and coordinates their execution based on dependencies. It never implements code itself.

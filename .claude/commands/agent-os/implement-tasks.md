@@ -2,55 +2,124 @@
 
 Now that we have a spec and tasks list ready for implementation, we will proceed with implementation of this spec by following this multi-phase process:
 
-PHASE 1: Determine which task group(s) from tasks.md should be implemented
-PHASE 2: Delegate implementation to the implementer subagent
+PHASE 1: Parse task groups and determine execution strategy
+PHASE 2: Delegate each task group to its own implementer subagent
 PHASE 3: After ALL task groups have been implemented, delegate to implementation-verifier to produce the final verification report.
+
+**CRITICAL: Never implement task groups yourself. Always delegate each task group to a separate implementer subagent.**
 
 Follow each of these phases and their individual workflows IN SEQUENCE:
 
 ## Multi-Phase Process
 
-### PHASE 1: Determine which task group(s) to implement
+### PHASE 1: Parse task groups and determine execution strategy
 
-First, check if the user has already provided instructions about which task group(s) to implement.
+1. Read `agent-os/specs/[this-spec]/tasks.md` to identify all task groups
+2. For each task group, extract:
+   - Task group number and name (e.g., "Task Group 1: Data Models and Migrations")
+   - Dependencies line (e.g., "**Dependencies:** None" or "**Dependencies:** Task Group 1")
+   - All tasks and sub-tasks belonging to that group
+3. Build a dependency map to determine execution order
 
-**If the user HAS provided instructions:** Proceed to PHASE 2 to delegate implementation of those specified task group(s) to the **implementer** subagent.
+**Dependency Analysis:**
+- Task groups with `Dependencies: None` can start immediately
+- Task groups with dependencies must wait for those dependencies to complete
+- Multiple task groups with the same dependencies (or no dependencies) can run in parallel
 
-**If the user has NOT provided instructions:**
-
-Read `agent-os/specs/[this-spec]/tasks.md` to review the available task groups, then output the following message to the user and WAIT for their response:
+**Check if user has specific instructions:**
+- If the user specified particular task group(s) to implement, only process those
+- If not, ask the user:
 
 ```
-Should we proceed with implementation of all task groups in tasks.md?
+I've identified the following task groups and their dependencies:
 
-If not, then please specify which task(s) to implement.
+[List each task group with its dependencies]
+
+Execution strategy:
+- Parallel: [Groups that can run simultaneously]
+- Sequential: [Groups that must wait for others]
+
+Should I proceed with implementing all task groups? If not, specify which to implement.
 ```
 
-### PHASE 2: Delegate implementation to the implementer subagent
+### PHASE 2: Delegate each task group to its own implementer subagent
 
-Delegate to the **implementer** subagent to implement the specified task group(s):
+**IMPORTANT: Each task group MUST be delegated to its own separate implementer subagent. Never implement multiple task groups in a single subagent call.**
 
-Provide to the subagent:
-- The specific task group(s) from `agent-os/specs/[this-spec]/tasks.md` including the parent task, all sub-tasks, and any sub-bullet points
-- The path to this spec's documentation: `agent-os/specs/[this-spec]/spec.md`
-- The path to this spec's requirements: `agent-os/specs/[this-spec]/planning/requirements.md`
-- The path to this spec's visuals (if any): `agent-os/specs/[this-spec]/planning/visuals`
+**Execution Rules:**
 
-Instruct the subagent to:
-1. Analyze the provided spec.md, requirements.md, and visuals (if any)
-2. Analyze patterns in the codebase according to its built-in workflow
-3. Implement the assigned task group according to requirements and standards
-4. Update `agent-os/specs/[this-spec]/tasks.md` to mark completed tasks with `- [x]`
-5. **Commit the completed task group** using `git` with a condensed message summarizing what was changed and why
+1. **Independent task groups (no unmet dependencies):** Launch implementer subagents in parallel using multiple Task tool calls in a single message with `run_in_background: true`
+
+2. **Dependent task groups:** Wait for dependencies to complete before launching. Use `TaskOutput` to monitor background agents and determine when to proceed.
+
+**For each task group, spawn an implementer subagent with:**
+
+```
+Implement Task Group [N]: [Name]
+
+Spec path: agent-os/specs/[this-spec]/spec.md
+Requirements path: agent-os/specs/[this-spec]/planning/requirements.md
+Visuals path: agent-os/specs/[this-spec]/planning/visuals (if exists)
+
+Task Group to implement:
+[Copy the ENTIRE task group section from tasks.md, including:]
+- The "#### Task Group N: Name" header
+- The "**Dependencies:**" line
+- All "- [ ]" tasks and their sub-items
+- The "**Acceptance Criteria:**" section
+
+Instructions:
+1. Implement ONLY this task group - do not work on other groups
+2. Follow the spec.md and requirements.md closely
+3. Update tasks.md to mark completed tasks with "- [x]"
+4. Commit the completed task group with a descriptive message
+```
+
+**Orchestration Flow:**
+
+```
+Example with 6 task groups:
+- Group 1: Dependencies: None         → Start immediately (background)
+- Group 2: Dependencies: Group 1      → Wait for Group 1, then start
+- Group 3: Dependencies: Group 2      → Wait for Group 2, then start
+- Group 4: Dependencies: Group 3      → Wait for Group 3, then start
+- Group 5: Dependencies: Group 4      → Wait for Group 4, then start
+- Group 6: Dependencies: Groups 1-5   → Wait for all, then start
+
+If groups had different dependencies:
+- Groups 1, 2: Dependencies: None     → Start both in parallel (background)
+- Group 3: Dependencies: Group 1      → Start after Group 1 completes
+- Group 4: Dependencies: Group 2      → Start after Group 2 completes
+- Groups 3 and 4 can run in parallel since they have different dependencies
+```
+
+**Monitoring Progress:**
+
+1. After launching background agents, use `TaskOutput` with `block: true` to wait for completion
+2. When a task group completes, check which dependent groups can now start
+3. Continue until all task groups are complete
+4. Track any failures and report them to the user
 
 ### PHASE 3: Produce the final verification report
 
-IF ALL task groups in tasks.md are marked complete with `- [x]`, then proceed with this step.  Otherwise, return to PHASE 1.
+IF ALL task groups in tasks.md are marked complete with `- [x]`, then proceed with this step. Otherwise, report incomplete groups to the user.
 
-Assuming all tasks are marked complete, then delegate to the **implementation-verifier** subagent to do its implementation verification and produce its final verification report.
+Delegate to the **implementation-verifier** subagent:
 
-Provide to the subagent the following:
-- The path to this spec: `agent-os/specs/[this-spec]`
-Instruct the subagent to do the following:
-  1. Run all of its final verifications according to its built-in workflow
-  2. Produce the final verification report in `agent-os/specs/[this-spec]/verifications/final-verification.md`.
+```
+Verify implementation for spec: agent-os/specs/[this-spec]
+
+Instructions:
+1. Run all final verifications according to your built-in workflow
+2. Produce the final verification report in agent-os/specs/[this-spec]/verification/final-verification.md
+```
+
+## Summary
+
+| Phase | Action |
+|-------|--------|
+| 1 | Parse tasks.md, extract groups and dependencies, determine parallel vs sequential execution |
+| 2 | Spawn separate implementer subagent for EACH task group, respecting dependencies |
+| 3 | After all complete, run implementation-verifier for final report |
+
+**Key Principle:** This command is an ORCHESTRATOR. It delegates work to implementer subagents and coordinates their execution. It never implements code itself.
