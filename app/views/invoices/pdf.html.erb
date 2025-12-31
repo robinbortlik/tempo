@@ -236,6 +236,14 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .line-items .vat-col {
+      width: 60px;
+      text-align: right;
+      color: #78716c;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
     .line-items .amount-col {
       width: 90px;
       text-align: right;
@@ -433,23 +441,33 @@
     <table class="line-items">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Project</th>
           <th>Description</th>
           <th class="text-right">Hours</th>
           <th class="text-right">Rate</th>
+          <th class="text-right">VAT</th>
           <th class="text-right">Amount</th>
         </tr>
       </thead>
       <tbody>
-        <% @work_entries.each do |entry| %>
+        <% @invoice.line_items.each do |item| %>
           <tr>
-            <td class="date-col"><%= entry.date.strftime("%b %d") %></td>
-            <td class="project-col"><%= entry.project.name %></td>
-            <td class="description-col"><%= entry.description.presence || "No description" %></td>
-            <td class="hours-col"><%= number_with_precision(entry.hours, precision: 2) %></td>
-            <td class="rate-col"><%= format_currency(entry.project.effective_hourly_rate, @invoice.currency) %></td>
-            <td class="amount-col"><%= format_currency(entry.calculated_amount, @invoice.currency) %></td>
+            <td class="description-col"><%= item.description %></td>
+            <td class="hours-col">
+              <% if item.time_aggregate? && item.quantity.present? %>
+                <%= number_with_precision(item.quantity, precision: 2) %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td class="rate-col">
+              <% if item.time_aggregate? && item.unit_price.present? %>
+                <%= format_currency(item.unit_price, @invoice.currency) %>
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td class="vat-col"><%= number_with_precision(item.vat_rate, precision: 0) %>%</td>
+            <td class="amount-col"><%= format_currency(item.amount, @invoice.currency) %></td>
           </tr>
         <% end %>
       </tbody>
@@ -459,16 +477,26 @@
     <div class="totals-section">
       <dl class="totals-table">
         <div class="totals-row">
-          <dt>Subtotal (<%= number_with_precision(@invoice.total_hours, precision: 2) %> hrs)</dt>
-          <dd><%= format_currency(@invoice.total_amount, @invoice.currency) %></dd>
+          <dt>Subtotal<% if @invoice.total_hours.to_f > 0 %> (<%= number_with_precision(@invoice.total_hours, precision: 2) %> hrs)<% end %></dt>
+          <dd><%= format_currency(@invoice.subtotal, @invoice.currency) %></dd>
         </div>
-        <div class="totals-row">
-          <dt>VAT (0%)</dt>
-          <dd><%= format_currency(0, @invoice.currency) %></dd>
-        </div>
+        <% vat_totals = @invoice.vat_totals_by_rate %>
+        <% if vat_totals.values.any? { |v| v > 0 } %>
+          <% vat_totals.select { |rate, amount| rate.to_f > 0 }.sort_by { |rate, _| -rate.to_f }.each do |rate, amount| %>
+            <div class="totals-row">
+              <dt>VAT <%= number_with_precision(rate, precision: 0) %>%</dt>
+              <dd><%= format_currency(amount, @invoice.currency) %></dd>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="totals-row">
+            <dt>VAT (0%)</dt>
+            <dd><%= format_currency(0, @invoice.currency) %></dd>
+          </div>
+        <% end %>
         <div class="totals-row total">
           <dt>Total Due</dt>
-          <dd><%= format_currency(@invoice.total_amount, @invoice.currency) %></dd>
+          <dd><%= format_currency(@invoice.grand_total, @invoice.currency) %></dd>
         </div>
       </dl>
     </div>
