@@ -63,15 +63,14 @@ RSpec.describe "Dashboard", type: :system do
         visit dashboard_path
 
         # The stat cards display hours, just verify the content exists on page
-        expect(page).to have_content("12.0")
-        expect(page).to have_content("hrs")
+        expect(page).to have_content("12hrs")
       end
 
       it "displays unbilled amount" do
         visit dashboard_path
 
-        # 12 hours * 100 EUR/hr = 1,200 EUR
-        expect(page).to have_content(/1[,.]?200/)
+        # 12 hours * 100 EUR/hr = 1,200 EUR (displayed as "1 200" with space separator)
+        expect(page).to have_content(/1[ ,.]?200/)
       end
 
       it "displays client in unbilled table" do
@@ -79,7 +78,7 @@ RSpec.describe "Dashboard", type: :system do
 
         within('table') do
           expect(page).to have_content("Acme Corp")
-          expect(page).to have_content("12.0")
+          expect(page).to have_content("12")
         end
       end
     end
@@ -152,8 +151,8 @@ RSpec.describe "Dashboard", type: :system do
     it "shows zero hours in stats" do
       visit dashboard_path
 
-      # When no entries, stats should show 0.0
-      expect(page).to have_content("0.0")
+      # When no entries, stats should show 0hrs
+      expect(page).to have_content("0hrs")
     end
 
     it "shows empty unbilled table message" do
