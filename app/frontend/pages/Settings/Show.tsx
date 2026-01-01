@@ -18,6 +18,8 @@ interface Settings {
   bank_name: string | null;
   bank_account: string | null;
   bank_swift: string | null;
+  iban: string | null;
+  invoice_message: string | null;
   logo_url: string | null;
 }
 
@@ -37,6 +39,7 @@ export default function SettingsShow() {
     settings.logo_url
   );
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [ibanError, setIbanError] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data, setData } = useForm({
@@ -49,6 +52,8 @@ export default function SettingsShow() {
     bank_name: settings.bank_name || "",
     bank_account: settings.bank_account || "",
     bank_swift: settings.bank_swift || "",
+    iban: settings.iban || "",
+    invoice_message: settings.invoice_message || "",
     logo: null as File | null,
   });
 
@@ -113,14 +118,22 @@ export default function SettingsShow() {
     formData.append("setting[bank_name]", data.bank_name);
     formData.append("setting[bank_account]", data.bank_account);
     formData.append("setting[bank_swift]", data.bank_swift);
+    formData.append("setting[iban]", data.iban);
+    formData.append("setting[invoice_message]", data.invoice_message);
     if (data.logo) {
       formData.append("setting[logo]", data.logo);
     }
 
     setIsSubmitting(true);
+    setIbanError(null);
     router.post("/settings", formData, {
       preserveScroll: true,
       onFinish: () => setIsSubmitting(false),
+      onError: (errors) => {
+        if (errors.iban) {
+          setIbanError(errors.iban);
+        }
+      },
     });
   }
 
@@ -277,7 +290,7 @@ export default function SettingsShow() {
                     htmlFor="bank_account"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    IBAN
+                    Bank Account
                   </Label>
                   <Input
                     id="bank_account"
@@ -302,6 +315,59 @@ export default function SettingsShow() {
                     className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono"
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="iban"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
+                  IBAN
+                </Label>
+                <Input
+                  id="iban"
+                  type="text"
+                  value={data.iban}
+                  onChange={(e) => {
+                    setData("iban", e.target.value);
+                    setIbanError(null);
+                  }}
+                  className={`w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono ${
+                    ibanError ? "border-red-500 focus-visible:ring-red-500" : ""
+                  }`}
+                />
+                {ibanError && (
+                  <p className="mt-1 text-sm text-red-600">{ibanError}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Invoice Settings Section */}
+          <div className="bg-white rounded-xl border border-stone-200 p-6">
+            <h3 className="font-semibold text-stone-900 mb-6">
+              Invoice Settings
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <Label
+                  htmlFor="invoice_message"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
+                  Invoice Message
+                </Label>
+                <Textarea
+                  id="invoice_message"
+                  rows={4}
+                  maxLength={500}
+                  value={data.invoice_message}
+                  onChange={(e) => setData("invoice_message", e.target.value)}
+                  placeholder="Custom message to display on all invoices"
+                  className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
+                />
+                <p className="mt-1 text-sm text-stone-500">
+                  {data.invoice_message.length}/500
+                </p>
               </div>
             </div>
           </div>
@@ -361,7 +427,7 @@ export default function SettingsShow() {
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={isSubmitting || !!emailError}
+              disabled={isSubmitting || !!emailError || !!ibanError}
               className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
