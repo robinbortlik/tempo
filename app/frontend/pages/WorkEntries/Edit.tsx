@@ -29,6 +29,9 @@ interface WorkEntry {
   entry_type: string;
   description: string;
   project_id: number | null;
+  hourly_rate: number | null;
+  status: "unbilled" | "invoiced";
+  effective_hourly_rate: number | null;
 }
 
 interface PageProps {

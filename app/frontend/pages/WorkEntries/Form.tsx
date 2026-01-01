@@ -3,6 +3,11 @@ import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface Project {
   id: number;
@@ -29,6 +34,9 @@ interface WorkEntry {
   entry_type: string;
   description: string;
   project_id: number | null;
+  hourly_rate: number | null;
+  status: "unbilled" | "invoiced";
+  effective_hourly_rate: number | null;
 }
 
 interface WorkEntryFormProps {
@@ -51,8 +59,10 @@ export default function WorkEntryForm({
     hours: workEntry.hours?.toString() || "",
     amount: workEntry.amount?.toString() || "",
     description: workEntry.description || "",
+    hourly_rate: workEntry.hourly_rate?.toString() || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showRateOverride, setShowRateOverride] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -64,6 +74,9 @@ export default function WorkEntryForm({
       description: formData.description,
       hours: formData.hours ? parseFloat(formData.hours) : null,
       amount: formData.amount ? parseFloat(formData.amount) : null,
+      hourly_rate: formData.hourly_rate
+        ? parseFloat(formData.hourly_rate)
+        : null,
     };
 
     if (isEditing) {
@@ -90,6 +103,24 @@ export default function WorkEntryForm({
   const hasAmount = formData.amount && parseFloat(formData.amount) > 0;
   const isValid =
     formData.date && formData.project_id && (hasHours || hasAmount);
+
+  // Get the selected project's effective hourly rate
+  const getSelectedProjectRate = (): number | null => {
+    if (!formData.project_id) return null;
+    const projectId = parseInt(formData.project_id);
+    for (const group of projects) {
+      const project = group.projects.find((p) => p.id === projectId);
+      if (project) return project.effective_hourly_rate;
+    }
+    return null;
+  };
+
+  const selectedProjectRate = getSelectedProjectRate();
+  const isInvoiced = workEntry.status === "invoiced";
+  const hasCustomRate = formData.hourly_rate !== "";
+  const displayRate = hasCustomRate
+    ? parseFloat(formData.hourly_rate)
+    : selectedProjectRate;
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-6 max-w-2xl">
@@ -195,6 +226,61 @@ export default function WorkEntryForm({
             </p>
           </div>
         </div>
+
+        {hasHours && (
+          <Collapsible
+            open={showRateOverride}
+            onOpenChange={setShowRateOverride}
+          >
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-stone-600 hover:text-stone-900 transition-colors cursor-pointer">
+              <svg
+                className={`w-4 h-4 transition-transform ${showRateOverride ? "rotate-90" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+              <span>
+                Rate: ${displayRate}/h{" "}
+                {hasCustomRate ? "(custom)" : "(from project)"}
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-3">
+              <div>
+                <label
+                  htmlFor="hourly_rate"
+                  className="block text-sm font-medium text-stone-700 mb-1.5"
+                >
+                  Hourly Rate Override
+                </label>
+                <Input
+                  id="hourly_rate"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.hourly_rate}
+                  onChange={(e) =>
+                    setFormData({ ...formData, hourly_rate: e.target.value })
+                  }
+                  disabled={isInvoiced}
+                  className="w-full max-w-xs px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder={selectedProjectRate?.toString() || ""}
+                />
+                <p className="text-xs text-stone-500 mt-1">
+                  {isInvoiced
+                    ? "Rate cannot be changed on invoiced entries"
+                    : "Clear this field to use the project rate"}
+                </p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
 
         <p className="text-sm text-stone-600 bg-stone-50 p-3 rounded-lg">
           At least one of Hours or Amount must be filled. Hours only = time

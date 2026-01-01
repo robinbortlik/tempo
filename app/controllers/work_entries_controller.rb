@@ -193,9 +193,12 @@ class WorkEntriesController < ApplicationController
       date: Date.current,
       hours: nil,
       amount: nil,
+      hourly_rate: nil,
       entry_type: "time",
       description: "",
-      project_id: nil
+      project_id: nil,
+      status: "unbilled",
+      effective_hourly_rate: nil
     }
   end
 
