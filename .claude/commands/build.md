@@ -26,7 +26,7 @@ This command executes the full AgentOS workflow:
 2. **Spec** - Write detailed specification
 3. **Tasks** - Create implementation task list
 4. **Verify** - Validate spec against requirements
-5. **Implement** - Build all features
+5. **Implement tasks** - Build all features
 6. **Test** - Run verification and tests
 7. **Ship** - Commit, push, and optionally create PR
 

@@ -19,7 +19,11 @@ interface LineItemEditorProps {
   lineItem: LineItem;
   currency: string;
   defaultVatRate?: number | null;
-  onSave: (data: { description: string; amount: number; vat_rate: number }) => void;
+  onSave: (data: {
+    description: string;
+    amount: number;
+    vat_rate: number;
+  }) => void;
   onCancel: () => void;
 }
 
@@ -32,11 +36,21 @@ export default function LineItemEditor({
 }: LineItemEditorProps) {
   const [description, setDescription] = useState(lineItem.description);
   const [amount, setAmount] = useState(lineItem.amount);
-  const [vatRate, setVatRate] = useState(lineItem.vat_rate ?? defaultVatRate ?? 0);
-  const [errors, setErrors] = useState<{ description?: string; amount?: string; vatRate?: string }>({});
+  const [vatRate, setVatRate] = useState(
+    lineItem.vat_rate ?? defaultVatRate ?? 0
+  );
+  const [errors, setErrors] = useState<{
+    description?: string;
+    amount?: string;
+    vatRate?: string;
+  }>({});
 
   const validate = () => {
-    const newErrors: { description?: string; amount?: string; vatRate?: string } = {};
+    const newErrors: {
+      description?: string;
+      amount?: string;
+      vatRate?: string;
+    } = {};
 
     if (!description.trim()) {
       newErrors.description = "Description is required";
@@ -70,9 +84,15 @@ export default function LineItemEditor({
   const currencySymbol = currencySymbols[currency] || currency;
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-stone-50 rounded-lg space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 bg-stone-50 rounded-lg space-y-4"
+    >
       <div>
-        <Label htmlFor="edit-description" className="block text-sm font-medium text-stone-600 mb-1">
+        <Label
+          htmlFor="edit-description"
+          className="block text-sm font-medium text-stone-600 mb-1"
+        >
           Description
         </Label>
         <Input
@@ -81,7 +101,9 @@ export default function LineItemEditor({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className={`w-full ${errors.description ? "border-red-500" : ""}`}
-          aria-describedby={errors.description ? "description-error" : undefined}
+          aria-describedby={
+            errors.description ? "description-error" : undefined
+          }
         />
         {errors.description && (
           <p id="description-error" className="mt-1 text-sm text-red-500">
@@ -92,7 +114,10 @@ export default function LineItemEditor({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="edit-amount" className="block text-sm font-medium text-stone-600 mb-1">
+          <Label
+            htmlFor="edit-amount"
+            className="block text-sm font-medium text-stone-600 mb-1"
+          >
             Amount
           </Label>
           <div className="relative">
@@ -118,7 +143,10 @@ export default function LineItemEditor({
         </div>
 
         <div>
-          <Label htmlFor="edit-vat-rate" className="block text-sm font-medium text-stone-600 mb-1">
+          <Label
+            htmlFor="edit-vat-rate"
+            className="block text-sm font-medium text-stone-600 mb-1"
+          >
             VAT Rate
           </Label>
           <div className="relative">

@@ -70,7 +70,11 @@ export function ProjectGroup({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="print:!block">
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className="print:!block"
+    >
       <CollapsibleTrigger className="w-full px-4 py-3 bg-stone-50 flex items-center justify-between hover:bg-stone-100 transition-colors cursor-pointer print:cursor-default print:hover:bg-stone-50">
         <div className="flex items-center gap-2">
           <svg
@@ -89,7 +93,8 @@ export function ProjectGroup({
           <span className="font-medium text-stone-700">{project.name}</span>
         </div>
         <span className="text-sm text-stone-500">
-          {formatHours(totalHours)}h &middot; {formatCurrency(totalAmount, currency)}
+          {formatHours(totalHours)}h &middot;{" "}
+          {formatCurrency(totalAmount, currency)}
         </span>
       </CollapsibleTrigger>
       <CollapsibleContent className="print:!block print:!h-auto print:!overflow-visible">
@@ -99,7 +104,11 @@ export function ProjectGroup({
               {entries.map((entry, index) => (
                 <tr
                   key={entry.id}
-                  className={index < entries.length - 1 ? "border-b border-stone-100" : ""}
+                  className={
+                    index < entries.length - 1
+                      ? "border-b border-stone-100"
+                      : ""
+                  }
                 >
                   <td className="px-4 py-3 text-stone-500 w-24 whitespace-nowrap">
                     {formatDate(entry.date)}

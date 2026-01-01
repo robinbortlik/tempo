@@ -22,7 +22,9 @@ describe("DateDisplay", () => {
 
   it("handles different months correctly", () => {
     render(<DateDisplay date="2025-01-15" />);
-    expect(screen.getByTestId("date-display")).toHaveTextContent("Jan 15, 2025");
+    expect(screen.getByTestId("date-display")).toHaveTextContent(
+      "Jan 15, 2025"
+    );
   });
 
   it("handles single digit days correctly", () => {

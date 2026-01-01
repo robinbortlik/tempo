@@ -46,7 +46,11 @@ export function UnbilledSection({
         {projectGroups.map((group, index) => (
           <div
             key={group.project.id}
-            className={index < projectGroups.length - 1 ? "border-b border-stone-100" : ""}
+            className={
+              index < projectGroups.length - 1
+                ? "border-b border-stone-100"
+                : ""
+            }
           >
             <ProjectGroup
               project={group.project}

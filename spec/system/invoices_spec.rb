@@ -168,7 +168,8 @@ RSpec.describe "Invoices", type: :system do
 
       expect(page).to have_content("Preview")
       expect(page).to have_content("API Integration")
-      expect(page).to have_content("API development")
+      # Preview shows aggregated line items by project, not individual work entry descriptions
+      expect(page).to have_content("12") # total hours (8 + 4)
     end
 
     it "creates a draft invoice" do
@@ -207,6 +208,17 @@ RSpec.describe "Invoices", type: :system do
         total_amount: 2880,
         currency: "EUR",
         notes: "Thank you for your business"
+      )
+    end
+
+    let!(:line_item) do
+      create(:invoice_line_item,
+        invoice: invoice,
+        description: "API Integration - Development work",
+        quantity: 8,
+        unit_price: 150,
+        amount: 1200,
+        position: 1
       )
     end
 
@@ -254,11 +266,11 @@ RSpec.describe "Invoices", type: :system do
       expect(page).to have_content("Acme Corporation")
     end
 
-    it "displays time entries" do
+    it "displays line items" do
       visit invoice_path(invoice)
 
-      expect(page).to have_content("API development")
-      expect(page).to have_content("API Integration")
+      # Invoice shows line items
+      expect(page).to have_content("API Integration - Development work")
     end
 
     it "displays totals" do
@@ -315,6 +327,17 @@ RSpec.describe "Invoices", type: :system do
       )
     end
 
+    let!(:line_item) do
+      create(:invoice_line_item,
+        invoice: invoice,
+        description: "API Integration - Development work",
+        quantity: 8,
+        unit_price: 150,
+        amount: 1200,
+        position: 1
+      )
+    end
+
     let!(:work_entry) do
       create(:work_entry,
         project: project,
@@ -347,12 +370,11 @@ RSpec.describe "Invoices", type: :system do
       expect(page).to have_content("Updated notes")
     end
 
-    it "displays invoice entries preview" do
+    it "displays invoice line items" do
       visit edit_invoice_path(invoice)
 
-      expect(page).to have_content("Invoice Entries")
-      expect(page).to have_content("API Integration")
-      expect(page).to have_content("API development")
+      expect(page).to have_content("Invoice Line Items")
+      expect(page).to have_content("API Integration - Development work")
     end
 
     it "can cancel editing" do

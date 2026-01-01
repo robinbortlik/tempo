@@ -82,7 +82,9 @@ export default function ClientForm({
         payment_terms: data.payment_terms,
         hourly_rate: data.hourly_rate ? parseFloat(data.hourly_rate) : null,
         currency: data.currency,
-        default_vat_rate: data.default_vat_rate ? parseFloat(data.default_vat_rate) : null,
+        default_vat_rate: data.default_vat_rate
+          ? parseFloat(data.default_vat_rate)
+          : null,
       },
     };
 

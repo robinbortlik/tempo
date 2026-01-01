@@ -91,9 +91,9 @@ export default function DashboardIndex() {
   }, [flash.notice, flash.alert]);
 
   // Convert unbilled_amounts object to array for display
-  const unbilledAmountEntries = Object.entries(stats.unbilled_amounts || {}).sort(
-    ([, a], [, b]) => Number(b) - Number(a)
-  );
+  const unbilledAmountEntries = Object.entries(
+    stats.unbilled_amounts || {}
+  ).sort(([, a], [, b]) => Number(b) - Number(a));
 
   return (
     <>

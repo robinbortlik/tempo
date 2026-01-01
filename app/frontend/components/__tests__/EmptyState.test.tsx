@@ -26,13 +26,10 @@ describe("EmptyState", () => {
   });
 
   it("renders the action button when provided", () => {
-    render(
-      <EmptyState
-        {...defaultProps}
-        action={<button>Add Item</button>}
-      />
-    );
-    expect(screen.getByRole("button", { name: "Add Item" })).toBeInTheDocument();
+    render(<EmptyState {...defaultProps} action={<button>Add Item</button>} />);
+    expect(
+      screen.getByRole("button", { name: "Add Item" })
+    ).toBeInTheDocument();
   });
 
   it("does not render action when not provided", () => {

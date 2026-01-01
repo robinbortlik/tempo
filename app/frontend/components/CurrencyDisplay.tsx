@@ -27,7 +27,10 @@ export function CurrencyDisplay({
   });
 
   return (
-    <span className={cn("tabular-nums", className)} data-testid="currency-display">
+    <span
+      className={cn("tabular-nums", className)}
+      data-testid="currency-display"
+    >
       {symbol}
       {formattedAmount}
     </span>

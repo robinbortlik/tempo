@@ -169,11 +169,15 @@ export default function WorkEntriesIndex() {
               <div className="flex items-center gap-6 text-sm text-stone-500">
                 <span>
                   {summary.time_entries_count || 0} time{" "}
-                  {(summary.time_entries_count || 0) === 1 ? "entry" : "entries"}
+                  {(summary.time_entries_count || 0) === 1
+                    ? "entry"
+                    : "entries"}
                 </span>
                 <span>
                   {summary.fixed_entries_count || 0} fixed{" "}
-                  {(summary.fixed_entries_count || 0) === 1 ? "entry" : "entries"}
+                  {(summary.fixed_entries_count || 0) === 1
+                    ? "entry"
+                    : "entries"}
                 </span>
               </div>
             </div>

@@ -218,7 +218,8 @@ function ReportsShow() {
         {/* Period Label for Print */}
         <div className="hidden print:block mb-6">
           <p className="text-sm text-stone-500">
-            Period: <span className="font-medium text-stone-900">{periodLabel}</span>
+            Period:{" "}
+            <span className="font-medium text-stone-900">{periodLabel}</span>
           </p>
         </div>
 
@@ -231,7 +232,9 @@ function ReportsShow() {
             </p>
           </div>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <p className="text-sm text-amber-700 font-medium">Unbilled Amount</p>
+            <p className="text-sm text-amber-700 font-medium">
+              Unbilled Amount
+            </p>
             <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">
               {formatCurrency(unbilled.total_amount, client.currency)}
             </p>

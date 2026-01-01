@@ -101,29 +101,40 @@ export default function NewInvoice() {
           issue_date: data.issue_date,
           due_date: data.due_date,
         });
-        router.get(`/invoices/new?${params.toString()}`, {}, { preserveState: true, preserveScroll: true });
+        router.get(
+          `/invoices/new?${params.toString()}`,
+          {},
+          { preserveState: true, preserveScroll: true }
+        );
       }
     }, 0);
   };
 
-  const handleDateChange = (field: "period_start" | "period_end" | "issue_date" | "due_date") => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setData(field, e.target.value);
-    // Trigger preview fetch after state update
-    setTimeout(() => {
-      if (data.client_id && data.period_start && data.period_end) {
-        const params = new URLSearchParams({
-          client_id: data.client_id,
-          period_start: field === "period_start" ? e.target.value : data.period_start,
-          period_end: field === "period_end" ? e.target.value : data.period_end,
-          issue_date: field === "issue_date" ? e.target.value : data.issue_date,
-          due_date: field === "due_date" ? e.target.value : data.due_date,
-        });
-        router.get(`/invoices/new?${params.toString()}`, {}, { preserveState: true, preserveScroll: true });
-      }
-    }, 0);
-  };
+  const handleDateChange =
+    (field: "period_start" | "period_end" | "issue_date" | "due_date") =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setData(field, e.target.value);
+      // Trigger preview fetch after state update
+      setTimeout(() => {
+        if (data.client_id && data.period_start && data.period_end) {
+          const params = new URLSearchParams({
+            client_id: data.client_id,
+            period_start:
+              field === "period_start" ? e.target.value : data.period_start,
+            period_end:
+              field === "period_end" ? e.target.value : data.period_end,
+            issue_date:
+              field === "issue_date" ? e.target.value : data.issue_date,
+            due_date: field === "due_date" ? e.target.value : data.due_date,
+          });
+          router.get(
+            `/invoices/new?${params.toString()}`,
+            {},
+            { preserveState: true, preserveScroll: true }
+          );
+        }
+      }, 0);
+    };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,7 +169,9 @@ export default function NewInvoice() {
     );
   };
 
-  const selectedClient = clients.find((c) => c.id.toString() === data.client_id);
+  const selectedClient = clients.find(
+    (c) => c.id.toString() === data.client_id
+  );
   const lineItems = preview?.line_items || [];
   const hasLineItems = lineItems.length > 0;
 
@@ -220,7 +233,9 @@ export default function NewInvoice() {
                       {clients.map((client) => (
                         <option key={client.id} value={client.id}>
                           {client.name}
-                          {client.has_unbilled_entries ? " (has unbilled entries)" : ""}
+                          {client.has_unbilled_entries
+                            ? " (has unbilled entries)"
+                            : ""}
                         </option>
                       ))}
                     </select>
@@ -327,7 +342,9 @@ export default function NewInvoice() {
                 lineItems={lineItems}
                 totalHours={preview?.total_hours || 0}
                 totalAmount={preview?.total_amount || 0}
-                currency={selectedClient?.currency || preview?.currency || "EUR"}
+                currency={
+                  selectedClient?.currency || preview?.currency || "EUR"
+                }
               />
             </div>
           </div>

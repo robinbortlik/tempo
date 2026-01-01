@@ -73,8 +73,9 @@ RSpec.describe "Client Report Portal", type: :system do
   describe "summary cards" do
     context "with unbilled entries" do
       before do
+        # Use dates within the same year to ensure both entries show up in the report
         create(:work_entry, project: project, date: Date.current, hours: 8, description: "Development work", status: :unbilled)
-        create(:work_entry, project: project, date: Date.current - 1.day, hours: 4, description: "Code review", status: :unbilled)
+        create(:work_entry, project: project, date: Date.current + 1.day, hours: 4, description: "Code review", status: :unbilled)
       end
 
       it "displays unbilled hours and amount" do

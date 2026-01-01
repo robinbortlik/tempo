@@ -78,7 +78,9 @@ describe("ConfirmDialog", () => {
 
   it("shows loading state when loading is true", () => {
     render(<ConfirmDialog {...defaultProps} loading={true} />);
-    expect(screen.getByRole("button", { name: "Loading..." })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Loading..." })
+    ).toBeInTheDocument();
   });
 
   it("disables buttons when loading is true", () => {

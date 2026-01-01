@@ -160,7 +160,11 @@ export default function InvoicesIndex() {
         </div>
 
         {/* Filter Tabs */}
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={handleTabChange}
+          className="mb-6"
+        >
           <TabsList className="bg-transparent p-0 gap-2">
             <TabsTrigger
               value="all"

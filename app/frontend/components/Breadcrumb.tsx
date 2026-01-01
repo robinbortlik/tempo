@@ -52,7 +52,8 @@ function generateBreadcrumbs(url: string): BreadcrumbItem[] {
       return;
     }
 
-    const label = routeNames[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+    const label =
+      routeNames[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
 
     // Last item doesn't get a link
     if (index === segments.length - 1) {

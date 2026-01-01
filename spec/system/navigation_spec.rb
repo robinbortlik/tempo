@@ -26,7 +26,7 @@ RSpec.describe "Navigation", type: :system do
     it "displays all main navigation links" do
       within('[data-testid="sidebar"]') do
         expect(page).to have_link("Dashboard")
-        expect(page).to have_link("Time Entries")
+        expect(page).to have_link("Log Work")
         expect(page).to have_link("Clients")
         expect(page).to have_link("Projects")
         expect(page).to have_link("Invoices")
@@ -43,14 +43,14 @@ RSpec.describe "Navigation", type: :system do
       end
     end
 
-    it "navigates to Time Entries and updates active state" do
-      click_link "Time Entries"
+    it "navigates to Log Work and updates active state" do
+      click_link "Log Work"
 
-      expect(page).to have_current_path(time_entries_path)
+      expect(page).to have_current_path(work_entries_path)
 
       within('[data-testid="sidebar"]') do
-        time_entries_link = find('[data-testid="nav-time-entries"]')
-        expect(time_entries_link[:class]).to include("bg-stone-900")
+        log_work_link = find('[data-testid="nav-log-work"]')
+        expect(log_work_link[:class]).to include("bg-stone-900")
       end
     end
 
@@ -138,7 +138,7 @@ RSpec.describe "Navigation", type: :system do
       # Should see navigation links in the drawer
       within('[role="dialog"]') do
         expect(page).to have_link("Dashboard")
-        expect(page).to have_link("Time Entries")
+        expect(page).to have_link("Log Work")
         expect(page).to have_link("Clients")
       end
     end

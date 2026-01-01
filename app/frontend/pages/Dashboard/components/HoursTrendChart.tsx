@@ -58,7 +58,10 @@ export function HoursTrendChart({ data }: HoursTrendChartProps) {
               width={35}
             />
             <Tooltip
-              formatter={(value) => [`${Number(value).toFixed(1)} hrs`, "Hours"]}
+              formatter={(value) => [
+                `${Number(value).toFixed(1)} hrs`,
+                "Hours",
+              ]}
               contentStyle={{
                 backgroundColor: "#fafaf9",
                 border: "1px solid #e7e5e4",

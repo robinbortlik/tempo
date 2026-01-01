@@ -22,9 +22,7 @@ export function StatCard({
     <Card
       className={cn(
         "p-5 transition-all hover:shadow-md",
-        highlight
-          ? "bg-amber-50 border-amber-200"
-          : "bg-white border-stone-200"
+        highlight ? "bg-amber-50 border-amber-200" : "bg-white border-stone-200"
       )}
     >
       <div className="flex items-center justify-between mb-3">

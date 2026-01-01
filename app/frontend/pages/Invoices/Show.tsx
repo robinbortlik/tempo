@@ -137,7 +137,9 @@ export default function InvoiceShow() {
   const { invoice, line_items, settings, flash } = usePage<PageProps>().props;
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [editingLineItemId, setEditingLineItemId] = useState<number | null>(null);
+  const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
+    null
+  );
   const [lineItemToRemove, setLineItemToRemove] = useState<number | null>(null);
   const [isAddingLineItem, setIsAddingLineItem] = useState(false);
 
@@ -172,7 +174,10 @@ export default function InvoiceShow() {
     setEditingLineItemId(id);
   };
 
-  const handleSaveLineItem = (id: number, data: { description: string; amount: number; vat_rate: number }) => {
+  const handleSaveLineItem = (
+    id: number,
+    data: { description: string; amount: number; vat_rate: number }
+  ) => {
     router.patch(
       `/invoices/${invoice.id}/line_items/${id}`,
       { line_item: data },
@@ -225,7 +230,11 @@ export default function InvoiceShow() {
     setIsAddingLineItem(true);
   };
 
-  const handleSaveNewLineItem = (data: { description: string; amount: number; vat_rate: number }) => {
+  const handleSaveNewLineItem = (data: {
+    description: string;
+    amount: number;
+    vat_rate: number;
+  }) => {
     router.post(
       `/invoices/${invoice.id}/line_items`,
       { line_item: { ...data, line_type: "fixed" } },
@@ -333,8 +342,8 @@ export default function InvoiceShow() {
                         <AlertDialogTitle>Finalize Invoice?</AlertDialogTitle>
                         <AlertDialogDescription>
                           This will mark the invoice as final and lock all
-                          associated work entries as invoiced. This action cannot
-                          be undone.
+                          associated work entries as invoiced. This action
+                          cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -366,9 +375,9 @@ export default function InvoiceShow() {
                           Delete Invoice {invoice.number}?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete the invoice and unassociate
-                          all work entries. The work entries will become unbilled
-                          again.
+                          This will permanently delete the invoice and
+                          unassociate all work entries. The work entries will
+                          become unbilled again.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -467,7 +476,9 @@ export default function InvoiceShow() {
           {/* Bill To */}
           <div className="mb-8">
             <p className="text-sm text-stone-500 mb-2">Bill To:</p>
-            <p className="font-semibold text-stone-900">{invoice.client_name}</p>
+            <p className="font-semibold text-stone-900">
+              {invoice.client_name}
+            </p>
             {invoice.client_address && (
               <p className="text-sm text-stone-500 whitespace-pre-line">
                 {invoice.client_address}
@@ -588,7 +599,8 @@ export default function InvoiceShow() {
               <div className="flex justify-between">
                 <dt className="text-stone-500">
                   Subtotal
-                  {calculatedTotalHours > 0 && ` (${formatHours(calculatedTotalHours)} hrs)`}
+                  {calculatedTotalHours > 0 &&
+                    ` (${formatHours(calculatedTotalHours)} hrs)`}
                 </dt>
                 <dd className="tabular-nums text-stone-900">
                   {formatCurrency(invoice.subtotal, invoice.currency)}
@@ -639,38 +651,49 @@ export default function InvoiceShow() {
           {/* Footer */}
           <div className="mt-8 pt-8 border-t border-stone-200 text-sm text-stone-500">
             <p className="font-medium text-stone-700 mb-2">Payment Details</p>
-            {(settings.bank_name || settings.bank_account || settings.bank_swift) && (
+            {(settings.bank_name ||
+              settings.bank_account ||
+              settings.bank_swift) && (
               <div className="grid grid-cols-3 gap-4 mb-4">
                 {settings.bank_name && (
                   <div>
                     <p className="text-stone-500">Bank</p>
-                    <p className="text-stone-900 font-medium">{settings.bank_name}</p>
+                    <p className="text-stone-900 font-medium">
+                      {settings.bank_name}
+                    </p>
                   </div>
                 )}
                 {settings.bank_account && (
                   <div>
                     <p className="text-stone-500">Account / IBAN</p>
-                    <p className="text-stone-900 font-medium">{settings.bank_account}</p>
+                    <p className="text-stone-900 font-medium">
+                      {settings.bank_account}
+                    </p>
                   </div>
                 )}
                 {settings.bank_swift && (
                   <div>
                     <p className="text-stone-500">SWIFT / BIC</p>
-                    <p className="text-stone-900 font-medium">{settings.bank_swift}</p>
+                    <p className="text-stone-900 font-medium">
+                      {settings.bank_swift}
+                    </p>
                   </div>
                 )}
               </div>
             )}
             <p>
-              Please include invoice number{" "}
-              <strong>#{invoice.number}</strong> in payment reference.
+              Please include invoice number <strong>#{invoice.number}</strong>{" "}
+              in payment reference.
             </p>
           </div>
         </div>
       </div>
 
       {/* Remove Line Item Confirmation Dialog */}
-      <AlertDialog open={lineItemToRemove !== null} onOpenChange={() => setLineItemToRemove(null)}>
+      <AlertDialog
+        open={lineItemToRemove !== null}
+        onOpenChange={() => setLineItemToRemove(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Line Item?</AlertDialogTitle>

@@ -64,7 +64,10 @@ function formatTotalHours(hours: number): string {
 }
 
 function formatCurrency(amount: number): string {
-  return amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return amount.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 export default function DateGroup({

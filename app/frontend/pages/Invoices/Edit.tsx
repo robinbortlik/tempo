@@ -96,7 +96,9 @@ function formatHours(hours: number): string {
 export default function EditInvoice() {
   const { invoice, line_items, flash } = usePage<PageProps>().props;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingLineItemId, setEditingLineItemId] = useState<number | null>(null);
+  const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
+    null
+  );
   const [lineItemToRemove, setLineItemToRemove] = useState<number | null>(null);
   const [isAddingLineItem, setIsAddingLineItem] = useState(false);
 
@@ -137,7 +139,10 @@ export default function EditInvoice() {
     setEditingLineItemId(id);
   };
 
-  const handleSaveLineItem = (id: number, itemData: { description: string; amount: number; vat_rate: number }) => {
+  const handleSaveLineItem = (
+    id: number,
+    itemData: { description: string; amount: number; vat_rate: number }
+  ) => {
     router.patch(
       `/invoices/${invoice.id}/line_items/${id}`,
       { line_item: itemData },
@@ -190,7 +195,11 @@ export default function EditInvoice() {
     setIsAddingLineItem(true);
   };
 
-  const handleSaveNewLineItem = (itemData: { description: string; amount: number; vat_rate: number }) => {
+  const handleSaveNewLineItem = (itemData: {
+    description: string;
+    amount: number;
+    vat_rate: number;
+  }) => {
     router.post(
       `/invoices/${invoice.id}/line_items`,
       { line_item: { ...itemData, line_type: "fixed" } },
@@ -364,7 +373,8 @@ export default function EditInvoice() {
                   <div className="text-sm text-stone-500">
                     {calculatedTotalHours > 0 && (
                       <>
-                        {formatHours(calculatedTotalHours)} hours {"\u00B7"}{" "}
+                        {formatHours(calculatedTotalHours)} hours{" "}
+                        {"\u00B7"}{" "}
                       </>
                     )}
                     {formatCurrency(invoice.grand_total, invoice.currency)}
@@ -377,10 +387,18 @@ export default function EditInvoice() {
                     <thead>
                       <tr className="text-left text-stone-500 bg-stone-50 border-b border-stone-200">
                         <th className="px-4 py-3 font-medium">Description</th>
-                        <th className="px-4 py-3 font-medium text-right w-16">Hours</th>
-                        <th className="px-4 py-3 font-medium text-right w-24">Rate</th>
-                        <th className="px-4 py-3 font-medium text-right w-16">VAT</th>
-                        <th className="px-4 py-3 font-medium text-right w-28">Amount</th>
+                        <th className="px-4 py-3 font-medium text-right w-16">
+                          Hours
+                        </th>
+                        <th className="px-4 py-3 font-medium text-right w-24">
+                          Rate
+                        </th>
+                        <th className="px-4 py-3 font-medium text-right w-16">
+                          VAT
+                        </th>
+                        <th className="px-4 py-3 font-medium text-right w-28">
+                          Amount
+                        </th>
                         <th className="px-4 py-3 font-medium w-36"></th>
                       </tr>
                     </thead>
@@ -397,8 +415,12 @@ export default function EditInvoice() {
                                 <LineItemEditor
                                   lineItem={item}
                                   currency={invoice.currency}
-                                  defaultVatRate={invoice.client_default_vat_rate}
-                                  onSave={(itemData) => handleSaveLineItem(item.id, itemData)}
+                                  defaultVatRate={
+                                    invoice.client_default_vat_rate
+                                  }
+                                  onSave={(itemData) =>
+                                    handleSaveLineItem(item.id, itemData)
+                                  }
                                   onCancel={() => setEditingLineItemId(null)}
                                 />
                               </td>
@@ -480,7 +502,8 @@ export default function EditInvoice() {
                       <div className="flex justify-between">
                         <dt className="text-stone-500">
                           Subtotal
-                          {calculatedTotalHours > 0 && ` (${formatHours(calculatedTotalHours)} hrs)`}
+                          {calculatedTotalHours > 0 &&
+                            ` (${formatHours(calculatedTotalHours)} hrs)`}
                         </dt>
                         <dd className="tabular-nums text-stone-900">
                           {formatCurrency(invoice.subtotal, invoice.currency)}
@@ -488,19 +511,25 @@ export default function EditInvoice() {
                       </div>
                       {/* VAT breakdown by rate */}
                       {Object.entries(invoice.vat_totals_by_rate || {})
-                        .filter(([rate, amount]) => parseFloat(rate) > 0 || amount > 0)
+                        .filter(
+                          ([rate, amount]) => parseFloat(rate) > 0 || amount > 0
+                        )
                         .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
                         .map(([rate, amount]) => (
                           <div key={rate} className="flex justify-between">
-                            <dt className="text-stone-500">VAT {parseFloat(rate)}%</dt>
+                            <dt className="text-stone-500">
+                              VAT {parseFloat(rate)}%
+                            </dt>
                             <dd className="tabular-nums text-stone-900">
                               {formatCurrency(amount, invoice.currency)}
                             </dd>
                           </div>
                         ))}
                       {/* Show 0% VAT line only if all items are 0% */}
-                      {Object.keys(invoice.vat_totals_by_rate || {}).length === 0 ||
-                      (Object.keys(invoice.vat_totals_by_rate || {}).length === 1 &&
+                      {Object.keys(invoice.vat_totals_by_rate || {}).length ===
+                        0 ||
+                      (Object.keys(invoice.vat_totals_by_rate || {}).length ===
+                        1 &&
                         Object.keys(invoice.vat_totals_by_rate)[0] === "0") ? (
                         <div className="flex justify-between">
                           <dt className="text-stone-500">VAT (0%)</dt>
@@ -512,7 +541,10 @@ export default function EditInvoice() {
                       <div className="flex justify-between pt-2 border-t border-stone-200">
                         <dt className="font-semibold text-stone-900">Total</dt>
                         <dd className="tabular-nums font-semibold text-stone-900">
-                          {formatCurrency(invoice.grand_total, invoice.currency)}
+                          {formatCurrency(
+                            invoice.grand_total,
+                            invoice.currency
+                          )}
                         </dd>
                       </div>
                     </dl>
@@ -525,7 +557,10 @@ export default function EditInvoice() {
       </div>
 
       {/* Remove Line Item Confirmation Dialog */}
-      <AlertDialog open={lineItemToRemove !== null} onOpenChange={() => setLineItemToRemove(null)}>
+      <AlertDialog
+        open={lineItemToRemove !== null}
+        onOpenChange={() => setLineItemToRemove(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Line Item?</AlertDialogTitle>

@@ -36,9 +36,10 @@ export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
   const chartData = data.slice(0, 8).map((project) => ({
     ...project,
     // Truncate long project names
-    displayName: project.name.length > 15
-      ? project.name.substring(0, 12) + "..."
-      : project.name,
+    displayName:
+      project.name.length > 15
+        ? project.name.substring(0, 12) + "..."
+        : project.name,
   }));
 
   if (data.length === 0) {
@@ -76,7 +77,10 @@ export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
               tick={{ fontSize: 12 }}
             />
             <Tooltip
-              formatter={(value) => [`${Number(value).toFixed(1)} hrs`, "Hours"]}
+              formatter={(value) => [
+                `${Number(value).toFixed(1)} hrs`,
+                "Hours",
+              ]}
               labelFormatter={(label, payload) => {
                 if (payload && payload[0]) {
                   return payload[0].payload.name;

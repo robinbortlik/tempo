@@ -31,7 +31,8 @@ export function TimeByClientChart({ data }: TimeByClientChartProps) {
 
   const chartData = data.slice(0, 5).map((client) => ({
     ...client,
-    percentage: totalHours > 0 ? ((client.hours / totalHours) * 100).toFixed(1) : "0",
+    percentage:
+      totalHours > 0 ? ((client.hours / totalHours) * 100).toFixed(1) : "0",
   }));
 
   if (data.length === 0) {
@@ -73,7 +74,10 @@ export function TimeByClientChart({ data }: TimeByClientChartProps) {
               ))}
             </Pie>
             <Tooltip
-              formatter={(value) => [`${Number(value).toFixed(1)} hrs`, "Hours"]}
+              formatter={(value) => [
+                `${Number(value).toFixed(1)} hrs`,
+                "Hours",
+              ]}
               contentStyle={{
                 backgroundColor: "#fafaf9",
                 border: "1px solid #e7e5e4",

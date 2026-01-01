@@ -56,7 +56,9 @@ describe("CurrencyDisplay", () => {
   });
 
   it("hides decimals when showDecimals is false", () => {
-    render(<CurrencyDisplay amount={1234.56} currency="EUR" showDecimals={false} />);
+    render(
+      <CurrencyDisplay amount={1234.56} currency="EUR" showDecimals={false} />
+    );
     const display = screen.getByTestId("currency-display");
     expect(display).toHaveTextContent("\u20AC1,235");
   });

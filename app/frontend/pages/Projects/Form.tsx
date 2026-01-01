@@ -15,7 +15,7 @@ interface Project {
 interface Client {
   id: number;
   name: string;
-  hourly_rate: number | null;
+  hourly_rate: number | string | null;
   currency: string | null;
 }
 
@@ -26,8 +26,13 @@ interface ProjectFormProps {
   isEdit?: boolean;
 }
 
-function formatRate(rate: number | null, currency: string | null): string {
+function formatRate(
+  rate: number | string | null,
+  currency: string | null
+): string {
   if (!rate) return "";
+  const numRate = typeof rate === "string" ? parseFloat(rate) : rate;
+  if (isNaN(numRate)) return "";
   const symbols: Record<string, string> = {
     EUR: "\u20AC",
     USD: "$",
@@ -35,7 +40,7 @@ function formatRate(rate: number | null, currency: string | null): string {
     CZK: "K\u010D",
   };
   const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${rate.toFixed(2)}`;
+  return `${symbol}${numRate.toFixed(2)}`;
 }
 
 export default function ProjectForm({

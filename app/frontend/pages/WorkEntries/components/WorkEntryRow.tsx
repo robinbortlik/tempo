@@ -50,7 +50,9 @@ interface WorkEntryRowProps {
 function formatHours(hours: number | null): string {
   if (hours === null) return "0";
   const numHours = Number(hours) || 0;
-  return numHours % 1 === 0 ? `${Math.floor(numHours)}` : `${numHours.toFixed(1)}`;
+  return numHours % 1 === 0
+    ? `${Math.floor(numHours)}`
+    : `${numHours.toFixed(1)}`;
 }
 
 function formatCurrency(amount: number, currency?: string | null): string {
@@ -71,7 +73,11 @@ export default function WorkEntryRow({
     date: entry.date,
     project_id: entry.project_id.toString(),
     hours: entry.hours?.toString() || "",
-    amount: entry.amount?.toString() || (entry.entry_type === "time" && entry.calculated_amount ? entry.calculated_amount.toString() : ""),
+    amount:
+      entry.amount?.toString() ||
+      (entry.entry_type === "time" && entry.calculated_amount
+        ? entry.calculated_amount.toString()
+        : ""),
     description: entry.description || "",
   });
 
@@ -299,7 +305,10 @@ export default function WorkEntryRow({
                   <span className="text-sm font-medium text-stone-400">h</span>
                 </div>
                 <span className="text-sm text-stone-500 tabular-nums">
-                  {formatCurrency(entry.calculated_amount, entry.client_currency)}
+                  {formatCurrency(
+                    entry.calculated_amount,
+                    entry.client_currency
+                  )}
                 </span>
               </>
             ) : (

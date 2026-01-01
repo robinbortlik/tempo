@@ -107,9 +107,7 @@ describe("InvoicePreview", () => {
     expect(screen.getByText("$150.00/h")).toBeInTheDocument();
 
     // Fixed item should show just description and amount
-    const fixedRow = screen
-      .getByText("Logo design deliverable")
-      .closest("tr");
+    const fixedRow = screen.getByText("Logo design deliverable").closest("tr");
     expect(fixedRow).toBeInTheDocument();
     expect(within(fixedRow!).getByText("$500.00")).toBeInTheDocument();
   });

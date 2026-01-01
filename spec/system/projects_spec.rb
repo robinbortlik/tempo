@@ -98,17 +98,22 @@ RSpec.describe "Projects", type: :system do
       # Click the first Add Project button (in the header)
       first(:button, "Add Project").click
 
+      # Wait for page navigation to complete
       expect(page).to have_current_path(new_project_path)
-      expect(page).to have_content("New Project")
+      # Wait for the page content to load
+      expect(page).to have_css("h1", text: "New Project", wait: 10)
       expect(page).to have_content("Add a new project to track time")
     end
 
     it "creates a project with valid data" do
       visit new_project_path
 
-      fill_in "Project Name", with: "Website Redesign"
-      select "Acme Corp", from: "Client"
-      fill_in "Custom Hourly Rate", with: "150"
+      # Wait for page to fully load
+      expect(page).to have_css("h1", text: "New Project", wait: 10)
+
+      fill_in "name", with: "Website Redesign"
+      select "Acme Corp", from: "client_id"
+      fill_in "hourly_rate", with: "150"
 
       click_button "Create Project"
 
@@ -119,8 +124,8 @@ RSpec.describe "Projects", type: :system do
     it "creates a project without custom rate (uses client rate)" do
       visit new_project_path
 
-      fill_in "Project Name", with: "API Project"
-      select "Acme Corp", from: "Client"
+      fill_in "name", with: "API Project"
+      select "Acme Corp", from: "client_id"
       # Leave hourly rate empty
 
       click_button "Create Project"
@@ -132,7 +137,7 @@ RSpec.describe "Projects", type: :system do
     it "disables submit button when name is empty" do
       visit new_project_path
 
-      select "Acme Corp", from: "Client"
+      select "Acme Corp", from: "client_id"
       # Leave name empty
 
       expect(page).to have_button("Create Project", disabled: true)
@@ -141,7 +146,7 @@ RSpec.describe "Projects", type: :system do
     it "disables submit button when client is not selected" do
       visit new_project_path
 
-      fill_in "Project Name", with: "Test Project"
+      fill_in "name", with: "Test Project"
       # Leave client unselected
 
       expect(page).to have_button("Create Project", disabled: true)
@@ -159,10 +164,9 @@ RSpec.describe "Projects", type: :system do
       it "pre-selects the client" do
         visit new_project_path(client_id: client.id)
 
-        # Check that the select shows Acme Corp as the selected value
+        # Check that the select shows the client name (pre-selected)
         select_element = find("select#client_id")
-        selected_text = select_element.find("option[value='#{client.id}']").text
-        expect(selected_text).to include("Acme Corp")
+        expect(select_element.value).to eq(client.id.to_s)
       end
     end
   end
@@ -244,15 +248,15 @@ RSpec.describe "Projects", type: :system do
       visit edit_project_path(project)
 
       expect(page).to have_content("Edit Project")
-      expect(page).to have_field("Project Name", with: "Original Project")
-      expect(page).to have_field("Custom Hourly Rate", with: "100.0")
+      expect(page).to have_field("name", with: "Original Project")
+      expect(page).to have_field("hourly_rate", with: "100.0")
     end
 
     it "updates the project with valid data" do
       visit edit_project_path(project)
 
-      fill_in "Project Name", with: "Updated Project", fill_options: { clear: :backspace }
-      fill_in "Custom Hourly Rate", with: "200", fill_options: { clear: :backspace }
+      fill_in "name", with: "Updated Project", fill_options: { clear: :backspace }
+      fill_in "hourly_rate", with: "200", fill_options: { clear: :backspace }
 
       click_button "Save Changes"
 
@@ -263,7 +267,7 @@ RSpec.describe "Projects", type: :system do
     it "navigates back to project details when clicking Back" do
       visit edit_project_path(project)
 
-      click_on "Back to Original Project"
+      click_on "Back to #{project.name}"
 
       expect(page).to have_current_path(project_path(project))
     end
