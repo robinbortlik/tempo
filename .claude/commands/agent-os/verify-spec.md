@@ -4,7 +4,15 @@ Verify that the specification and tasks accurately reflect requirements before i
 
 ## Arguments
 
-- `$ARGUMENTS` - Path to spec folder (optional, will find most recent if not provided)
+- `$ARGUMENTS` - Path to spec folder and/or flags
+  - `--chained` - When present, this command is running as part of `/build-feature` workflow. Skip "NEXT STEP" messaging and output machine-readable result.
+  - `--spec-path <path>` - Explicit spec path to use (optional, will find most recent if not provided)
+
+## Mode Detection
+
+Check if `$ARGUMENTS` contains `--chained`:
+- **Standalone mode**: Show full user-friendly output with "NEXT STEP" guidance
+- **Chained mode**: Output result status with PASSED/FAILED indicator
 
 ## Process
 
@@ -69,9 +77,23 @@ The spec-verifier will:
 
 ### Step 4: Report results
 
-After verification completes, OUTPUT:
+After verification completes:
 
-**If verification PASSED:**
+**If running in chained mode (`--chained` in $ARGUMENTS):**
+
+If verification PASSED:
+```
+VERIFY_SPEC_PASSED::[spec-path]
+```
+
+If verification found CRITICAL issues:
+```
+VERIFY_SPEC_FAILED::[spec-path]::[comma-separated list of critical issues]
+```
+
+**If running in standalone mode:**
+
+If verification PASSED:
 ```
 Spec Verification Complete!
 
@@ -85,7 +107,7 @@ Verification report: [spec-path]/verification/spec-verification.md
 NEXT STEP 👉 Run `/implement-tasks` to start implementation.
 ```
 
-**If verification found ISSUES:**
+If verification found ISSUES:
 ```
 Spec Verification Complete - Issues Found
 

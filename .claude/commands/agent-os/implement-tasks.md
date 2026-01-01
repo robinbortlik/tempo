@@ -8,6 +8,18 @@ PHASE 3: After ALL task groups have been implemented, delegate to implementation
 
 **CRITICAL: Never implement task groups yourself. Always delegate each task group to a separate implementer subagent.**
 
+## Arguments
+
+- `$ARGUMENTS` - Spec path and/or flags
+  - `--chained` - When present, this command is running as part of `/build-feature` workflow. Skip interactive prompts and output machine-readable result.
+  - `--spec-path <path>` - Explicit spec path to use (optional, will find most recent if not provided)
+
+## Mode Detection
+
+Check if `$ARGUMENTS` contains `--chained`:
+- **Standalone mode**: Show full user-friendly output with confirmations and "NEXT STEP" guidance
+- **Chained mode**: Proceed without confirmations and output result status
+
 Follow each of these phases and their individual workflows IN SEQUENCE:
 
 ## Multi-Phase Process
@@ -28,7 +40,8 @@ Follow each of these phases and their individual workflows IN SEQUENCE:
 
 **Check if user has specific instructions:**
 - If the user specified particular task group(s) to implement, only process those
-- If not, ask the user:
+- **If running in chained mode (`--chained`)**: Proceed immediately with all task groups without asking for confirmation
+- If in standalone mode and no specific instructions, ask the user:
 
 ```
 I've identified the following task groups and their dependencies:
@@ -123,3 +136,30 @@ Instructions:
 | 3 | After all complete, run implementation-verifier for final report |
 
 **Key Principle:** This command is an ORCHESTRATOR. It delegates work to implementer subagents and coordinates their execution. It never implements code itself.
+
+## Final Output
+
+After all phases complete:
+
+**If running in chained mode (`--chained` in $ARGUMENTS):**
+
+If implementation succeeded:
+```
+IMPLEMENT_COMPLETE::[spec-path]::[number of task groups completed]
+```
+
+If implementation had failures:
+```
+IMPLEMENT_FAILED::[spec-path]::[comma-separated list of failed task groups]
+```
+
+**If running in standalone mode:**
+
+```
+Implementation Complete!
+
+✅ All [X] task groups implemented
+✅ Verification report: [spec-path]/verification/final-verification.md
+
+NEXT STEP 👉 Commit and push your changes, then create a PR.
+```

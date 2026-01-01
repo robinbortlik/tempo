@@ -2,13 +2,13 @@
 
 Orchestrate the complete feature development workflow from idea to deployed code.
 
-This command automates the entire AgentOS workflow:
-1. Shape spec (gather requirements)
-2. Write spec
-3. Create tasks
-4. Verify spec
-5. Implement all tasks
-6. Verify implementation
+This command chains together the individual AgentOS commands:
+1. `/agent-os:shape-spec` - Gather requirements
+2. `/agent-os:write-spec` - Write specification
+3. `/agent-os:create-tasks` - Create task list
+4. `/agent-os:verify-spec` - Verify specification
+5. `/agent-os:implement-tasks` - Implement all tasks
+6. `/agent-os:verify-implementation` - Verify implementation
 7. Commit and push to GitHub
 
 ## Arguments
@@ -47,23 +47,38 @@ Please respond with your choice.
 
 Wait for user response before proceeding.
 
+#### Step 0.2: Determine starting point
+
+Based on user response or existing spec state, determine which phase to start from:
+
+- No spec exists → Start at PHASE 1
+- Spec has `planning/requirements.md` but no `spec.md` → Start at PHASE 2
+- Spec has `spec.md` but no `tasks.md` → Start at PHASE 3
+- Spec has `tasks.md` but not verified → Start at PHASE 4
+- Spec verified but not implemented → Start at PHASE 5
+- Spec implemented but not verified → Start at PHASE 6
+- Implementation verified → Start at PHASE 7
+
+Store the spec path for subsequent phases: `SPEC_PATH=[spec-folder-path]`
+
 ---
 
 ### PHASE 1: Shape Specification
 
-Use the **spec-initializer** subagent to initialize a new spec folder.
+**Invoke the shape-spec command:**
 
-Provide the spec-initializer with:
-- The feature description from `$ARGUMENTS` or from user's earlier response
+```
+/agent-os:shape-spec --chained $ARGUMENTS
+```
 
-After spec-initializer completes, immediately use the **spec-shaper** subagent:
+The command will:
+- Initialize a new spec folder
+- Run interactive requirements gathering via AskUserQuestion
+- Output `SHAPE_COMPLETE::[spec-path]` when done
 
-Provide the spec-shaper with:
-- The spec folder path from spec-initializer
+**Capture the spec path** from the output for subsequent phases.
 
-The spec-shaper uses **AskUserQuestion tool** to gather requirements interactively. Wait for all question rounds to complete.
-
-After spec shaping completes, OUTPUT:
+After shape-spec completes, OUTPUT:
 ```
 Phase 1 Complete: Spec Shaping
 
@@ -77,14 +92,17 @@ Proceeding to Phase 2: Write Specification...
 
 ### PHASE 2: Write Specification
 
-Use the **spec-writer** subagent to create the specification document.
+**Invoke the write-spec command:**
 
-Provide the spec-writer with:
-- The spec folder path
-- The requirements from `planning/requirements.md`
-- Any visual assets in `planning/visuals/`
+```
+/agent-os:write-spec --chained --spec-path [SPEC_PATH]
+```
 
-After spec-writer completes, OUTPUT:
+The command will:
+- Create `spec.md` from requirements
+- Output `SPEC_COMPLETE::[spec-path]` when done
+
+After write-spec completes, OUTPUT:
 ```
 Phase 2 Complete: Specification Written
 
@@ -97,14 +115,17 @@ Proceeding to Phase 3: Create Tasks...
 
 ### PHASE 3: Create Task List
 
-Use the **tasks-list-creator** subagent to break down the spec into actionable tasks.
+**Invoke the create-tasks command:**
 
-Provide the tasks-list-creator with:
-- `agent-os/specs/[this-spec]/spec.md`
-- `agent-os/specs/[this-spec]/planning/requirements.md`
-- `agent-os/specs/[this-spec]/planning/visuals/` (if present)
+```
+/agent-os:create-tasks --chained --spec-path [SPEC_PATH]
+```
 
-After tasks-list-creator completes, OUTPUT:
+The command will:
+- Create `tasks.md` with task groups and dependencies
+- Output `TASKS_COMPLETE::[spec-path]` when done
+
+After create-tasks completes, OUTPUT:
 ```
 Phase 3 Complete: Tasks Created
 
@@ -117,14 +138,15 @@ Proceeding to Phase 4: Verify Specification...
 
 ### PHASE 4: Verify Specification
 
-Use the **spec-verifier** subagent to validate the spec and tasks against requirements.
+**Invoke the verify-spec command:**
 
-Provide the spec-verifier with:
-- The spec folder path
-- The questions asked during requirements gathering
-- The user's responses
+```
+/agent-os:verify-spec --chained --spec-path [SPEC_PATH]
+```
 
-After spec-verifier completes, check the verification report at `[spec-path]/verification/spec-verification.md`.
+The command will output one of:
+- `VERIFY_SPEC_PASSED::[spec-path]`
+- `VERIFY_SPEC_FAILED::[spec-path]::[issues]`
 
 **If verification PASSED:**
 ```
@@ -136,12 +158,12 @@ Phase 4 Complete: Specification Verified
 Proceeding to Phase 5: Implementation...
 ```
 
-**If verification found CRITICAL ISSUES:**
+**If verification FAILED:**
 ```
 Phase 4: Specification Verification Found Issues
 
 ⚠️ Critical issues found in specification:
-[List critical issues from verification report]
+[List critical issues from output]
 
 Would you like to:
 1. Fix the issues and re-verify (recommended)
@@ -151,11 +173,11 @@ Would you like to:
 Please respond with your choice.
 ```
 
-Wait for user response. If user chooses to fix, provide guidance on what to update, then re-run spec-verifier.
+Wait for user response. If user chooses to fix, provide guidance on what to update, then re-run `/agent-os:verify-spec --chained`.
 
 ---
 
-### PHASE 5: Implement All Tasks
+### PHASE 5: Checkpoint Commit and Implementation
 
 Before starting implementation, create a checkpoint commit:
 
@@ -172,21 +194,18 @@ EOF
 )"
 ```
 
-Now delegate to the **implementer** subagent to implement ALL task groups:
+**Invoke the implement-tasks command:**
 
-Provide the implementer with:
-- ALL task groups from `agent-os/specs/[this-spec]/tasks.md`
-- The spec file: `agent-os/specs/[this-spec]/spec.md`
-- The requirements: `agent-os/specs/[this-spec]/planning/requirements.md`
-- The visuals (if any): `agent-os/specs/[this-spec]/planning/visuals`
+```
+/agent-os:implement-tasks --chained --spec-path [SPEC_PATH]
+```
 
-Instruct the implementer to:
-1. Implement each task group sequentially
-2. Mark completed tasks with `- [x]` in tasks.md
-3. Commit after each completed task group with a descriptive message
-4. Continue until ALL task groups are complete
+The command will:
+- Parse task groups and dependencies
+- Delegate each task group to implementer subagents
+- Output `IMPLEMENT_COMPLETE::[spec-path]::[count]` or `IMPLEMENT_FAILED::[spec-path]::[issues]`
 
-After ALL task groups are implemented, OUTPUT:
+After implement-tasks completes, OUTPUT:
 ```
 Phase 5 Complete: Implementation Finished
 
@@ -200,16 +219,15 @@ Proceeding to Phase 6: Verify Implementation...
 
 ### PHASE 6: Verify Implementation
 
-Use the **implementation-verifier** subagent to verify the complete implementation.
+**Invoke the verify-implementation command:**
 
-Provide the implementation-verifier with:
-- The spec path: `agent-os/specs/[this-spec]`
+```
+/agent-os:verify-implementation --chained --spec-path [SPEC_PATH]
+```
 
-Instruct the implementation-verifier to:
-1. Verify all tasks are marked complete
-2. Update the product roadmap if applicable
-3. Run the entire test suite
-4. Create the final verification report at `agent-os/specs/[this-spec]/verifications/final-verification.md`
+The command will output one of:
+- `VERIFY_IMPL_PASSED::[spec-path]::[passing]::[failing]`
+- `VERIFY_IMPL_FAILED::[spec-path]::[issues]`
 
 After verification completes, OUTPUT:
 ```
@@ -324,7 +342,7 @@ Next steps:
 
 Throughout the workflow, if any phase fails:
 
-1. **Subagent failure**: Report the error and ask user how to proceed
+1. **Command failure**: Report the error and ask user how to proceed
 2. **Git errors**: Show the error and suggest resolution
 3. **Test failures**: Document in verification report, ask user if blocking
 4. **User cancellation**: Save progress and provide resume instructions
@@ -333,13 +351,13 @@ Throughout the workflow, if any phase fails:
 
 If the workflow is interrupted, running `/build-feature` again will:
 1. Detect the existing spec folder
-2. Determine which phase was last completed
+2. Determine which phase was last completed (Step 0.2)
 3. Offer to resume from that point
 
 ## Notes
 
-- This command orchestrates multiple subagents sequentially
-- User interaction is required during spec shaping (Phase 2)
+- This command orchestrates the individual AgentOS commands
+- User interaction is required during spec shaping (Phase 1)
 - Commits are made at key checkpoints for safety
 - The workflow can be resumed if interrupted
 - All documentation is preserved in the spec folder

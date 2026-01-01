@@ -2,6 +2,18 @@
 
 You are helping me brainstorm, explore, and shape a new feature idea. This is an **iterative discovery process** - we will explore the idea from multiple angles through conversation until I explicitly signal that feature discovery is complete.
 
+## Arguments
+
+- `$ARGUMENTS` - Feature description and/or flags
+  - `--chained` - When present, this command is running as part of `/build-feature` workflow. Skip "NEXT STEP" messaging and output machine-readable result.
+  - `--spec-path <path>` - Explicit spec path to use (optional)
+
+## Mode Detection
+
+Check if `$ARGUMENTS` contains `--chained`:
+- **Standalone mode**: Show full user-friendly output with "NEXT STEP" guidance
+- **Chained mode**: Output only the spec path for the next command in the workflow
+
 This process will follow 3 main phases:
 
 PHASE 1. Initialize spec folder
@@ -52,7 +64,15 @@ The spec-shaper will run an **iterative discovery loop**:
 
 ### PHASE 3: Inform the user
 
-After feature discovery is complete, inform the user:
+After feature discovery is complete:
+
+**If running in chained mode (`--chained` in $ARGUMENTS):**
+
+```
+SHAPE_COMPLETE::[spec-path]
+```
+
+**If running in standalone mode:**
 
 ```
 Feature discovery complete!

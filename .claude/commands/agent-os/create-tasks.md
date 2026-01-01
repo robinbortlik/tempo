@@ -2,6 +2,18 @@
 
 You are creating a tasks breakdown from a given spec and requirements for a new feature.
 
+## Arguments
+
+- `$ARGUMENTS` - Spec path and/or flags
+  - `--chained` - When present, this command is running as part of `/build-feature` workflow. Skip "NEXT STEP" messaging and output machine-readable result.
+  - `--spec-path <path>` - Explicit spec path to use (optional, will find most recent if not provided)
+
+## Mode Detection
+
+Check if `$ARGUMENTS` contains `--chained`:
+- **Standalone mode**: Show full user-friendly output with "NEXT STEP" guidance
+- **Chained mode**: Output only the result status for the next command in the workflow
+
 ## PHASE 1: Get and read the spec.md and/or requirements document(s)
 
 You will need ONE OR BOTH of these files to inform your tasks breakdown:
@@ -29,7 +41,15 @@ The tasks-list-creator will create `tasks.md` inside the spec folder.
 
 ## PHASE 3: Inform user
 
-Once the tasks-list-creator has created `tasks.md` output the following to inform the user:
+Once the tasks-list-creator has created `tasks.md`:
+
+**If running in chained mode (`--chained` in $ARGUMENTS):**
+
+```
+TASKS_COMPLETE::[spec-path]
+```
+
+**If running in standalone mode:**
 
 ```
 Your tasks list ready!

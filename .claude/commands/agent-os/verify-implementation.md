@@ -4,7 +4,15 @@ Verify that the implementation is complete, tests pass, and documentation is upd
 
 ## Arguments
 
-- `$ARGUMENTS` - Path to spec folder (optional, will find most recent if not provided)
+- `$ARGUMENTS` - Path to spec folder and/or flags
+  - `--chained` - When present, this command is running as part of `/build-feature` workflow. Skip "NEXT STEP" messaging and output machine-readable result.
+  - `--spec-path <path>` - Explicit spec path to use (optional, will find most recent if not provided)
+
+## Mode Detection
+
+Check if `$ARGUMENTS` contains `--chained`:
+- **Standalone mode**: Show full user-friendly output with "NEXT STEP" guidance
+- **Chained mode**: Output result status with PASSED/FAILED indicator
 
 ## Process
 
@@ -58,9 +66,23 @@ Instruct the implementation-verifier to:
 
 ### Step 4: Report results
 
-After verification completes, OUTPUT:
+After verification completes:
 
-**If verification PASSED:**
+**If running in chained mode (`--chained` in $ARGUMENTS):**
+
+If verification PASSED:
+```
+VERIFY_IMPL_PASSED::[spec-path]::[passing tests]::[failing tests]
+```
+
+If verification found issues:
+```
+VERIFY_IMPL_FAILED::[spec-path]::[comma-separated list of issues]
+```
+
+**If running in standalone mode:**
+
+If verification PASSED:
 ```
 Implementation Verification Complete!
 
@@ -73,7 +95,7 @@ Final verification report: [spec-path]/verifications/final-verification.md
 NEXT STEP 👉 Commit and push your changes to create a PR.
 ```
 
-**If verification found ISSUES:**
+If verification found ISSUES:
 ```
 Implementation Verification Complete - Issues Found
 
