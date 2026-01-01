@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 import LineItemEditor from "./components/LineItemEditor";
 import LineItemDisplay from "./components/LineItemDisplay";
 import {
@@ -76,11 +76,6 @@ function formatPeriod(start: string, end: string): string {
     return `${startMonth} ${startDay}\u2013${endDay}, ${year}`;
   }
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
-}
-
-function formatHours(hours: number): string {
-  const numHours = Number(hours) || 0;
-  return numHours % 1 === 0 ? numHours.toString() : numHours.toFixed(1);
 }
 
 export default function EditInvoice() {

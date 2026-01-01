@@ -208,11 +208,11 @@ class InvoiceBuilder
   end
 
   def format_hours(hours)
-    hours % 1 == 0 ? hours.to_i.to_s : format("%.1f", hours)
+    hours.to_i.to_s
   end
 
   def format_currency(amount)
-    format("%.2f", amount)
+    amount.to_i.to_s
   end
 
   def project_groups

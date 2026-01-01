@@ -1,7 +1,7 @@
 import React from "react";
 import { router, usePage } from "@inertiajs/react";
 import PublicLayout from "@/components/PublicLayout";
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 import { UnbilledSection } from "./components/UnbilledSection";
 import { InvoicedSection } from "./components/InvoicedSection";
 
@@ -78,13 +78,6 @@ const MONTHS = [
   "Nov",
   "Dec",
 ];
-
-function formatHours(hours: number | string): string {
-  // Convert to number if string (Rails may send as string)
-  const numHours = typeof hours === "string" ? parseFloat(hours) : hours;
-  // Remove trailing zeros: 8.0 -> 8, 8.5 -> 8.5
-  return numHours % 1 === 0 ? numHours.toFixed(0) : numHours.toFixed(1);
-}
 
 function ReportsShow() {
   const { client, period, unbilled, invoiced, settings } =

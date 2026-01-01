@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import { formatRate } from "@/components/CurrencyDisplay";
 
 interface Client {
   id: number;
@@ -34,18 +35,6 @@ interface PageProps {
     notice?: string;
   };
   [key: string]: unknown;
-}
-
-function formatRate(rate: number | null, currency: string | null): string {
-  if (!rate) return "-";
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${rate}/hr`;
 }
 
 export default function ProjectsIndex() {
@@ -169,7 +158,7 @@ export default function ProjectsIndex() {
                         <div className="text-right">
                           {project.unbilled_hours > 0 ? (
                             <span className="text-amber-600 font-medium tabular-nums">
-                              {project.unbilled_hours}h unbilled
+                              {Math.round(project.unbilled_hours)}h unbilled
                             </span>
                           ) : (
                             <span className="text-stone-400">

@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 import LineItemEditor from "./components/LineItemEditor";
 import LineItemDisplay from "./components/LineItemDisplay";
 
@@ -101,11 +101,6 @@ function formatPeriod(start: string, end: string): string {
     return `${startMonth} ${startDay}\u2013${endDay}, ${year}`;
   }
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
-}
-
-function formatHours(hours: number): string {
-  const numHours = Number(hours) || 0;
-  return numHours % 1 === 0 ? numHours.toString() : numHours.toFixed(1);
 }
 
 function StatusBadge({ status }: { status: "draft" | "final" }) {

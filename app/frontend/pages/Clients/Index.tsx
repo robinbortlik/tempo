@@ -156,7 +156,7 @@ export default function ClientsIndex() {
                       {client.unbilled_hours > 0 ? (
                         <>
                           <span className="tabular-nums font-medium text-amber-600">
-                            {client.unbilled_hours}h
+                            {Math.round(client.unbilled_hours)}h
                           </span>
                           <span className="text-stone-400 ml-1">
                             {" \u00B7 "}

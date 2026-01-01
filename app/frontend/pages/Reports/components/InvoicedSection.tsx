@@ -1,5 +1,5 @@
 import { ProjectGroup } from "./ProjectGroup";
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 
 interface Entry {
   id: number;
@@ -53,13 +53,6 @@ function formatDateRange(start: string, end: string): string {
     year: "numeric",
   });
   return `${startFormatted}\u2013${endFormatted}`;
-}
-
-function formatHours(hours: number | string): string {
-  // Convert to number if string (Rails may send as string)
-  const numHours = typeof hours === "string" ? parseFloat(hours) : hours;
-  // Remove trailing zeros: 8.0 -> 8, 8.5 -> 8.5
-  return numHours % 1 === 0 ? numHours.toFixed(0) : numHours.toFixed(1);
 }
 
 export function InvoicedSection({

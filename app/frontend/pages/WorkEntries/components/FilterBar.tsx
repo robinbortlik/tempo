@@ -77,19 +77,7 @@ export default function FilterBar({
   const hasFilters = startDate || endDate || clientId || projectId || entryType;
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-stone-900">Filters</h3>
-        {hasFilters && (
-          <button
-            type="button"
-            onClick={handleClearFilters}
-            className="text-sm text-stone-500 hover:text-stone-700"
-          >
-            Clear all
-          </button>
-        )}
-      </div>
+    <div className="bg-stone-100 px-6 py-4">
       <div className="flex flex-wrap gap-4 items-end">
         <div className="w-40">
           <label
@@ -193,6 +181,15 @@ export default function FilterBar({
         >
           Apply Filters
         </Button>
+        {hasFilters && (
+          <button
+            type="button"
+            onClick={handleClearFilters}
+            className="h-10 px-2 text-sm text-stone-500 hover:text-stone-700"
+          >
+            Clear
+          </button>
+        )}
       </div>
     </div>
   );

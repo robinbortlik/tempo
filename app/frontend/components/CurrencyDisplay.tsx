@@ -24,7 +24,8 @@ export function CurrencyDisplay({
   showDecimals = true,
 }: CurrencyDisplayProps) {
   const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  const formattedAmount = amount.toLocaleString(undefined, {
+  const numAmount = Math.round(Number(amount) * 100) / 100;
+  const formattedAmount = numAmount.toLocaleString("cs-CZ", {
     minimumFractionDigits: showDecimals ? 2 : 0,
     maximumFractionDigits: showDecimals ? 2 : 0,
   });
@@ -47,7 +48,9 @@ export function formatCurrency(
   showDecimals = true
 ): string {
   const symbol = getCurrencySymbol(currency);
-  const formattedAmount = amount.toLocaleString(undefined, {
+  // Ensure amount is a number and round to avoid floating point issues
+  const numAmount = Math.round(Number(amount) * 100) / 100;
+  const formattedAmount = numAmount.toLocaleString("cs-CZ", {
     minimumFractionDigits: showDecimals ? 2 : 0,
     maximumFractionDigits: showDecimals ? 2 : 0,
   });
@@ -68,13 +71,26 @@ export function isSymbolAfter(currency: string | null | undefined): boolean {
 
 // Utility function for formatting hourly rates (e.g., "$150/hr" or "150 Kč/hr")
 export function formatRate(
-  rate: number | null,
-  currency: string | null | undefined
+  rate: number | string | null,
+  currency: string | null | undefined,
+  showSuffix = true
 ): string {
   if (!rate) return "-";
+  const numRate = typeof rate === "string" ? parseFloat(rate) : rate;
+  if (isNaN(numRate)) return "-";
   const symbol = getCurrencySymbol(currency);
   const symbolAfter = currency && SYMBOL_AFTER_CURRENCIES.has(currency);
-  return symbolAfter ? `${rate} ${symbol}/hr` : `${symbol}${rate}/hr`;
+  const roundedRate = Math.round(numRate);
+  const suffix = showSuffix ? "/hr" : "";
+  return symbolAfter ? `${roundedRate} ${symbol}${suffix}` : `${symbol}${roundedRate}${suffix}`;
+}
+
+// Utility function for formatting hours (always whole numbers)
+export function formatHours(hours: number | string | null): string {
+  if (hours === null || hours === undefined) return "0";
+  const numHours = typeof hours === "string" ? parseFloat(hours) : hours;
+  if (isNaN(numHours)) return "0";
+  return Math.round(numHours).toString();
 }
 
 // Export the currency symbols map for external use

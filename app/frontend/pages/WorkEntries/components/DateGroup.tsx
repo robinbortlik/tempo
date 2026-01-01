@@ -59,10 +59,7 @@ function formatDateDisplay(dateStr: string): string {
 }
 
 function formatTotalHours(hours: number): string {
-  const numHours = Number(hours) || 0;
-  const formatted =
-    numHours % 1 === 0 ? Math.floor(numHours).toString() : numHours.toFixed(1);
-  return formatted;
+  return Math.round(Number(hours) || 0).toString();
 }
 
 export default function DateGroup({
@@ -76,39 +73,32 @@ export default function DateGroup({
   return (
     <div className="group/dategroup">
       {/* Date Header */}
-      <div className="flex items-center gap-4 mb-4">
-        <div className="flex items-center gap-3">
-          {/* Date pill */}
-          <div
+      <div className="flex items-center gap-3 px-4 py-2 bg-stone-50 border-b border-stone-100">
+        <div className="flex items-center gap-2">
+          <span
             className={`
-              px-4 py-2 rounded-full text-sm font-semibold tracking-wide
-              ${isToday ? "bg-stone-900 text-white" : isYesterday ? "bg-stone-200 text-stone-700" : "bg-stone-100 text-stone-600"}
+              px-2.5 py-1 rounded-md text-xs font-semibold
+              ${isToday ? "bg-stone-900 text-white" : isYesterday ? "bg-stone-300 text-stone-700" : "bg-stone-200 text-stone-600"}
             `}
           >
             {group.formatted_date}
-          </div>
-          <span className="text-sm text-stone-400 font-medium">
+          </span>
+          <span className="text-xs text-stone-400">
             {formatDateDisplay(group.date)}
           </span>
         </div>
 
-        {/* Separator line */}
-        <div className="flex-1 h-px bg-gradient-to-r from-stone-200 to-transparent" />
+        <div className="flex-1" />
 
-        {/* Hours and amount summary */}
-        <div className="flex items-baseline gap-3 pr-2">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold text-stone-900 tabular-nums tracking-tight">
-              {formatTotalHours(group.total_hours)}
-            </span>
-            <span className="text-sm font-medium text-stone-400">
-              {group.total_hours === 1 ? "hour" : "hours"}
-            </span>
-          </div>
+        {/* Day summary */}
+        <div className="flex items-center gap-2 text-xs tabular-nums">
+          <span className="font-semibold text-stone-700">
+            {formatTotalHours(group.total_hours)}h
+          </span>
           {group.total_amount > 0 && (
             <>
-              <span className="text-stone-300">·</span>
-              <span className="text-lg font-semibold text-stone-600 tabular-nums">
+              <span className="text-stone-300">=</span>
+              <span className="font-semibold text-stone-700">
                 {formatCurrency(group.total_amount, group.entries[0]?.client_currency, false)}
               </span>
             </>
@@ -116,29 +106,18 @@ export default function DateGroup({
         </div>
       </div>
 
-      {/* Entries container */}
-      <div className="relative">
-        {/* Subtle left border accent */}
-        <div
-          className={`
-            absolute left-0 top-3 bottom-3 w-1 rounded-full
-            ${isToday ? "bg-stone-900" : "bg-stone-200"}
-          `}
-        />
-
-        {/* Entries list */}
-        <div className="ml-4 space-y-2">
-          {group.entries.map((entry, index) => (
-            <WorkEntryRow
-              key={entry.id}
-              entry={entry}
-              projects={projects}
-              onDelete={onDeleteEntry}
-              isFirst={index === 0}
-              isLast={index === group.entries.length - 1}
-            />
-          ))}
-        </div>
+      {/* Entries list */}
+      <div className="divide-y divide-stone-100">
+        {group.entries.map((entry, index) => (
+          <WorkEntryRow
+            key={entry.id}
+            entry={entry}
+            projects={projects}
+            onDelete={onDeleteEntry}
+            isFirst={index === 0}
+            isLast={index === group.entries.length - 1}
+          />
+        ))}
       </div>
     </div>
   );

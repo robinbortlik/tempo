@@ -4,7 +4,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 
 interface Entry {
   id: number;
@@ -35,13 +35,6 @@ function formatDate(dateString: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function formatHours(hours: number | string): string {
-  // Convert to number if string (Rails may send as string)
-  const numHours = typeof hours === "string" ? parseFloat(hours) : hours;
-  // Remove trailing zeros: 8.0 -> 8, 8.5 -> 8.5
-  return numHours % 1 === 0 ? numHours.toFixed(0) : numHours.toFixed(1);
 }
 
 export function ProjectGroup({

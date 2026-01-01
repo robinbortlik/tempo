@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatRate } from "@/components/CurrencyDisplay";
 
 interface Project {
   id: number | null;
@@ -24,23 +25,6 @@ interface ProjectFormProps {
   clients: Client[];
   preselectedClientId?: number | null;
   isEdit?: boolean;
-}
-
-function formatRate(
-  rate: number | string | null,
-  currency: string | null
-): string {
-  if (!rate) return "";
-  const numRate = typeof rate === "string" ? parseFloat(rate) : rate;
-  if (isNaN(numRate)) return "";
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${numRate.toFixed(2)}`;
 }
 
 export default function ProjectForm({
@@ -132,7 +116,7 @@ export default function ProjectForm({
                 <option key={client.id} value={client.id}>
                   {client.name}
                   {client.hourly_rate &&
-                    ` (${formatRate(client.hourly_rate, client.currency)})`}
+                    ` (${formatRate(client.hourly_rate, client.currency, false)})`}
                 </option>
               ))}
             </select>
@@ -177,7 +161,7 @@ export default function ProjectForm({
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
               placeholder={
                 selectedClient?.hourly_rate
-                  ? `Client rate: ${formatRate(selectedClient.hourly_rate, selectedClient.currency)}`
+                  ? `Client rate: ${formatRate(selectedClient.hourly_rate, selectedClient.currency, false)}`
                   : "Enter rate"
               }
             />
@@ -188,7 +172,8 @@ export default function ProjectForm({
                     Custom rate will be used instead of client rate (
                     {formatRate(
                       selectedClient.hourly_rate,
-                      selectedClient.currency
+                      selectedClient.currency,
+                      false
                     )}
                     )
                   </>
@@ -197,7 +182,8 @@ export default function ProjectForm({
                     Leave empty to use the client&apos;s default rate (
                     {formatRate(
                       selectedClient.hourly_rate,
-                      selectedClient.currency
+                      selectedClient.currency,
+                      false
                     )}
                     )
                   </>

@@ -96,19 +96,19 @@ export default function DashboardIndex() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatCard
             title="This Week"
-            value={stats.hours_this_week.toFixed(1)}
+            value={Math.round(stats.hours_this_week).toString()}
             suffix="hrs"
           />
 
           <StatCard
             title="This Month"
-            value={stats.hours_this_month.toFixed(1)}
+            value={Math.round(stats.hours_this_month).toString()}
             suffix="hrs"
           />
 
           <StatCard
             title="Unbilled Hours"
-            value={stats.unbilled_hours.toFixed(1)}
+            value={Math.round(stats.unbilled_hours).toString()}
             suffix="hrs"
             indicator={
               stats.unbilled_hours > 0 ? (

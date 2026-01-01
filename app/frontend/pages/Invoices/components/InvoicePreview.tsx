@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 
 export interface LineItem {
   id?: number;
@@ -18,11 +18,6 @@ interface InvoicePreviewProps {
   totalHours: number;
   totalAmount: number;
   currency: string;
-}
-
-function formatHours(hours: number): string {
-  const numHours = Number(hours) || 0;
-  return numHours % 1 === 0 ? numHours.toString() : numHours.toFixed(1);
 }
 
 export default function InvoicePreview({
@@ -124,8 +119,8 @@ export default function InvoicePreview({
                             <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-600">
                               {formatHours(item.quantity || 0)}h
                             </td>
-                            <td className="px-4 py-3 text-right tabular-nums w-24 text-stone-500">
-                              {formatCurrency(item.unit_price || 0, currency)}/h
+                            <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-500 whitespace-nowrap">
+                              {formatCurrency(item.unit_price || 0, currency, false)}/h
                             </td>
                           </>
                         ) : (
@@ -133,12 +128,12 @@ export default function InvoicePreview({
                             <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-400">
                               -
                             </td>
-                            <td className="px-4 py-3 text-right tabular-nums w-24 text-stone-400">
+                            <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-400 whitespace-nowrap">
                               -
                             </td>
                           </>
                         )}
-                        <td className="px-4 py-3 text-right tabular-nums text-stone-900 font-medium w-28">
+                        <td className="px-4 py-3 text-right tabular-nums text-stone-900 font-medium w-32 whitespace-nowrap">
                           {formatCurrency(item.amount, currency)}
                         </td>
                       </tr>

@@ -207,13 +207,13 @@ export default function ProjectShow() {
           <div className="bg-white rounded-xl border border-stone-200 p-4">
             <p className="text-sm text-stone-500">Total Hours</p>
             <p className="text-2xl font-semibold text-stone-900 tabular-nums mt-1">
-              {stats.total_hours}
+              {Math.round(stats.total_hours)}
             </p>
           </div>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
             <p className="text-sm text-amber-700">Unbilled Hours</p>
             <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">
-              {stats.unbilled_hours}
+              {Math.round(stats.unbilled_hours)}
             </p>
           </div>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
@@ -270,7 +270,7 @@ export default function ProjectShow() {
                       )}
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right tabular-nums text-stone-900">
-                      {entry.hours}h
+                      {Math.round(entry.hours)}h
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right tabular-nums text-stone-900">
                       {formatCurrency(

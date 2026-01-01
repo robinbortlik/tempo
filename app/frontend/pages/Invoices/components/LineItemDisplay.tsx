@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/components/CurrencyDisplay";
+import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 
 interface LineItem {
   id?: number;
@@ -26,11 +26,6 @@ interface LineItemDisplayProps {
   onMoveDown: (id: number) => void;
 }
 
-function formatHours(hours: number): string {
-  const numHours = Number(hours) || 0;
-  return numHours % 1 === 0 ? numHours.toString() : numHours.toFixed(1);
-}
-
 export default function LineItemDisplay({
   lineItem,
   currency,
@@ -54,8 +49,8 @@ export default function LineItemDisplay({
           <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-600">
             {formatHours(lineItem.quantity || 0)}h
           </td>
-          <td className="px-4 py-3 text-right tabular-nums w-24 text-stone-500">
-            {formatCurrency(lineItem.unit_price || 0, currency)}/h
+          <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-500 whitespace-nowrap">
+            {formatCurrency(lineItem.unit_price || 0, currency, false)}/h
           </td>
         </>
       ) : (
@@ -63,7 +58,7 @@ export default function LineItemDisplay({
           <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-400">
             -
           </td>
-          <td className="px-4 py-3 text-right tabular-nums w-24 text-stone-400">
+          <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-400 whitespace-nowrap">
             -
           </td>
         </>
@@ -71,7 +66,7 @@ export default function LineItemDisplay({
       <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-500">
         {lineItem.vat_rate}%
       </td>
-      <td className="px-4 py-3 text-right tabular-nums text-stone-900 font-medium w-28">
+      <td className="px-4 py-3 text-right tabular-nums text-stone-900 font-medium w-32 whitespace-nowrap">
         {formatCurrency(lineItem.amount, currency)}
       </td>
       {isDraft && (

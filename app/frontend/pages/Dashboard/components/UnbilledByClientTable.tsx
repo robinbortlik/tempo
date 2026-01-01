@@ -91,7 +91,7 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                     </div>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right tabular-nums text-stone-900">
-                    {client.total_hours.toFixed(1)}
+                    {Math.round(client.total_hours)}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right tabular-nums font-medium text-stone-900">
                     {formatCurrency(client.total_amount, client.currency, false)}

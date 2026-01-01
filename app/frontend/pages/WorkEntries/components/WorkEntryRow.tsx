@@ -10,11 +10,10 @@ import {
 } from "@/components/ui/collapsible";
 import {
   formatCurrency,
+  formatHours,
   getCurrencySymbol,
   isSymbolAfter,
 } from "@/components/CurrencyDisplay";
-import StatusBadge from "./StatusBadge";
-import EntryTypeBadge from "./EntryTypeBadge";
 import ProjectSelector from "./ProjectSelector";
 
 interface Project {
@@ -57,14 +56,6 @@ interface WorkEntryRowProps {
   onDelete: (id: number) => void;
   isFirst?: boolean;
   isLast?: boolean;
-}
-
-function formatHours(hours: number | null): string {
-  if (hours === null) return "0";
-  const numHours = Number(hours) || 0;
-  return numHours % 1 === 0
-    ? `${Math.floor(numHours)}`
-    : `${numHours.toFixed(1)}`;
 }
 
 export default function WorkEntryRow({
@@ -330,153 +321,104 @@ export default function WorkEntryRow({
   return (
     <div
       className={`
-        group/row relative bg-white border border-stone-200/80
-        transition-all duration-200 ease-out
-        hover:border-stone-300 hover:shadow-sm hover:shadow-stone-200/50
-        ${isFirst ? "rounded-t-xl" : ""}
-        ${isLast ? "rounded-b-xl" : ""}
-        ${!isFirst ? "-mt-px" : ""}
-        ${isInvoiced ? "bg-stone-50/50" : ""}
+        group/row relative
+        transition-colors duration-150
+        hover:bg-stone-50
+        ${isInvoiced ? "bg-stone-50/50" : "bg-white"}
       `}
       data-testid={`work-entry-row-${entry.id}`}
     >
-      <div className="flex items-center px-5 py-4">
-        {/* Left section: Project info and description */}
-        <div className="flex-1 min-w-0">
-          {/* Client / Project hierarchy */}
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`
-                text-xs font-semibold uppercase tracking-wider
-                ${isInvoiced ? "text-stone-400" : "text-stone-500"}
-              `}
-            >
+      <div className="flex items-center px-4 py-2.5 gap-4">
+        {/* Left section: Project and description */}
+        <div className="flex-1 min-w-0 flex items-center gap-3">
+          {/* Project info */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className={`text-xs font-medium uppercase tracking-wide ${isInvoiced ? "text-stone-400" : "text-stone-500"}`}>
               {entry.client_name}
             </span>
-            <svg
-              className={`w-3 h-3 ${isInvoiced ? "text-stone-300" : "text-stone-400"}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <span
-              className={`
-                text-sm font-medium
-                ${isInvoiced ? "text-stone-500" : "text-stone-700"}
-              `}
-            >
+            <span className={`text-xs ${isInvoiced ? "text-stone-300" : "text-stone-400"}`}>/</span>
+            <span className={`text-sm font-medium ${isInvoiced ? "text-stone-500" : "text-stone-700"}`}>
               {entry.project_name}
             </span>
           </div>
 
           {/* Description */}
-          {entry.description ? (
-            <p
-              className={`
-                text-base leading-relaxed
-                ${isInvoiced ? "text-stone-500" : "text-stone-800"}
-              `}
-            >
-              {entry.description}
-            </p>
-          ) : (
-            <p className="text-sm text-stone-400 italic">No description</p>
+          {entry.description && (
+            <>
+              <span className="text-stone-300">—</span>
+              <span className={`text-sm truncate ${isInvoiced ? "text-stone-500" : "text-stone-600"}`}>
+                {entry.description}
+              </span>
+            </>
           )}
         </div>
 
-        {/* Right section: Entry Type, Status, Hours/Amount, Actions */}
-        <div className="flex items-center gap-4 ml-6">
-          {/* Entry type badge */}
-          <EntryTypeBadge entryType={entry.entry_type} />
-
-          {/* Status badge */}
-          <StatusBadge status={entry.status} />
-
-          {/* Hours or Amount display */}
-          <div
-            className={`
-              flex flex-col items-end min-w-[100px]
-              ${isInvoiced ? "opacity-60" : ""}
-            `}
-          >
+        {/* Right section: Hours, Rate, Total, Status, Actions */}
+        <div className="flex items-center gap-4 shrink-0">
+          {/* Calculation breakdown */}
+          <div className={`flex items-center gap-2 text-sm tabular-nums ${isInvoiced ? "text-stone-500" : "text-stone-700"}`}>
             {isTimeEntry ? (
               <>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold tabular-nums tracking-tight text-stone-900">
-                    {formatHours(entry.hours)}
-                  </span>
-                  <span className="text-sm font-medium text-stone-400">h</span>
-                </div>
-                <span className="text-sm text-stone-500 tabular-nums">
-                  {formatCurrency(
-                    entry.calculated_amount,
-                    entry.client_currency,
-                    false
-                  )}
+                <span className="font-semibold">{formatHours(entry.hours)}h</span>
+                <span className="text-stone-400">×</span>
+                <span>
+                  {formatCurrency(entry.hourly_rate || 0, entry.client_currency, false)}/h
+                </span>
+                <span className="text-stone-400">=</span>
+                <span className="font-semibold min-w-[80px] text-right">
+                  {formatCurrency(entry.calculated_amount, entry.client_currency, false)}
                 </span>
               </>
             ) : (
-              <span className="text-xl font-bold tabular-nums tracking-tight text-stone-900">
+              <span className="font-semibold">
                 {formatCurrency(entry.calculated_amount, entry.client_currency, false)}
               </span>
             )}
           </div>
 
+          {/* Status badge - compact */}
+          {isInvoiced ? (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Invoiced
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Unbilled
+            </span>
+          )}
+
           {/* Actions */}
           <div
             className={`
-              flex items-center gap-1 w-20 justify-end
-              transition-opacity duration-200
+              flex items-center gap-0.5
+              transition-opacity duration-150
               ${isInvoiced ? "opacity-0 pointer-events-none" : "opacity-0 group-hover/row:opacity-100"}
             `}
           >
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="p-2 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition-all duration-150"
+              className="p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded transition-colors"
               title="Edit entry"
               data-testid={`edit-entry-${entry.id}`}
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                />
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
               </svg>
             </button>
             <button
               type="button"
               onClick={() => onDelete(entry.id)}
-              className="p-2 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-150"
+              className="p-1.5 text-stone-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
               title="Delete entry"
               data-testid={`delete-entry-${entry.id}`}
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
               </svg>
             </button>
           </div>

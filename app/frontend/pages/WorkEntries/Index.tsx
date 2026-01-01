@@ -155,66 +155,70 @@ export default function WorkEntriesIndex() {
 
         <QuickEntryForm projects={projects} />
 
-        <FilterBar clients={clients} projects={projects} filters={filters} />
+        {/* Data Section: Filters + Summary + Entries */}
+        <div className="border border-stone-200 rounded-xl overflow-hidden">
+          <FilterBar clients={clients} projects={projects} filters={filters} />
 
-        {/* Summary Stats Bar */}
-        {totalEntries > 0 && (
-          <div className="bg-stone-50 rounded-xl border border-stone-200 p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-8">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-stone-500">
-                    Total Hours:
+          {/* Summary Stats Bar */}
+          {totalEntries > 0 && (
+            <div className="bg-stone-50 border-t border-stone-200 px-6 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-8">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-stone-500">
+                      Total Hours:
+                    </span>
+                    <span className="text-lg font-bold text-stone-900 tabular-nums">
+                      {Math.round(Number(summary.total_hours || 0))}h
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-stone-500">
+                      Total Amount:
+                    </span>
+                    <span className="text-lg font-bold text-stone-900 tabular-nums">
+                      {formatCurrency(Number(summary.total_amount || 0), summaryCurrency, false)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 text-sm text-stone-500">
+                  <span>
+                    {summary.time_entries_count || 0} time{" "}
+                    {(summary.time_entries_count || 0) === 1
+                      ? "entry"
+                      : "entries"}
                   </span>
-                  <span className="text-lg font-bold text-stone-900 tabular-nums">
-                    {Number(summary.total_hours || 0).toFixed(1)}h
+                  <span>
+                    {summary.fixed_entries_count || 0} fixed{" "}
+                    {(summary.fixed_entries_count || 0) === 1
+                      ? "entry"
+                      : "entries"}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-stone-500">
-                    Total Amount:
-                  </span>
-                  <span className="text-lg font-bold text-stone-900 tabular-nums">
-                    {formatCurrency(Number(summary.total_amount || 0), summaryCurrency, false)}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-6 text-sm text-stone-500">
-                <span>
-                  {summary.time_entries_count || 0} time{" "}
-                  {(summary.time_entries_count || 0) === 1
-                    ? "entry"
-                    : "entries"}
-                </span>
-                <span>
-                  {summary.fixed_entries_count || 0} fixed{" "}
-                  {(summary.fixed_entries_count || 0) === 1
-                    ? "entry"
-                    : "entries"}
-                </span>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {totalEntries === 0 ? (
-          <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
-            <p className="text-stone-500">
-              No work entries found. Add your first entry above.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {date_groups.map((group) => (
-              <DateGroup
-                key={group.date}
-                group={group}
-                projects={projects}
-                onDeleteEntry={handleDeleteEntry}
-              />
-            ))}
-          </div>
-        )}
+          {/* Entries List */}
+          {totalEntries === 0 ? (
+            <div className="bg-white border-t border-stone-200 p-8 text-center">
+              <p className="text-stone-500">
+                No work entries found. Add your first entry above.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white border-t border-stone-200 divide-y divide-stone-200">
+              {date_groups.map((group) => (
+                <DateGroup
+                  key={group.date}
+                  group={group}
+                  projects={projects}
+                  onDeleteEntry={handleDeleteEntry}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <AlertDialog

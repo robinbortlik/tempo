@@ -229,11 +229,12 @@
     }
 
     .line-items .rate-col {
-      width: 80px;
+      width: 100px;
       text-align: right;
       color: #78716c;
       font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     .line-items .vat-col {
@@ -245,11 +246,12 @@
     }
 
     .line-items .amount-col {
-      width: 90px;
+      width: 110px;
       text-align: right;
       font-weight: 500;
       font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     /* Totals section */
@@ -278,6 +280,7 @@
       font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
       font-variant-numeric: tabular-nums;
       color: #1c1917;
+      white-space: nowrap;
     }
 
     .totals-row.total {
@@ -454,14 +457,14 @@
             <td class="description-col"><%= item.description %></td>
             <td class="hours-col">
               <% if item.time_aggregate? && item.quantity.present? %>
-                <%= number_with_precision(item.quantity, precision: 2) %>
+                <%= format_hours(item.quantity) %>h
               <% else %>
                 -
               <% end %>
             </td>
             <td class="rate-col">
               <% if item.time_aggregate? && item.unit_price.present? %>
-                <%= format_currency(item.unit_price, @invoice.currency) %>
+                <%= format_rate(item.unit_price, @invoice.currency) %>
               <% else %>
                 -
               <% end %>
@@ -477,7 +480,7 @@
     <div class="totals-section">
       <dl class="totals-table">
         <div class="totals-row">
-          <dt>Subtotal<% if @invoice.total_hours.to_f > 0 %> (<%= number_with_precision(@invoice.total_hours, precision: 2) %> hrs)<% end %></dt>
+          <dt>Subtotal<% if @invoice.total_hours.to_f > 0 %> (<%= format_hours(@invoice.total_hours) %> hrs)<% end %></dt>
           <dd><%= format_currency(@invoice.subtotal, @invoice.currency) %></dd>
         </div>
         <% vat_totals = @invoice.vat_totals_by_rate %>

@@ -166,8 +166,7 @@ describe("WorkEntryRow", () => {
       />
     );
 
-    expect(screen.getByText("8")).toBeInTheDocument();
-    expect(screen.getByText("h")).toBeInTheDocument();
+    expect(screen.getByText("8h")).toBeInTheDocument();
   });
 
   it("displays amount for fixed entries", () => {
@@ -182,20 +181,9 @@ describe("WorkEntryRow", () => {
     expect(screen.getByText("$500")).toBeInTheDocument();
   });
 
-  it("displays type badge", () => {
-    render(
-      <WorkEntryRow
-        entry={mockTimeEntry}
-        projects={mockProjects}
-        onDelete={vi.fn()}
-      />
-    );
-
-    expect(screen.getByText("Time")).toBeInTheDocument();
-  });
-
   it("handles string hours values from backend (decimal serialization)", () => {
     // Rails returns decimal values as strings, test that Number() conversion works
+    // Hours are now rounded to whole numbers
     const entryWithStringHours = {
       ...mockTimeEntry,
       hours: "8.5" as unknown as number, // Simulating Rails returning string
@@ -209,7 +197,7 @@ describe("WorkEntryRow", () => {
       />
     );
 
-    expect(screen.getByText("8.5")).toBeInTheDocument();
+    expect(screen.getByText("9h")).toBeInTheDocument();
   });
 
   it("handles string amount values from backend (decimal serialization)", () => {

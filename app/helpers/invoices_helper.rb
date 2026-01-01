@@ -5,15 +5,44 @@ module InvoicesHelper
     "EUR" => "\u20AC",
     "USD" => "$",
     "GBP" => "\u00A3",
-    "CZK" => "K\u010D"
+    "CZK" => "Kč"
   }.freeze
 
-  def format_currency(amount, currency)
-    return "0.00" if amount.nil?
+  SYMBOL_AFTER_CURRENCIES = %w[CZK].freeze
+
+  def format_currency(amount, currency, show_decimals: true)
+    return "0" if amount.nil?
 
     symbol = CURRENCY_SYMBOLS[currency] || currency || ""
-    formatted_amount = number_with_precision(amount, precision: 2, delimiter: ",")
-    "#{symbol}#{formatted_amount}"
+    precision = show_decimals ? 2 : 0
+    formatted_amount = number_with_delimiter(number_with_precision(amount, precision: precision), delimiter: " ")
+    symbol_after = SYMBOL_AFTER_CURRENCIES.include?(currency)
+
+    if symbol_after
+      "#{formatted_amount} #{symbol}"
+    else
+      "#{symbol}#{formatted_amount}"
+    end
+  end
+
+  def format_rate(rate, currency)
+    return "-" if rate.nil? || rate.zero?
+
+    symbol = CURRENCY_SYMBOLS[currency] || currency || ""
+    rounded_rate = rate.to_i
+    symbol_after = SYMBOL_AFTER_CURRENCIES.include?(currency)
+
+    if symbol_after
+      "#{rounded_rate} #{symbol}/h"
+    else
+      "#{symbol}#{rounded_rate}/h"
+    end
+  end
+
+  def format_hours(hours)
+    return "0" if hours.nil?
+
+    hours.to_i.to_s
   end
 
   def format_period(period_start, period_end)

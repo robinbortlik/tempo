@@ -78,7 +78,7 @@ export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
             />
             <Tooltip
               formatter={(value) => [
-                `${Number(value).toFixed(1)} hrs`,
+                `${Math.round(Number(value))} hrs`,
                 "Hours",
               ]}
               labelFormatter={(label, payload) => {

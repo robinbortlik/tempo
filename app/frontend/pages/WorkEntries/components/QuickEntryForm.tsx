@@ -153,7 +153,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   const isValid = date && projectId && (hasHours || hasAmount);
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
+    <div className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-emerald-500 p-6 mb-6">
       <h3 className="font-semibold text-stone-900 mb-4">Quick Entry</h3>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="flex items-end gap-4">
