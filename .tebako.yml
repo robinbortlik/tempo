@@ -1,7 +1,0 @@
-# Tebako packaging configuration
-# See: https://github.com/tamatebako/tebako
-
-options:
-  Ruby: "3.3.5"
-  prefix: /tmp/tebako-invoicing
-  log-level: warn
