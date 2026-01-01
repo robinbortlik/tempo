@@ -38,6 +38,13 @@ class DashboardStatsService
       total_hours = entries.select(&:time?).sum { |e| e.hours || 0 }
       total_amount = entries.sum { |e| e.calculated_amount || 0 }
 
+      # Get unique effective hourly rates from projects with unbilled time entries
+      project_rates = projects_with_unbilled
+        .map(&:effective_hourly_rate)
+        .compact
+        .uniq
+        .sort
+
       {
         id: client.id,
         name: client.name,
@@ -45,7 +52,7 @@ class DashboardStatsService
         project_count: projects_with_unbilled.count,
         total_hours: total_hours.to_f,
         total_amount: total_amount.to_f,
-        average_rate: total_hours > 0 ? (total_amount / total_hours).round(2) : 0
+        project_rates: project_rates
       }
     end.sort_by { |c| -c[:total_amount] }
   end

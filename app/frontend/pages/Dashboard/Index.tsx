@@ -18,7 +18,7 @@ interface UnbilledClient {
   project_count: number;
   total_hours: number;
   total_amount: number;
-  average_rate: number;
+  project_rates: number[];
 }
 
 interface ClientHours {

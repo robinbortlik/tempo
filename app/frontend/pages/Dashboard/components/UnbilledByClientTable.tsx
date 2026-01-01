@@ -18,11 +18,22 @@ interface UnbilledClient {
   project_count: number;
   total_hours: number;
   total_amount: number;
-  average_rate: number;
+  project_rates: number[];
 }
 
 interface UnbilledByClientTableProps {
   data: UnbilledClient[];
+}
+
+function formatRates(rates: number[], currency: string): string {
+  if (rates.length === 0) return "—";
+  if (rates.length === 1) {
+    return `${formatCurrency(rates[0], currency, false)}/hr`;
+  }
+  // Multiple rates: show range
+  const min = rates[0];
+  const max = rates[rates.length - 1];
+  return `${formatCurrency(min, currency, false)}–${formatCurrency(max, currency, false)}/hr`;
 }
 
 export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
@@ -96,8 +107,8 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                   <TableCell className="px-6 py-4 text-right tabular-nums font-medium text-stone-900">
                     {formatCurrency(client.total_amount, client.currency, false)}
                   </TableCell>
-                  <TableCell className="px-6 py-4 text-right text-sm text-stone-500">
-                    {formatCurrency(client.average_rate, client.currency, false)}/hr
+                  <TableCell className="px-6 py-4 text-right text-sm text-stone-500 whitespace-nowrap">
+                    {formatRates(client.project_rates, client.currency)}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right">
                     <Button

@@ -146,7 +146,7 @@ RSpec.describe DashboardStatsService do
       expect(result.last[:name]).to eq("Small Client")
     end
 
-    it "calculates average rate correctly" do
+    it "returns project rates correctly" do
       client = create(:client, currency: "EUR", hourly_rate: 100)
       project1 = create(:project, client: client, hourly_rate: 100)
       project2 = create(:project, client: client, hourly_rate: 150)
@@ -156,8 +156,8 @@ RSpec.describe DashboardStatsService do
 
       result = service.unbilled_by_client.first
 
-      # Average rate = 2500 / 20 = 125
-      expect(result[:average_rate]).to eq(125.0)
+      # Returns sorted unique rates from projects with unbilled entries
+      expect(result[:project_rates]).to eq([100, 150])
     end
 
     it "counts distinct projects with unbilled entries" do
