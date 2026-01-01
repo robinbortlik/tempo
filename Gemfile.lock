@@ -143,6 +143,8 @@ GEM
       nokogiri (~> 1)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
+    ibandit (1.27.0)
+      i18n
     image_processing (1.14.0)
       mini_magick (>= 4.9.5, < 6)
       ruby-vips (>= 2.0.17, < 3)
@@ -436,6 +438,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   grover
+  ibandit
   image_processing (~> 1.2)
   inertia_rails
   jbuilder

@@ -41,6 +41,9 @@ gem "image_processing", "~> 1.2"
 # PDF generation using Puppeteer [https://github.com/Studiosity/grover]
 gem "grover"
 
+# IBAN validation [https://github.com/gocardless/ibandit]
+gem "ibandit"
+
 group :development, :test do
   # Load environment variables from .env files
   gem "dotenv-rails"

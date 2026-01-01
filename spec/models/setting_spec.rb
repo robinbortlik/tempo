@@ -23,6 +23,42 @@ RSpec.describe Setting, type: :model do
         expect(setting.errors[:email]).to include("must be a valid email address")
       end
     end
+
+    describe "iban" do
+      it "allows blank IBAN" do
+        setting = build(:setting, iban: nil)
+        expect(setting).to be_valid
+      end
+
+      it "allows valid IBAN format" do
+        setting = build(:setting, iban: "DE89370400440532013000")
+        expect(setting).to be_valid
+      end
+
+      it "rejects invalid IBAN format" do
+        setting = build(:setting, iban: "INVALID123")
+        expect(setting).not_to be_valid
+        expect(setting.errors[:iban]).to include("is not a valid IBAN")
+      end
+    end
+
+    describe "invoice_message" do
+      it "allows blank invoice_message" do
+        setting = build(:setting, invoice_message: nil)
+        expect(setting).to be_valid
+      end
+
+      it "allows invoice_message at 500 characters" do
+        setting = build(:setting, invoice_message: "a" * 500)
+        expect(setting).to be_valid
+      end
+
+      it "rejects invoice_message exceeding 500 characters" do
+        setting = build(:setting, invoice_message: "a" * 501)
+        expect(setting).not_to be_valid
+        expect(setting.errors[:invoice_message]).to include("is too long (maximum is 500 characters)")
+      end
+    end
   end
 
   describe ".instance (singleton pattern)" do
