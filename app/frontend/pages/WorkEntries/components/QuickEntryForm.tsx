@@ -2,6 +2,11 @@ import { router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import ProjectSelector from "./ProjectSelector";
 
 interface Project {
@@ -32,7 +37,26 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   const [hours, setHours] = useState("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [showRateOverride, setShowRateOverride] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get the selected project's effective hourly rate
+  const getSelectedProjectRate = (): number | null => {
+    if (!projectId) return null;
+    const pid = parseInt(projectId);
+    for (const group of projects) {
+      const project = group.projects.find((p) => p.id === pid);
+      if (project) return project.effective_hourly_rate;
+    }
+    return null;
+  };
+
+  const selectedProjectRate = getSelectedProjectRate();
+  const hasCustomRate = hourlyRate !== "";
+  const displayRate = hasCustomRate
+    ? parseFloat(hourlyRate)
+    : selectedProjectRate;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -47,6 +71,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
           description,
           hours: hours ? parseFloat(hours) : null,
           amount: amount ? parseFloat(amount) : null,
+          hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
         },
       },
       {
@@ -57,6 +82,8 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
           setHours("");
           setAmount("");
           setDescription("");
+          setHourlyRate("");
+          setShowRateOverride(false);
         },
         onFinish: () => {
           setIsSubmitting(false);
@@ -73,103 +100,157 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
       <h3 className="font-semibold text-stone-900 mb-4">Quick Entry</h3>
-      <form onSubmit={handleSubmit} className="flex items-end gap-4">
-        <div className="w-40">
-          <label
-            htmlFor="Date"
-            className="block text-sm font-medium text-stone-600 mb-1.5"
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="flex items-end gap-4">
+          <div className="w-40">
+            <label
+              htmlFor="Date"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              Date
+            </label>
+            <input
+              id="Date"
+              name="Date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+              className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
+            />
+          </div>
+          <div className="w-64">
+            <label
+              htmlFor="Project"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              Project
+            </label>
+            <ProjectSelector
+              id="Project"
+              projects={projects}
+              value={projectId}
+              onChange={setProjectId}
+              required
+              className="w-full h-10"
+            />
+          </div>
+          <div className="w-24">
+            <label
+              htmlFor="Hours"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              Hours
+            </label>
+            <Input
+              id="Hours"
+              name="Hours"
+              type="number"
+              step="0.25"
+              min="0"
+              max="24"
+              value={hours}
+              onChange={(e) => setHours(e.target.value)}
+              className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
+              placeholder="8"
+            />
+          </div>
+          <div className="w-28">
+            <label
+              htmlFor="Amount"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              Amount
+            </label>
+            <Input
+              id="Amount"
+              name="Amount"
+              type="number"
+              step="0.01"
+              min="0"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
+              placeholder="$500"
+            />
+          </div>
+          <div className="flex-1">
+            <label
+              htmlFor="Description"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              Description
+            </label>
+            <Input
+              id="Description"
+              name="Description"
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="h-10 bg-stone-50 border-stone-200 rounded-lg"
+              placeholder="What did you work on?"
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={!isValid || isSubmitting}
+            className="h-10 px-6 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
           >
-            Date
-          </label>
-          <input
-            id="Date"
-            name="Date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-            className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
-          />
+            {isSubmitting ? "Adding..." : "Add Entry"}
+          </Button>
         </div>
-        <div className="w-64">
-          <label
-            htmlFor="Project"
-            className="block text-sm font-medium text-stone-600 mb-1.5"
+
+        {hasHours && projectId && (
+          <Collapsible
+            open={showRateOverride}
+            onOpenChange={setShowRateOverride}
           >
-            Project
-          </label>
-          <ProjectSelector
-            id="Project"
-            projects={projects}
-            value={projectId}
-            onChange={setProjectId}
-            required
-            className="w-full h-10"
-          />
-        </div>
-        <div className="w-24">
-          <label
-            htmlFor="Hours"
-            className="block text-sm font-medium text-stone-600 mb-1.5"
-          >
-            Hours
-          </label>
-          <Input
-            id="Hours"
-            name="Hours"
-            type="number"
-            step="0.25"
-            min="0"
-            max="24"
-            value={hours}
-            onChange={(e) => setHours(e.target.value)}
-            className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
-            placeholder="8"
-          />
-        </div>
-        <div className="w-28">
-          <label
-            htmlFor="Amount"
-            className="block text-sm font-medium text-stone-600 mb-1.5"
-          >
-            Amount
-          </label>
-          <Input
-            id="Amount"
-            name="Amount"
-            type="number"
-            step="0.01"
-            min="0"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
-            placeholder="$500"
-          />
-        </div>
-        <div className="flex-1">
-          <label
-            htmlFor="Description"
-            className="block text-sm font-medium text-stone-600 mb-1.5"
-          >
-            Description
-          </label>
-          <Input
-            id="Description"
-            name="Description"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="h-10 bg-stone-50 border-stone-200 rounded-lg"
-            placeholder="What did you work on?"
-          />
-        </div>
-        <Button
-          type="submit"
-          disabled={!isValid || isSubmitting}
-          className="h-10 px-6 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
-        >
-          {isSubmitting ? "Adding..." : "Add Entry"}
-        </Button>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-stone-600 hover:text-stone-900 transition-colors cursor-pointer">
+              <svg
+                className={`w-4 h-4 transition-transform ${showRateOverride ? "rotate-90" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+              <span>
+                Rate: ${displayRate}/h{" "}
+                {hasCustomRate ? "(custom)" : "(from project)"}
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-3">
+              <div className="flex items-end gap-3">
+                <div>
+                  <label
+                    htmlFor="hourly_rate"
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
+                    Hourly Rate Override
+                  </label>
+                  <Input
+                    id="hourly_rate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={hourlyRate}
+                    onChange={(e) => setHourlyRate(e.target.value)}
+                    className="w-32 h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
+                    placeholder={selectedProjectRate?.toString() || ""}
+                  />
+                </div>
+                <p className="text-xs text-stone-500 pb-2">
+                  Clear to use project rate
+                </p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
       </form>
     </div>
   );
