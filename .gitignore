@@ -43,3 +43,4 @@ node_modules
 agent-os/specs
 .playwright-mcp/
 .DS_Store
+.worktrees/

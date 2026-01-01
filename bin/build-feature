@@ -47,29 +47,51 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-PARENT_DIR="$(dirname "$PROJECT_DIR")"
-WORKTREE_PATH="$PARENT_DIR/invoicing-$NORMALIZED_NAME"
+WORKTREES_DIR="$PROJECT_DIR/.worktrees"
+WORKTREE_PATH="$WORKTREES_DIR/$NORMALIZED_NAME"
+BRANCH_NAME="feature/$NORMALIZED_NAME"
 
 echo "Building feature: $NORMALIZED_NAME"
 echo "Description: $FEATURE_PROMPT"
 echo ""
+
+# Ensure .worktrees directory exists
+mkdir -p "$WORKTREES_DIR"
 
 # Create worktree if it doesn't exist
 if [ -d "$WORKTREE_PATH" ]; then
   echo "Worktree already exists at $WORKTREE_PATH"
   echo "Switching to existing worktree..."
 else
-  echo "Creating new worktree..."
-  "$SCRIPT_DIR/worktree-setup" "$NORMALIZED_NAME" "feature/$NORMALIZED_NAME"
+  echo "Creating new worktree at $WORKTREE_PATH..."
+
+  # Check if branch exists
+  if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1; then
+    echo "Branch $BRANCH_NAME already exists, using it..."
+    git worktree add "$WORKTREE_PATH" "$BRANCH_NAME"
+  else
+    echo "Creating new branch $BRANCH_NAME..."
+    git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH"
+  fi
 fi
 
 # Change to worktree directory
 cd "$WORKTREE_PATH"
 
 echo ""
+echo "Setting up environment..."
+
+# Trust mise configuration
+echo "Running mise trust..."
+mise trust
+
+# Install dependencies
+echo "Installing yarn dependencies..."
+yarn install
+
+echo ""
 echo "Starting Claude Code with /build command..."
 echo ""
 
 # Start Claude Code with /build command and the feature prompt
-# Uses same parameters as cyolo alias
-exec env ENABLE_TOOL_SEARCH=true claude --dangerously-skip-permissions --prompt "/build $FEATURE_PROMPT"
+exec env ENABLE_TOOL_SEARCH=true claude --dangerously-skip-permissions "Execute /build command with following prompt: $FEATURE_PROMPT"
