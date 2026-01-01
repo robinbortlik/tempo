@@ -30,6 +30,8 @@ class SettingsController < ApplicationController
       :bank_name,
       :bank_account,
       :bank_swift,
+      :iban,
+      :invoice_message,
       :logo
     )
   end
@@ -46,6 +48,8 @@ class SettingsController < ApplicationController
       bank_name: settings.bank_name,
       bank_account: settings.bank_account,
       bank_swift: settings.bank_swift,
+      iban: settings.iban,
+      invoice_message: settings.invoice_message,
       logo_url: settings.logo? ? url_for(settings.logo) : nil
     }
   end

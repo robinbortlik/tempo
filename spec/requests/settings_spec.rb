@@ -66,6 +66,19 @@ RSpec.describe SettingsController, type: :request do
         json_response = JSON.parse(response.body)
         expect(json_response['props']['settings']['logo_url']).to be_nil
       end
+
+      it "includes iban and invoice_message in settings_json" do
+        create(:setting, iban: "DE89370400440532013000", invoice_message: "Thank you!")
+
+        get settings_path, headers: {
+          'X-Inertia' => 'true',
+          'X-Inertia-Version' => ViteRuby.digest
+        }
+
+        json_response = JSON.parse(response.body)
+        expect(json_response['props']['settings']['iban']).to eq("DE89370400440532013000")
+        expect(json_response['props']['settings']['invoice_message']).to eq("Thank you!")
+      end
     end
 
     context "when not authenticated" do
@@ -144,6 +157,44 @@ RSpec.describe SettingsController, type: :request do
           expect(response).to redirect_to(settings_path)
           follow_redirect!
           expect(flash[:alert]).to include("Email")
+        end
+
+        it "redirects with an error message for invalid IBAN" do
+          create(:setting)
+
+          patch settings_path, params: {
+            setting: { iban: "INVALID123" }
+          }
+
+          expect(response).to redirect_to(settings_path)
+          follow_redirect!
+          expect(flash[:alert]).to include("Iban")
+        end
+      end
+
+      context "with IBAN field" do
+        it "updates settings with valid IBAN" do
+          setting = create(:setting)
+
+          patch settings_path, params: {
+            setting: { iban: "DE89370400440532013000" }
+          }
+
+          expect(setting.reload.iban).to eq("DE89370400440532013000")
+          expect(response).to redirect_to(settings_path)
+        end
+      end
+
+      context "with invoice_message field" do
+        it "updates settings with invoice_message" do
+          setting = create(:setting)
+
+          patch settings_path, params: {
+            setting: { invoice_message: "Thank you for your business!" }
+          }
+
+          expect(setting.reload.invoice_message).to eq("Thank you for your business!")
+          expect(response).to redirect_to(settings_path)
         end
       end
 
