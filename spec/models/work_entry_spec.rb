@@ -113,4 +113,55 @@ RSpec.describe WorkEntry, type: :model do
       expect(association.options[:through]).to eq(:invoice_line_item_work_entries)
     end
   end
+
+  describe "hourly_rate auto-population" do
+    let(:client) { create(:client, hourly_rate: 100) }
+    let(:project) { create(:project, client: client, hourly_rate: 120) }
+
+    it "auto-populates hourly_rate from project.effective_hourly_rate on create" do
+      entry = create(:work_entry, project: project, hours: 8, amount: nil)
+      expect(entry.hourly_rate).to eq(120)
+    end
+
+    it "preserves user-provided hourly_rate and does not overwrite" do
+      entry = create(:work_entry, project: project, hours: 8, amount: nil, hourly_rate: 150)
+      expect(entry.hourly_rate).to eq(150)
+    end
+
+    it "only populates hourly_rate for time-based entries, not fixed" do
+      entry = create(:work_entry, :fixed_entry, project: project)
+      expect(entry.hourly_rate).to be_nil
+    end
+  end
+
+  describe "#calculated_amount with stored hourly_rate" do
+    let(:client) { create(:client, hourly_rate: 100) }
+    let(:project) { create(:project, client: client, hourly_rate: 120) }
+
+    it "uses stored hourly_rate when present" do
+      entry = create(:work_entry, project: project, hours: 8, amount: nil, hourly_rate: 200)
+      expect(entry.calculated_amount).to eq(1600) # 8 * 200
+    end
+
+    it "falls back to project rate when hourly_rate is null" do
+      entry = build(:work_entry, project: project, hours: 8, amount: nil)
+      entry.hourly_rate = nil
+      entry.save!(validate: false) # Skip callback to force null hourly_rate
+      entry.reload
+      expect(entry.hourly_rate).to be_nil
+      expect(entry.calculated_amount).to eq(960) # 8 * 120 (project rate)
+    end
+  end
+
+  describe "hourly_rate validation on invoiced entries" do
+    let(:project) { create(:project) }
+
+    it "prevents hourly_rate change on invoiced entries" do
+      entry = create(:work_entry, project: project, hours: 8, hourly_rate: 100)
+      entry.update!(status: :invoiced)
+      entry.hourly_rate = 150
+      expect(entry).not_to be_valid
+      expect(entry.errors[:hourly_rate]).to include("cannot be changed on invoiced entries")
+    end
+  end
 end
