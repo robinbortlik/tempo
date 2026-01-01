@@ -6,6 +6,8 @@ interface Entry {
   hours: number;
   description: string | null;
   calculated_amount: number;
+  entry_type: "time" | "fixed";
+  amount: number | null;
 }
 
 interface Project {

@@ -12,6 +12,8 @@ interface Entry {
   hours: number;
   description: string | null;
   calculated_amount: number;
+  entry_type: "time" | "fixed";
+  amount: number | null;
 }
 
 interface Project {
@@ -70,14 +72,22 @@ export function ProjectGroup({
           </svg>
           <span className="font-medium text-stone-700">{project.name}</span>
         </div>
-        <span className="text-sm text-stone-500">
-          {formatHours(totalHours)}h &middot;{" "}
+        <span className="text-sm text-stone-500 whitespace-nowrap">
           {formatCurrency(totalAmount, currency)}
         </span>
       </CollapsibleTrigger>
       <CollapsibleContent className="print:!block print:!h-auto print:!overflow-visible">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-stone-400 border-b border-stone-100">
+                <th className="px-4 pt-4 pb-2 font-medium">Date</th>
+                <th className="px-4 pt-4 pb-2 font-medium">Description</th>
+                <th className="px-4 pt-4 pb-2 font-medium text-right">Hours</th>
+                <th className="px-4 pt-4 pb-2 font-medium text-right">Rate</th>
+                <th className="px-4 pt-4 pb-2 font-medium text-right">Amount</th>
+              </tr>
+            </thead>
             <tbody>
               {entries.map((entry, index) => (
                 <tr
@@ -94,10 +104,21 @@ export function ProjectGroup({
                   <td className="px-4 py-3 text-stone-700">
                     {entry.description || "-"}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-stone-900 w-20">
-                    {formatHours(entry.hours)}h
+                  <td className="px-4 py-3 text-right tabular-nums text-stone-900 w-16 whitespace-nowrap">
+                    {entry.entry_type === "time" ? (
+                      <>{formatHours(entry.hours)}h</>
+                    ) : (
+                      <span className="text-stone-400">&mdash;</span>
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-stone-600 w-24">
+                  <td className="px-4 py-3 text-right tabular-nums text-stone-500 whitespace-nowrap">
+                    {entry.entry_type === "time" && project.effective_hourly_rate > 0 ? (
+                      <>{formatCurrency(project.effective_hourly_rate, currency)}</>
+                    ) : (
+                      <span className="text-stone-300">&mdash;</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums text-stone-600 whitespace-nowrap">
                     {formatCurrency(entry.calculated_amount, currency)}
                   </td>
                 </tr>

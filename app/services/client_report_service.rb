@@ -93,6 +93,7 @@ class ClientReportService
       .where(status: :final)
       .where("(period_start <= ? AND period_end >= ?) OR (period_start >= ? AND period_start <= ?)",
              period_end, period_start, period_start, period_end)
+      .includes(line_items: { work_entries: :project })
       .order(issue_date: :desc)
       .map do |invoice|
         {
@@ -102,9 +103,37 @@ class ClientReportService
           period_start: invoice.period_start,
           period_end: invoice.period_end,
           total_hours: invoice.total_hours,
-          total_amount: invoice.total_amount
+          total_amount: invoice.total_amount,
+          subtotal: invoice.subtotal,
+          total_vat: invoice.total_vat,
+          line_items: invoice.line_items.map { |item| line_item_data(item) }
         }
       end
+  end
+
+  def line_item_data(item)
+    {
+      id: item.id,
+      line_type: item.line_type,
+      description: item.description,
+      quantity: item.quantity,
+      unit_price: item.unit_price,
+      amount: item.amount,
+      vat_rate: item.vat_rate,
+      work_entries: item.work_entries.order(date: :desc).map { |entry| line_item_entry_data(entry) }
+    }
+  end
+
+  def line_item_entry_data(entry)
+    {
+      id: entry.id,
+      date: entry.date,
+      hours: entry.hours,
+      description: entry.description,
+      calculated_amount: entry.calculated_amount,
+      entry_type: entry.entry_type,
+      project_name: entry.project.name
+    }
   end
 
   def client_data

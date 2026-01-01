@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Public client report portal (no authentication required)
   get "reports/:share_token", to: "reports#show", as: :report
+  get "reports/:share_token/invoices/:invoice_id/pdf", to: "reports#invoice_pdf", as: :report_invoice_pdf
 
   resource :session
   resource :settings, only: [:show, :update]

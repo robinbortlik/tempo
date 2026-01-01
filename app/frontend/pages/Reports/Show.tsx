@@ -11,6 +11,29 @@ interface Entry {
   hours: number;
   description: string | null;
   calculated_amount: number;
+  entry_type: "time" | "fixed";
+  amount: number | null;
+}
+
+interface WorkEntry {
+  id: number;
+  date: string;
+  hours: number;
+  description: string | null;
+  calculated_amount: number;
+  entry_type: "time" | "fixed";
+  project_name: string;
+}
+
+interface LineItem {
+  id: number;
+  line_type: "time_aggregate" | "fixed";
+  description: string;
+  quantity: number | null;
+  unit_price: number | null;
+  amount: number;
+  vat_rate: number;
+  work_entries: WorkEntry[];
 }
 
 interface Project {
@@ -34,6 +57,9 @@ interface Invoice {
   period_end: string;
   total_hours: number;
   total_amount: number;
+  line_items: LineItem[];
+  subtotal: number;
+  total_vat: number;
 }
 
 interface PageProps {
@@ -213,7 +239,7 @@ function ReportsShow() {
             <p className="text-sm text-amber-700 font-medium">
               Unbilled Amount
             </p>
-            <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">
+            <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1 whitespace-nowrap">
               {formatCurrency(unbilled.total_amount, client.currency)}
             </p>
           </div>
@@ -221,7 +247,7 @@ function ReportsShow() {
             <p className="text-sm text-emerald-700 font-medium">
               Invoiced ({periodLabel})
             </p>
-            <p className="text-2xl font-semibold text-emerald-900 tabular-nums mt-1">
+            <p className="text-2xl font-semibold text-emerald-900 tabular-nums mt-1 whitespace-nowrap">
               {formatCurrency(invoiced.total_amount, client.currency)}
             </p>
           </div>
@@ -237,16 +263,13 @@ function ReportsShow() {
 
         {/* Invoiced Section */}
         <InvoicedSection
-          projectGroups={invoiced.project_groups}
           invoices={invoiced.invoices}
-          totalHours={invoiced.total_hours}
-          totalAmount={invoiced.total_amount}
           currency={client.currency}
+          shareToken={shareToken}
         />
 
         {/* Empty State */}
         {unbilled.project_groups.length === 0 &&
-          invoiced.project_groups.length === 0 &&
           invoiced.invoices.length === 0 && (
             <div className="text-center py-12">
               <p className="text-stone-500">
