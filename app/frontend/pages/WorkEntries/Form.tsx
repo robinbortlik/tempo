@@ -74,8 +74,10 @@ export default function WorkEntryForm({
       description: formData.description,
       hours: formData.hours ? parseFloat(formData.hours) : null,
       amount: formData.amount ? parseFloat(formData.amount) : null,
-      hourly_rate: formData.hourly_rate
-        ? parseFloat(formData.hourly_rate)
+      hourly_rate: formData.hours
+        ? parseFloat(
+            formData.hourly_rate || selectedProjectRate?.toString() || "0"
+          )
         : null,
     };
 
@@ -246,10 +248,7 @@ export default function WorkEntryForm({
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span>
-                Rate: ${displayRate}/h{" "}
-                {hasCustomRate ? "(custom)" : "(from project)"}
-              </span>
+              <span>Rate: ${displayRate}/h</span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <div>
@@ -257,26 +256,28 @@ export default function WorkEntryForm({
                   htmlFor="hourly_rate"
                   className="block text-sm font-medium text-stone-700 mb-1.5"
                 >
-                  Hourly Rate Override
+                  Hourly Rate
                 </label>
                 <Input
                   id="hourly_rate"
                   type="number"
                   step="0.01"
-                  min="0"
-                  value={formData.hourly_rate}
+                  min="0.01"
+                  required
+                  value={
+                    formData.hourly_rate || selectedProjectRate?.toString() || ""
+                  }
                   onChange={(e) =>
                     setFormData({ ...formData, hourly_rate: e.target.value })
                   }
                   disabled={isInvoiced}
                   className="w-full max-w-xs px-3 py-2 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder={selectedProjectRate?.toString() || ""}
                 />
-                <p className="text-xs text-stone-500 mt-1">
-                  {isInvoiced
-                    ? "Rate cannot be changed on invoiced entries"
-                    : "Clear this field to use the project rate"}
-                </p>
+                {isInvoiced && (
+                  <p className="text-xs text-stone-500 mt-1">
+                    Rate cannot be changed on invoiced entries
+                  </p>
+                )}
               </div>
             </CollapsibleContent>
           </Collapsible>

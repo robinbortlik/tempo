@@ -122,8 +122,12 @@ export default function WorkEntryRow({
           description: editData.description,
           hours: editData.hours ? parseFloat(editData.hours) : null,
           amount: editData.amount ? parseFloat(editData.amount) : null,
-          hourly_rate: editData.hourly_rate
-            ? parseFloat(editData.hourly_rate)
+          hourly_rate: editData.hours
+            ? parseFloat(
+                editData.hourly_rate ||
+                  selectedProjectRate?.toString() ||
+                  "0"
+              )
             : null,
         },
       },
@@ -268,10 +272,7 @@ export default function WorkEntryRow({
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span>
-                Rate: ${displayRate}/h{" "}
-                {hasCustomRate ? "(custom)" : "(from project)"}
-              </span>
+              <span>Rate: ${displayRate}/h</span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <div className="flex items-end gap-3">
@@ -280,27 +281,31 @@ export default function WorkEntryRow({
                     htmlFor={`hourly_rate_${entry.id}`}
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Hourly Rate Override
+                    Hourly Rate
                   </label>
                   <Input
                     id={`hourly_rate_${entry.id}`}
                     type="number"
                     step="0.01"
-                    min="0"
-                    value={editData.hourly_rate}
+                    min="0.01"
+                    required
+                    value={
+                      editData.hourly_rate ||
+                      selectedProjectRate?.toString() ||
+                      ""
+                    }
                     onChange={(e) =>
                       setEditData({ ...editData, hourly_rate: e.target.value })
                     }
                     disabled={isInvoiced}
                     className="w-32 px-3 py-2 bg-white border-stone-200 rounded-lg tabular-nums text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    placeholder={selectedProjectRate?.toString() || ""}
                   />
                 </div>
-                <p className="text-xs text-stone-500 pb-2">
-                  {isInvoiced
-                    ? "Rate locked on invoiced entries"
-                    : "Clear to use project rate"}
-                </p>
+                {isInvoiced && (
+                  <p className="text-xs text-stone-500 pb-2">
+                    Rate locked on invoiced entries
+                  </p>
+                )}
               </div>
             </CollapsibleContent>
           </Collapsible>

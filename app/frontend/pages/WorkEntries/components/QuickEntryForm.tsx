@@ -71,7 +71,9 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
           description,
           hours: hours ? parseFloat(hours) : null,
           amount: amount ? parseFloat(amount) : null,
-          hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
+          hourly_rate: hours
+            ? parseFloat(hourlyRate || selectedProjectRate?.toString() || "0")
+            : null,
         },
       },
       {
@@ -219,10 +221,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span>
-                Rate: ${displayRate}/h{" "}
-                {hasCustomRate ? "(custom)" : "(from project)"}
-              </span>
+              <span>Rate: ${displayRate}/h</span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <div className="flex items-end gap-3">
@@ -231,22 +230,19 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                     htmlFor="hourly_rate"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Hourly Rate Override
+                    Hourly Rate
                   </label>
                   <Input
                     id="hourly_rate"
                     type="number"
                     step="0.01"
-                    min="0"
-                    value={hourlyRate}
+                    min="0.01"
+                    required
+                    value={hourlyRate || selectedProjectRate?.toString() || ""}
                     onChange={(e) => setHourlyRate(e.target.value)}
                     className="w-32 h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
-                    placeholder={selectedProjectRate?.toString() || ""}
                   />
                 </div>
-                <p className="text-xs text-stone-500 pb-2">
-                  Clear to use project rate
-                </p>
               </div>
             </CollapsibleContent>
           </Collapsible>
