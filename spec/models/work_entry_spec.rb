@@ -165,6 +165,38 @@ RSpec.describe WorkEntry, type: :model do
     end
   end
 
+  describe "hourly_rate mandatory for time entries" do
+    it "requires hourly_rate to be present for time entries when project has no rate" do
+      client = create(:client, hourly_rate: nil)
+      project = create(:project, client: client, hourly_rate: nil)
+      entry = build(:work_entry, project: project, hours: 8)
+      # Callback can't populate rate because project has none
+      expect(entry).not_to be_valid
+      expect(entry.errors[:hourly_rate]).to include("can't be blank")
+    end
+
+    it "requires hourly_rate to be greater than 0 for time entries" do
+      project = create(:project)
+      entry = build(:work_entry, project: project, hours: 8, hourly_rate: 0)
+      expect(entry).not_to be_valid
+      expect(entry.errors[:hourly_rate]).to include("must be greater than 0")
+    end
+
+    it "does not require hourly_rate for fixed entries" do
+      project = create(:project)
+      entry = build(:work_entry, :fixed_entry, project: project, hourly_rate: nil)
+      expect(entry).to be_valid
+    end
+
+    it "auto-populates hourly_rate from project for valid time entries" do
+      client = create(:client, hourly_rate: 100)
+      project = create(:project, client: client, hourly_rate: 150)
+      entry = create(:work_entry, project: project, hours: 8)
+      expect(entry.hourly_rate).to eq(150)
+      expect(entry).to be_valid
+    end
+  end
+
   describe "hourly_rate persistence integration" do
     let(:client) { create(:client, hourly_rate: 100) }
     let(:project) { create(:project, client: client, hourly_rate: 120) }

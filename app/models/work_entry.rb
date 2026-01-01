@@ -13,6 +13,7 @@ class WorkEntry < ApplicationRecord
   validates :date, presence: true
   validates :hours, numericality: { greater_than: 0 }, allow_nil: true
   validates :amount, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :hourly_rate, presence: true, numericality: { greater_than: 0 }, if: :time?
   validate :at_least_hours_or_amount_present
   validate :hourly_rate_locked_when_invoiced
 
