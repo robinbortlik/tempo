@@ -2,8 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-interface InputWithAddonProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputWithAddonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   startAddon?: React.ReactNode;
   endAddon?: React.ReactNode;
 }

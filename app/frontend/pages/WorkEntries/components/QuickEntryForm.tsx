@@ -56,8 +56,8 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
 
   const selectedClientGroup = getSelectedClientGroup();
   const selectedProjectRate = selectedClientGroup
-    ? selectedClientGroup.projects.find((p) => p.id === parseInt(projectId))
-        ?.effective_hourly_rate ?? null
+    ? (selectedClientGroup.projects.find((p) => p.id === parseInt(projectId))
+        ?.effective_hourly_rate ?? null)
     : null;
   const clientCurrency = selectedClientGroup?.client.currency;
   const selectedCurrency = getCurrencySymbol(clientCurrency);
@@ -276,7 +276,10 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span>Rate: {selectedCurrency}{displayRate}/h</span>
+              <span>
+                Rate: {selectedCurrency}
+                {displayRate}/h
+              </span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <div className="flex items-end gap-3">

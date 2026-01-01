@@ -64,16 +64,11 @@ function formatDate(dateString: string): string {
   });
 }
 
-function LineItemRow({
-  item,
-  currency,
-}: {
-  item: LineItem;
-  currency: string;
-}) {
+function LineItemRow({ item, currency }: { item: LineItem; currency: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
   // Only time_aggregate items can have expandable breakdowns
-  const isExpandable = item.line_type === "time_aggregate" &&
+  const isExpandable =
+    item.line_type === "time_aggregate" &&
     item.work_entries &&
     item.work_entries.length > 0;
 
@@ -108,14 +103,18 @@ function LineItemRow({
           </div>
         </td>
         <td className="py-3 text-right tabular-nums text-stone-600 whitespace-nowrap">
-          {item.line_type === "time_aggregate" && item.quantity
-            ? `${formatHours(item.quantity)}h`
-            : <span className="text-stone-300">&mdash;</span>}
+          {item.line_type === "time_aggregate" && item.quantity ? (
+            `${formatHours(item.quantity)}h`
+          ) : (
+            <span className="text-stone-300">&mdash;</span>
+          )}
         </td>
         <td className="py-3 text-right tabular-nums text-stone-600 whitespace-nowrap">
-          {item.line_type === "time_aggregate" && item.unit_price
-            ? formatCurrency(item.unit_price, currency)
-            : <span className="text-stone-300">&mdash;</span>}
+          {item.line_type === "time_aggregate" && item.unit_price ? (
+            formatCurrency(item.unit_price, currency)
+          ) : (
+            <span className="text-stone-300">&mdash;</span>
+          )}
         </td>
         <td className="py-3 text-right tabular-nums text-stone-500 whitespace-nowrap">
           {item.vat_rate}%
@@ -138,18 +137,22 @@ function LineItemRow({
             >
               <td className="py-2 pl-7 text-stone-500">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-stone-400 w-12">{formatDate(entry.date)}</span>
-                  <span className="text-stone-600">{entry.description || "-"}</span>
-                  <span className="text-xs text-stone-400">{entry.project_name}</span>
+                  <span className="text-xs text-stone-400 w-12">
+                    {formatDate(entry.date)}
+                  </span>
+                  <span className="text-stone-600">
+                    {entry.description || "-"}
+                  </span>
+                  <span className="text-xs text-stone-400">
+                    {entry.project_name}
+                  </span>
                 </div>
               </td>
               <td className="py-2 text-right tabular-nums text-stone-500 whitespace-nowrap">
                 {formatHours(entry.hours)}h
               </td>
-              <td className="py-2 text-right whitespace-nowrap">
-              </td>
-              <td className="py-2 text-right whitespace-nowrap">
-              </td>
+              <td className="py-2 text-right whitespace-nowrap"></td>
+              <td className="py-2 text-right whitespace-nowrap"></td>
               <td className="py-2 text-right tabular-nums text-stone-500 whitespace-nowrap">
                 {formatCurrency(entry.calculated_amount, currency)}
               </td>
@@ -226,10 +229,14 @@ export function InvoicedSection({
                   <thead>
                     <tr className="text-left text-xs text-stone-400 border-b border-stone-100">
                       <th className="pb-2 font-medium">Description</th>
-                      <th className="pb-2 font-medium text-right w-16">Hours</th>
+                      <th className="pb-2 font-medium text-right w-16">
+                        Hours
+                      </th>
                       <th className="pb-2 font-medium text-right w-28">Rate</th>
                       <th className="pb-2 font-medium text-right w-14">VAT</th>
-                      <th className="pb-2 font-medium text-right w-32">Amount</th>
+                      <th className="pb-2 font-medium text-right w-32">
+                        Amount
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -247,17 +254,23 @@ export function InvoicedSection({
                   <div className="text-sm space-y-1.5 min-w-48">
                     <div className="flex justify-between gap-6 text-stone-500">
                       <span>Subtotal</span>
-                      <span className="tabular-nums whitespace-nowrap">{formatCurrency(invoice.subtotal, currency)}</span>
+                      <span className="tabular-nums whitespace-nowrap">
+                        {formatCurrency(invoice.subtotal, currency)}
+                      </span>
                     </div>
                     {invoice.total_vat > 0 && (
                       <div className="flex justify-between gap-6 text-stone-500">
                         <span>VAT</span>
-                        <span className="tabular-nums whitespace-nowrap">{formatCurrency(invoice.total_vat, currency)}</span>
+                        <span className="tabular-nums whitespace-nowrap">
+                          {formatCurrency(invoice.total_vat, currency)}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between gap-6 font-semibold text-stone-900 pt-2 border-t border-stone-200">
                       <span>Total</span>
-                      <span className="tabular-nums whitespace-nowrap">{formatCurrency(invoice.total_amount, currency)}</span>
+                      <span className="tabular-nums whitespace-nowrap">
+                        {formatCurrency(invoice.total_amount, currency)}
+                      </span>
                     </div>
                   </div>
                 </div>

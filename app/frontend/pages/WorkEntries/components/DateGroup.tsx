@@ -99,7 +99,11 @@ export default function DateGroup({
             <>
               <span className="text-stone-300">=</span>
               <span className="font-semibold text-stone-700">
-                {formatCurrency(group.total_amount, group.entries[0]?.client_currency, false)}
+                {formatCurrency(
+                  group.total_amount,
+                  group.entries[0]?.client_currency,
+                  false
+                )}
               </span>
             </>
           )}

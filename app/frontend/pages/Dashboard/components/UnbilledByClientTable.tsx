@@ -105,7 +105,11 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                     {Math.round(client.total_hours)}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right tabular-nums font-medium text-stone-900">
-                    {formatCurrency(client.total_amount, client.currency, false)}
+                    {formatCurrency(
+                      client.total_amount,
+                      client.currency,
+                      false
+                    )}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right text-sm text-stone-500 whitespace-nowrap">
                     {formatRates(client.project_rates, client.currency)}

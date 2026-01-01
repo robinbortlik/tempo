@@ -36,7 +36,9 @@ export function CurrencyDisplay({
       className={cn("tabular-nums", className)}
       data-testid="currency-display"
     >
-      {symbolAfter ? `${formattedAmount} ${symbol}` : `${symbol}${formattedAmount}`}
+      {symbolAfter
+        ? `${formattedAmount} ${symbol}`
+        : `${symbol}${formattedAmount}`}
     </span>
   );
 }
@@ -55,7 +57,9 @@ export function formatCurrency(
     maximumFractionDigits: showDecimals ? 2 : 0,
   });
   const symbolAfter = currency && SYMBOL_AFTER_CURRENCIES.has(currency);
-  return symbolAfter ? `${formattedAmount} ${symbol}` : `${symbol}${formattedAmount}`;
+  return symbolAfter
+    ? `${formattedAmount} ${symbol}`
+    : `${symbol}${formattedAmount}`;
 }
 
 // Utility function for getting just the currency symbol (for input addons, etc.)
@@ -82,7 +86,9 @@ export function formatRate(
   const symbolAfter = currency && SYMBOL_AFTER_CURRENCIES.has(currency);
   const roundedRate = Math.round(numRate);
   const suffix = showSuffix ? "/hr" : "";
-  return symbolAfter ? `${roundedRate} ${symbol}${suffix}` : `${symbol}${roundedRate}${suffix}`;
+  return symbolAfter
+    ? `${roundedRate} ${symbol}${suffix}`
+    : `${symbol}${roundedRate}${suffix}`;
 }
 
 // Utility function for formatting hours (always whole numbers)

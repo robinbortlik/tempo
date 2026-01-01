@@ -85,7 +85,9 @@ export function ProjectGroup({
                 <th className="px-4 pt-4 pb-2 font-medium">Description</th>
                 <th className="px-4 pt-4 pb-2 font-medium text-right">Hours</th>
                 <th className="px-4 pt-4 pb-2 font-medium text-right">Rate</th>
-                <th className="px-4 pt-4 pb-2 font-medium text-right">Amount</th>
+                <th className="px-4 pt-4 pb-2 font-medium text-right">
+                  Amount
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -112,8 +114,14 @@ export function ProjectGroup({
                     )}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-stone-500 whitespace-nowrap">
-                    {entry.entry_type === "time" && project.effective_hourly_rate > 0 ? (
-                      <>{formatCurrency(project.effective_hourly_rate, currency)}</>
+                    {entry.entry_type === "time" &&
+                    project.effective_hourly_rate > 0 ? (
+                      <>
+                        {formatCurrency(
+                          project.effective_hourly_rate,
+                          currency
+                        )}
+                      </>
                     ) : (
                       <span className="text-stone-300">&mdash;</span>
                     )}

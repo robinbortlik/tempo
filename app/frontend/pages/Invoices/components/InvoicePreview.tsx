@@ -120,7 +120,12 @@ export default function InvoicePreview({
                               {formatHours(item.quantity || 0)}h
                             </td>
                             <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-500 whitespace-nowrap">
-                              {formatCurrency(item.unit_price || 0, currency, false)}/h
+                              {formatCurrency(
+                                item.unit_price || 0,
+                                currency,
+                                false
+                              )}
+                              /h
                             </td>
                           </>
                         ) : (

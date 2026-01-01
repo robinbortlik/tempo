@@ -177,7 +177,11 @@ export default function WorkEntriesIndex() {
                       Total Amount:
                     </span>
                     <span className="text-lg font-bold text-stone-900 tabular-nums">
-                      {formatCurrency(Number(summary.total_amount || 0), summaryCurrency, false)}
+                      {formatCurrency(
+                        Number(summary.total_amount || 0),
+                        summaryCurrency,
+                        false
+                      )}
                     </span>
                   </div>
                 </div>
