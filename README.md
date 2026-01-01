@@ -102,3 +102,35 @@ npm run typecheck     # TypeScript check
 ```bash
 npm run build         # Production frontend build
 ```
+
+## Standalone Package
+
+Create a self-contained macOS executable using [Tebako](https://github.com/tamatebako/tebako):
+
+```bash
+# Install dependencies (one-time)
+gem install tebako
+brew install create-dmg  # optional, for DMG creation
+
+# Build the package
+bin/package-macos 1.0.0
+```
+
+This creates in `dist/`:
+- `invoicing-macos` - standalone executable
+- `run-invoicing.command` - double-click launcher
+- `Invoicing-1.0.0.dmg` - installer (if create-dmg installed)
+
+### User Experience
+
+Users just:
+1. Download the DMG (or zip)
+2. Copy files to a folder
+3. Double-click `run-invoicing.command`
+4. Open http://localhost:3000
+
+Data is stored in `~/.invoicing/` and persists across updates.
+
+### Updating
+
+Users replace the executable files - their data stays intact. The launcher auto-runs migrations when needed.

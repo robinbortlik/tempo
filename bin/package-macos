@@ -1,0 +1,253 @@
+#!/bin/bash
+#
+# Package the Invoicing Rails application into a standalone macOS executable using Tebako
+#
+# Prerequisites:
+#   gem install tebako
+#   brew install create-dmg  (optional, for DMG creation)
+#
+# Usage:
+#   bin/package-macos [version]
+#
+# Example:
+#   bin/package-macos 1.0.0
+#
+
+set -e
+
+VERSION="${1:-dev}"
+APP_NAME="Invoicing"
+OUTPUT_NAME="invoicing-macos"
+RUBY_VERSION="3.3.5"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DIST_DIR="$PROJECT_ROOT/dist"
+
+echo "==> Packaging $APP_NAME v$VERSION for macOS"
+echo "    Ruby version: $RUBY_VERSION"
+echo ""
+
+# Check if tebako is installed
+if ! gem list tebako -i > /dev/null 2>&1; then
+  echo "Error: Tebako gem is not installed."
+  echo "Install it with: gem install tebako"
+  exit 1
+fi
+
+# Build frontend assets first
+echo "==> Building frontend assets..."
+cd "$PROJECT_ROOT"
+npm run build
+
+# Precompile Rails assets
+echo "==> Precompiling Rails assets..."
+RAILS_ENV=production bundle exec rails assets:precompile
+
+# Create a clean build directory
+BUILD_DIR="$PROJECT_ROOT/tmp/tebako-build"
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR"
+
+# Copy necessary files (exclude development/test files)
+echo "==> Preparing build directory..."
+rsync -av --progress "$PROJECT_ROOT/" "$BUILD_DIR/" \
+  --exclude '.git' \
+  --exclude 'node_modules' \
+  --exclude 'tmp' \
+  --exclude 'log' \
+  --exclude 'storage' \
+  --exclude '.env*' \
+  --exclude 'spec' \
+  --exclude 'test' \
+  --exclude 'coverage' \
+  --exclude '.tebako' \
+  --exclude 'dist' \
+  --exclude '*.md' \
+  --exclude '.github'
+
+# Create necessary directories in build
+mkdir -p "$BUILD_DIR/tmp"
+mkdir -p "$BUILD_DIR/log"
+mkdir -p "$BUILD_DIR/storage"
+
+# Write version file
+echo "$VERSION" > "$BUILD_DIR/VERSION"
+
+# Create a wrapper script as entry point
+cat > "$BUILD_DIR/bin/invoicing" << 'EOF'
+#!/usr/bin/env ruby
+# Wrapper script for packaged Rails application
+
+ENV['RAILS_ENV'] ||= 'production'
+ENV['RAILS_LOG_TO_STDOUT'] ||= '1'
+
+# Change to the app directory
+Dir.chdir(File.expand_path('..', __dir__))
+
+# Load the Rails application
+require_relative '../config/boot'
+require_relative '../config/application'
+
+# Run the server by default, or accept commands
+if ARGV.empty? || ARGV[0] == 'server'
+  args = ARGV.drop(1) if ARGV[0] == 'server'
+  args ||= []
+  args = ['-b', '0.0.0.0', '-p', '3000'] + args if args.empty?
+
+  require 'rails/commands/server/server_command'
+  Rails::Command.invoke('server', args)
+else
+  require 'rails/command'
+  Rails::Command.invoke(ARGV[0], ARGV.drop(1))
+end
+EOF
+chmod +x "$BUILD_DIR/bin/invoicing"
+
+# Clean and create dist directory
+rm -rf "$DIST_DIR"
+mkdir -p "$DIST_DIR"
+
+# Run tebako press
+echo "==> Running Tebako packaging..."
+tebako press \
+  --root="$BUILD_DIR" \
+  --entry-point=bin/invoicing \
+  --output="$DIST_DIR/$OUTPUT_NAME" \
+  --Ruby="$RUBY_VERSION" \
+  --log-level=warn
+
+# Clean up build directory
+rm -rf "$BUILD_DIR"
+
+# Create the launcher script
+echo "==> Creating launcher script..."
+cat > "$DIST_DIR/run-invoicing.command" << 'LAUNCHER'
+#!/bin/bash
+#
+# Invoicing App Launcher
+# Double-click this file to start the application
+#
+
+cd "$(dirname "$0")"
+APP_DIR="$HOME/.invoicing"
+
+# Create data directory on first run
+if [ ! -d "$APP_DIR" ]; then
+  echo "First run - setting up Invoicing..."
+  mkdir -p "$APP_DIR"/{db,storage,tmp,log}
+  FIRST_RUN=true
+fi
+
+# Path to the executable
+INVOICING="./invoicing-macos"
+
+if [ ! -f "$INVOICING" ]; then
+  echo "Error: invoicing-macos not found in $(pwd)"
+  echo "Please ensure the executable is in the same folder as this script."
+  read -p "Press Enter to exit..."
+  exit 1
+fi
+
+# Run migrations if needed (first run or schema changed)
+if [ "$FIRST_RUN" = true ] || [ ! -f "$APP_DIR/.schema_version" ]; then
+  echo "Running database setup..."
+  "$INVOICING" \
+    --tebako-mount local/db:"$APP_DIR/db" \
+    --tebako-mount local/storage:"$APP_DIR/storage" \
+    --tebako-mount local/tmp:"$APP_DIR/tmp" \
+    --tebako-mount local/log:"$APP_DIR/log" \
+    db:prepare 2>&1
+
+  # Mark schema version
+  "$INVOICING" \
+    --tebako-mount local/db:"$APP_DIR/db" \
+    --tebako-mount local/tmp:"$APP_DIR/tmp" \
+    runner "puts ActiveRecord::Base.connection.migration_context.current_version" \
+    > "$APP_DIR/.schema_version" 2>/dev/null || true
+fi
+
+echo ""
+echo "Starting Invoicing..."
+echo "Open http://localhost:3000 in your browser"
+echo ""
+echo "Press Ctrl+C to stop the server"
+echo ""
+
+# Start the server
+"$INVOICING" \
+  --tebako-mount local/db:"$APP_DIR/db" \
+  --tebako-mount local/storage:"$APP_DIR/storage" \
+  --tebako-mount local/tmp:"$APP_DIR/tmp" \
+  --tebako-mount local/log:"$APP_DIR/log" \
+  server
+
+LAUNCHER
+chmod +x "$DIST_DIR/run-invoicing.command"
+
+# Create a simple README for users
+cat > "$DIST_DIR/README.txt" << README
+Invoicing v$VERSION
+==================
+
+QUICK START:
+  Double-click "run-invoicing.command" to start the app.
+  Open http://localhost:3000 in your browser.
+
+DATA LOCATION:
+  Your data is stored in: ~/.invoicing/
+  - Database: ~/.invoicing/db/
+  - Uploads:  ~/.invoicing/storage/
+
+UPDATING:
+  1. Download the new version
+  2. Replace invoicing-macos and run-invoicing.command
+  3. Your data will be preserved
+
+BACKUP:
+  Copy the ~/.invoicing folder to back up all your data.
+
+README
+
+# Create DMG if create-dmg is available
+if command -v create-dmg &> /dev/null; then
+  echo "==> Creating DMG installer..."
+
+  DMG_DIR="$PROJECT_ROOT/tmp/dmg-contents"
+  rm -rf "$DMG_DIR"
+  mkdir -p "$DMG_DIR"
+
+  cp "$DIST_DIR/$OUTPUT_NAME" "$DMG_DIR/"
+  cp "$DIST_DIR/run-invoicing.command" "$DMG_DIR/"
+  cp "$DIST_DIR/README.txt" "$DMG_DIR/"
+
+  create-dmg \
+    --volname "$APP_NAME" \
+    --window-pos 200 120 \
+    --window-size 600 400 \
+    --icon-size 100 \
+    --hide-extension "run-invoicing.command" \
+    "$DIST_DIR/$APP_NAME-$VERSION.dmg" \
+    "$DMG_DIR/" \
+    2>/dev/null || true
+
+  rm -rf "$DMG_DIR"
+
+  if [ -f "$DIST_DIR/$APP_NAME-$VERSION.dmg" ]; then
+    echo "    DMG created: $DIST_DIR/$APP_NAME-$VERSION.dmg"
+  fi
+else
+  echo ""
+  echo "Note: Install create-dmg for DMG creation: brew install create-dmg"
+fi
+
+echo ""
+echo "==> Build complete!"
+echo ""
+echo "Output files in $DIST_DIR/:"
+ls -la "$DIST_DIR/"
+echo ""
+echo "To distribute:"
+echo "  1. Share the DMG (if created), or"
+echo "  2. Zip the dist/ folder contents"
+echo ""
+echo "Users just double-click 'run-invoicing.command' to start"
