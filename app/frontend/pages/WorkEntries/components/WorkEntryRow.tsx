@@ -2,6 +2,11 @@ import { router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import StatusBadge from "./StatusBadge";
 import EntryTypeBadge from "./EntryTypeBadge";
 import ProjectSelector from "./ProjectSelector";
@@ -28,6 +33,7 @@ interface WorkEntry {
   date: string;
   hours: number | null;
   amount: number | null;
+  hourly_rate: number | null;
   entry_type: "time" | "fixed";
   description: string | null;
   status: "unbilled" | "invoiced";
@@ -69,6 +75,7 @@ export default function WorkEntryRow({
 }: WorkEntryRowProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showRateOverride, setShowRateOverride] = useState(false);
   const [editData, setEditData] = useState({
     date: entry.date,
     project_id: entry.project_id.toString(),
@@ -79,10 +86,28 @@ export default function WorkEntryRow({
         ? entry.calculated_amount.toString()
         : ""),
     description: entry.description || "",
+    hourly_rate: entry.hourly_rate?.toString() || "",
   });
 
   const isInvoiced = entry.status === "invoiced";
   const isTimeEntry = entry.entry_type === "time";
+
+  // Get the selected project's effective hourly rate
+  const getSelectedProjectRate = (): number | null => {
+    if (!editData.project_id) return null;
+    const pid = parseInt(editData.project_id);
+    for (const group of projects) {
+      const project = group.projects.find((p) => p.id === pid);
+      if (project) return project.effective_hourly_rate;
+    }
+    return null;
+  };
+
+  const selectedProjectRate = getSelectedProjectRate();
+  const hasCustomRate = editData.hourly_rate !== "";
+  const displayRate = hasCustomRate
+    ? parseFloat(editData.hourly_rate)
+    : selectedProjectRate;
 
   const handleSave = (e: FormEvent) => {
     e.preventDefault();
@@ -97,11 +122,15 @@ export default function WorkEntryRow({
           description: editData.description,
           hours: editData.hours ? parseFloat(editData.hours) : null,
           amount: editData.amount ? parseFloat(editData.amount) : null,
+          hourly_rate: editData.hourly_rate
+            ? parseFloat(editData.hourly_rate)
+            : null,
         },
       },
       {
         onSuccess: () => {
           setIsEditing(false);
+          setShowRateOverride(false);
         },
         onFinish: () => {
           setIsSubmitting(false);
@@ -117,8 +146,10 @@ export default function WorkEntryRow({
       hours: entry.hours?.toString() || "",
       amount: entry.amount?.toString() || "",
       description: entry.description || "",
+      hourly_rate: entry.hourly_rate?.toString() || "",
     });
     setIsEditing(false);
+    setShowRateOverride(false);
   };
 
   // Validation: at least hours or amount must be provided
@@ -131,88 +162,149 @@ export default function WorkEntryRow({
       <form
         onSubmit={handleSave}
         className={`
-          flex items-center px-5 py-4 gap-4 bg-amber-50/50 border border-amber-200/50
+          px-5 py-4 bg-amber-50/50 border border-amber-200/50 space-y-3
           ${isFirst ? "rounded-t-xl" : ""}
           ${isLast ? "rounded-b-xl" : ""}
         `}
         data-testid={`work-entry-row-${entry.id}`}
       >
-        <div className="w-32">
-          <input
-            type="date"
-            value={editData.date}
-            onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-            required
-            className="w-full px-3 py-2 bg-white border border-stone-200 rounded-lg text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-400 transition-all"
-          />
+        <div className="flex items-center gap-4">
+          <div className="w-32">
+            <input
+              type="date"
+              value={editData.date}
+              onChange={(e) =>
+                setEditData({ ...editData, date: e.target.value })
+              }
+              required
+              className="w-full px-3 py-2 bg-white border border-stone-200 rounded-lg text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-400 transition-all"
+            />
+          </div>
+          <div className="w-44">
+            <ProjectSelector
+              projects={projects}
+              value={editData.project_id}
+              onChange={(value) =>
+                setEditData({ ...editData, project_id: value })
+              }
+              required
+              className="w-full text-sm py-2"
+            />
+          </div>
+          <div className="w-20">
+            <Input
+              type="number"
+              step="0.25"
+              min="0"
+              max="24"
+              value={editData.hours}
+              onChange={(e) =>
+                setEditData({ ...editData, hours: e.target.value })
+              }
+              className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
+              placeholder="Hours"
+            />
+          </div>
+          <div className="w-24">
+            <Input
+              type="number"
+              step="0.01"
+              min="0"
+              value={editData.amount}
+              onChange={(e) =>
+                setEditData({ ...editData, amount: e.target.value })
+              }
+              className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
+              placeholder="Amount"
+            />
+          </div>
+          <div className="flex-1">
+            <Input
+              type="text"
+              value={editData.description}
+              onChange={(e) =>
+                setEditData({ ...editData, description: e.target.value })
+              }
+              className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 text-sm"
+              placeholder="What did you work on?"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              type="submit"
+              disabled={isSubmitting || !isValid}
+              className="px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors"
+            >
+              {isSubmitting ? "Saving..." : "Save"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+              className="px-4 py-2 border border-stone-200 text-stone-600 text-sm font-medium rounded-lg hover:bg-stone-50 transition-colors"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-        <div className="w-44">
-          <ProjectSelector
-            projects={projects}
-            value={editData.project_id}
-            onChange={(value) =>
-              setEditData({ ...editData, project_id: value })
-            }
-            required
-            className="w-full text-sm py-2"
-          />
-        </div>
-        <div className="w-20">
-          <Input
-            type="number"
-            step="0.25"
-            min="0"
-            max="24"
-            value={editData.hours}
-            onChange={(e) =>
-              setEditData({ ...editData, hours: e.target.value })
-            }
-            className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
-            placeholder="Hours"
-          />
-        </div>
-        <div className="w-24">
-          <Input
-            type="number"
-            step="0.01"
-            min="0"
-            value={editData.amount}
-            onChange={(e) =>
-              setEditData({ ...editData, amount: e.target.value })
-            }
-            className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
-            placeholder="Amount"
-          />
-        </div>
-        <div className="flex-1">
-          <Input
-            type="text"
-            value={editData.description}
-            onChange={(e) =>
-              setEditData({ ...editData, description: e.target.value })
-            }
-            className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 text-sm"
-            placeholder="What did you work on?"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            type="submit"
-            disabled={isSubmitting || !isValid}
-            className="px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors"
+
+        {hasHours && editData.project_id && (
+          <Collapsible
+            open={showRateOverride}
+            onOpenChange={setShowRateOverride}
           >
-            {isSubmitting ? "Saving..." : "Save"}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={isSubmitting}
-            className="px-4 py-2 border border-stone-200 text-stone-600 text-sm font-medium rounded-lg hover:bg-stone-50 transition-colors"
-          >
-            Cancel
-          </Button>
-        </div>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-stone-600 hover:text-stone-900 transition-colors cursor-pointer">
+              <svg
+                className={`w-4 h-4 transition-transform ${showRateOverride ? "rotate-90" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+              <span>
+                Rate: ${displayRate}/h{" "}
+                {hasCustomRate ? "(custom)" : "(from project)"}
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-3">
+              <div className="flex items-end gap-3">
+                <div>
+                  <label
+                    htmlFor={`hourly_rate_${entry.id}`}
+                    className="block text-sm font-medium text-stone-600 mb-1.5"
+                  >
+                    Hourly Rate Override
+                  </label>
+                  <Input
+                    id={`hourly_rate_${entry.id}`}
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={editData.hourly_rate}
+                    onChange={(e) =>
+                      setEditData({ ...editData, hourly_rate: e.target.value })
+                    }
+                    disabled={isInvoiced}
+                    className="w-32 px-3 py-2 bg-white border-stone-200 rounded-lg tabular-nums text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    placeholder={selectedProjectRate?.toString() || ""}
+                  />
+                </div>
+                <p className="text-xs text-stone-500 pb-2">
+                  {isInvoiced
+                    ? "Rate locked on invoiced entries"
+                    : "Clear to use project rate"}
+                </p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
       </form>
     );
   }

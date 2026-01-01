@@ -22,6 +22,7 @@ interface WorkEntry {
   date: string;
   hours: number | null;
   amount: number | null;
+  hourly_rate: number | null;
   entry_type: "time" | "fixed";
   description: string | null;
   status: "unbilled" | "invoiced";
