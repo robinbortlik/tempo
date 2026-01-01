@@ -1,5 +1,5 @@
 class WorkEntriesController < ApplicationController
-  before_action :set_work_entry, only: [:show, :edit, :update, :destroy]
+  before_action :set_work_entry, only: [:update, :destroy]
 
   def index
     entries = filtered_work_entries
@@ -13,34 +13,13 @@ class WorkEntriesController < ApplicationController
     }
   end
 
-  def show
-    render inertia: "WorkEntries/Show", props: {
-      work_entry: work_entry_json(@work_entry)
-    }
-  end
-
-  def new
-    render inertia: "WorkEntries/New", props: {
-      work_entry: empty_work_entry_json,
-      projects: projects_grouped_by_client,
-      preselected_project_id: params[:project_id]&.to_i
-    }
-  end
-
-  def edit
-    render inertia: "WorkEntries/Edit", props: {
-      work_entry: work_entry_json(@work_entry),
-      projects: projects_grouped_by_client
-    }
-  end
-
   def create
     @work_entry = WorkEntry.new(work_entry_params)
 
     if @work_entry.save
       redirect_to work_entries_path, notice: "Work entry created successfully."
     else
-      redirect_to new_work_entry_path(project_id: params[:work_entry][:project_id]), alert: @work_entry.errors.full_messages.first
+      redirect_to work_entries_path, alert: @work_entry.errors.full_messages.first
     end
   end
 
@@ -53,7 +32,7 @@ class WorkEntriesController < ApplicationController
     if @work_entry.update(work_entry_params)
       redirect_to work_entries_path, notice: "Work entry updated successfully."
     else
-      redirect_to edit_work_entry_path(@work_entry), alert: @work_entry.errors.full_messages.first
+      redirect_to work_entries_path, alert: @work_entry.errors.full_messages.first
     end
   end
 
@@ -163,42 +142,6 @@ class WorkEntriesController < ApplicationController
       client_id: entry.project.client_id,
       client_name: entry.project.client.name,
       client_currency: entry.project.client.currency
-    }
-  end
-
-  def work_entry_json(entry)
-    {
-      id: entry.id,
-      date: entry.date,
-      hours: entry.hours,
-      amount: entry.amount,
-      hourly_rate: entry.hourly_rate,
-      entry_type: entry.entry_type,
-      description: entry.description,
-      status: entry.status,
-      calculated_amount: entry.calculated_amount,
-      project_id: entry.project_id,
-      project_name: entry.project.name,
-      client_id: entry.project.client_id,
-      client_name: entry.project.client.name,
-      client_currency: entry.project.client.currency,
-      effective_hourly_rate: entry.project.effective_hourly_rate,
-      invoice_id: entry.invoice_id
-    }
-  end
-
-  def empty_work_entry_json
-    {
-      id: nil,
-      date: Date.current,
-      hours: nil,
-      amount: nil,
-      hourly_rate: nil,
-      entry_type: "time",
-      description: "",
-      project_id: nil,
-      status: "unbilled",
-      effective_hourly_rate: nil
     }
   end
 

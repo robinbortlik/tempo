@@ -58,14 +58,6 @@ RSpec.describe WorkEntriesController, type: :request do
       expect(WorkEntry.last.hourly_rate).to eq(150)
     end
 
-    it "includes hourly_rate in work_entry_json response" do
-      entry = create(:work_entry, project: project, hours: 8, hourly_rate: 125)
-      get edit_work_entry_path(entry), headers: inertia_headers
-      json = JSON.parse(response.body)
-      expect(json['props']['work_entry']['hourly_rate'].to_f).to eq(125.0)
-      expect(json['props']['work_entry']['effective_hourly_rate'].to_f).to eq(project.effective_hourly_rate.to_f)
-    end
-
     it "includes hourly_rate in work_entry_list_json response" do
       create(:work_entry, project: project, hours: 8, hourly_rate: 130)
       get work_entries_path, headers: inertia_headers

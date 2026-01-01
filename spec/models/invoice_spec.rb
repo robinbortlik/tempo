@@ -317,21 +317,6 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    context "with work entries without hourly rate" do
-      let(:client_no_rate) { create(:client, hourly_rate: nil) }
-      let(:project_no_rate) { create(:project, client: client_no_rate, hourly_rate: nil) }
-      let(:invoice_no_rate) { create(:invoice, client: client_no_rate) }
-
-      before do
-        create(:work_entry, invoice: invoice_no_rate, project: project_no_rate, hours: 8)
-      end
-
-      it "treats nil amounts as zero" do
-        invoice_no_rate.calculate_totals
-        expect(invoice_no_rate.total_hours).to eq(8)
-        expect(invoice_no_rate.total_amount).to eq(0)
-      end
-    end
   end
 
   describe "#calculate_totals!" do

@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       patch :toggle_active
     end
   end
-  resources :work_entries do
+  resources :work_entries, only: [:index, :create, :update, :destroy] do
     collection do
       delete :bulk_destroy
     end
