@@ -534,9 +534,18 @@
             <div class="payment-value"><%= @settings.bank_swift %></div>
           </div>
         <% end %>
+        <% if @settings.iban.present? %>
+          <div class="payment-item">
+            <div class="payment-label">IBAN</div>
+            <div class="payment-value"><%= @settings.iban %></div>
+          </div>
+        <% end %>
       </div>
+      <% if @settings.invoice_message.present? %>
+        <div class="payment-note"><%= @settings.invoice_message %></div>
+      <% end %>
       <div class="payment-note">
-        Please include invoice number <strong>#<%= @invoice.number %></strong> in payment reference.
+        Reference: <strong>#<%= @invoice.number %></strong>
       </div>
     </div>
   </div>
