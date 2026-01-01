@@ -164,4 +164,38 @@ RSpec.describe WorkEntry, type: :model do
       expect(entry.errors[:hourly_rate]).to include("cannot be changed on invoiced entries")
     end
   end
+
+  describe "hourly_rate persistence integration" do
+    let(:client) { create(:client, hourly_rate: 100) }
+    let(:project) { create(:project, client: client, hourly_rate: 120) }
+
+    it "preserves entry amount when project rate changes after creation" do
+      # Create entry - captures rate at time of creation
+      entry = create(:work_entry, project: project, hours: 8, amount: nil)
+      expect(entry.hourly_rate).to eq(120)
+      expect(entry.calculated_amount).to eq(960)
+
+      # Change project rate
+      project.update!(hourly_rate: 200)
+
+      # Entry should still use original stored rate
+      entry.reload
+      expect(entry.hourly_rate).to eq(120)
+      expect(entry.calculated_amount).to eq(960)
+    end
+
+    it "preserves custom rate override when entry is updated" do
+      # Create entry with custom rate
+      entry = create(:work_entry, project: project, hours: 8, amount: nil, hourly_rate: 150)
+      expect(entry.hourly_rate).to eq(150)
+
+      # Update entry description (not the rate)
+      entry.update!(description: "Updated description")
+
+      # Custom rate should be preserved
+      entry.reload
+      expect(entry.hourly_rate).to eq(150)
+      expect(entry.calculated_amount).to eq(1200)
+    end
+  end
 end
