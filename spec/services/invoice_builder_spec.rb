@@ -106,7 +106,7 @@ RSpec.describe InvoiceBuilder do
         period_end: period_end
       )
 
-      expect(builder.unbilled_entries).to eq([entry2, entry3, entry1])
+      expect(builder.unbilled_entries).to eq([ entry2, entry3, entry1 ])
     end
   end
 

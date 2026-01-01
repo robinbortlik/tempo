@@ -9,7 +9,7 @@ class CreateInvoiceLineItemWorkEntries < ActiveRecord::Migration[8.1]
 
     # Add unique index to prevent duplicate links
     add_index :invoice_line_item_work_entries,
-              [:invoice_line_item_id, :work_entry_id],
+              [ :invoice_line_item_id, :work_entry_id ],
               unique: true,
               name: "index_line_item_work_entries_uniqueness"
   end

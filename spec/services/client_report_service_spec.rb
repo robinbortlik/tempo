@@ -83,7 +83,7 @@ RSpec.describe ClientReportService do
 
       service = described_class.new(client: client, year: 2024, month: 12)
 
-      expect(service.unbilled_entries).to eq([entry2, entry3, entry1])
+      expect(service.unbilled_entries).to eq([ entry2, entry3, entry1 ])
     end
   end
 

@@ -31,7 +31,7 @@ class InvoiceBuilder
 
   # Creates a draft invoice and associates the work entries via line items
   def create_draft
-    return { success: false, errors: ["No unbilled work entries found for the specified period"] } if unbilled_entries.empty?
+    return { success: false, errors: [ "No unbilled work entries found for the specified period" ] } if unbilled_entries.empty?
 
     invoice = Invoice.new(
       client: client,
@@ -150,7 +150,7 @@ class InvoiceBuilder
         position: position,
         project_id: entry.project_id,
         project_name: entry.project.name,
-        work_entry_ids: [entry.id]
+        work_entry_ids: [ entry.id ]
       }
       position += 1
     end

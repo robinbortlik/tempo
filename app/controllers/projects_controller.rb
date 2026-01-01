@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :toggle_active]
+  before_action :set_project, only: [ :show, :edit, :update, :destroy, :toggle_active ]
 
   def index
     @projects = params[:client_id].present? ? Project.where(client_id: params[:client_id]) : Project.all

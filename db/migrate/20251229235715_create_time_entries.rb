@@ -13,7 +13,7 @@ class CreateTimeEntries < ActiveRecord::Migration[8.1]
 
     add_index :time_entries, :date
     add_index :time_entries, :status
-    add_index :time_entries, [:project_id, :date]
+    add_index :time_entries, [ :project_id, :date ]
     add_index :time_entries, :invoice_id
   end
 end

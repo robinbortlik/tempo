@@ -1,5 +1,5 @@
 class WorkEntriesController < ApplicationController
-  before_action :set_work_entry, only: [:update, :destroy]
+  before_action :set_work_entry, only: [ :update, :destroy ]
 
   def index
     entries = filtered_work_entries

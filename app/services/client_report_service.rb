@@ -162,7 +162,7 @@ class ClientReportService
       .map(&:to_i)
 
     # Always include current year
-    (years_with_entries + [Date.current.year]).uniq.sort.reverse
+    (years_with_entries + [ Date.current.year ]).uniq.sort.reverse
   end
 
   def period_start

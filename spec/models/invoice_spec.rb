@@ -316,7 +316,6 @@ RSpec.describe Invoice, type: :model do
         expect(invoice.total_amount).to eq(1700)
       end
     end
-
   end
 
   describe "#calculate_totals!" do

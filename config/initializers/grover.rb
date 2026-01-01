@@ -3,7 +3,7 @@
 Grover.configure do |config|
   # Launch arguments for Chromium (required for Docker environments)
   launch_args = if ENV["GROVER_NO_SANDBOX"] == "true"
-    ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+    [ "--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage" ]
   else
     []
   end

@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   get "reports/:share_token/invoices/:invoice_id/pdf", to: "reports#invoice_pdf", as: :report_invoice_pdf
 
   resource :session
-  resource :settings, only: [:show, :update]
-  resource :dashboard, only: [:show], controller: "dashboard" do
+  resource :settings, only: [ :show, :update ]
+  resource :dashboard, only: [ :show ], controller: "dashboard" do
     get :time_by_client, on: :member
     get :time_by_project, on: :member
     get :earnings_over_time, on: :member
@@ -17,7 +17,7 @@ Rails.application.routes.draw do
       patch :toggle_active
     end
   end
-  resources :work_entries, only: [:index, :create, :update, :destroy] do
+  resources :work_entries, only: [ :index, :create, :update, :destroy ] do
     collection do
       delete :bulk_destroy
     end
@@ -27,7 +27,7 @@ Rails.application.routes.draw do
       post :finalize
       get :pdf
     end
-    resources :line_items, controller: "invoice_line_items", only: [:create, :update, :destroy] do
+    resources :line_items, controller: "invoice_line_items", only: [ :create, :update, :destroy ] do
       member do
         patch :reorder
       end

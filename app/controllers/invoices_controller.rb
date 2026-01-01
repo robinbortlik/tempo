@@ -1,7 +1,7 @@
 class InvoicesController < ApplicationController
   include InvoicesHelper
 
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :finalize, :pdf]
+  before_action :set_invoice, only: [ :show, :edit, :update, :destroy, :finalize, :pdf ]
 
   def index
     render inertia: "Invoices/Index", props: {

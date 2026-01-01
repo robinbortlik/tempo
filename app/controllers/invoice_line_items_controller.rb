@@ -1,7 +1,7 @@
 class InvoiceLineItemsController < ApplicationController
   before_action :set_invoice
   before_action :ensure_draft_invoice
-  before_action :set_line_item, only: [:update, :destroy, :reorder]
+  before_action :set_line_item, only: [ :update, :destroy, :reorder ]
 
   def create
     @line_item = @invoice.line_items.build(line_item_params)
@@ -81,7 +81,7 @@ class InvoiceLineItemsController < ApplicationController
 
     InvoiceLineItem.transaction do
       # Use a high temporary position to avoid unique constraint issues
-      temp_position = [pos1, pos2].max + 1000
+      temp_position = [ pos1, pos2 ].max + 1000
       item1.update!(position: temp_position)
       item2.update!(position: pos1)
       item1.update!(position: pos2)

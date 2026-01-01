@@ -157,7 +157,7 @@ RSpec.describe DashboardStatsService do
       result = service.unbilled_by_client.first
 
       # Returns sorted unique rates from projects with unbilled entries
-      expect(result[:project_rates]).to eq([100, 150])
+      expect(result[:project_rates]).to eq([ 100, 150 ])
     end
 
     it "counts distinct projects with unbilled entries" do

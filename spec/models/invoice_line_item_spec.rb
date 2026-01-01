@@ -59,7 +59,7 @@ RSpec.describe InvoiceLineItem, type: :model do
       item1 = create(:invoice_line_item, invoice: invoice, position: 1)
       item2 = create(:invoice_line_item, invoice: invoice, position: 2)
 
-      expect(invoice.line_items.to_a).to eq([item1, item2, item3])
+      expect(invoice.line_items.to_a).to eq([ item1, item2, item3 ])
     end
   end
 
