@@ -12,6 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 import QuickEntryForm from "./components/QuickEntryForm";
 import FilterBar from "./components/FilterBar";
 import DateGroup from "./components/DateGroup";
@@ -117,9 +118,20 @@ export default function WorkEntriesIndex() {
     });
   };
 
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  // Get the currency to use for the summary - use filtered client's currency if available
+  const getSummaryCurrency = (): string | null => {
+    if (filters.client_id) {
+      // Find the filtered client's currency from projects
+      const clientGroup = projects.find(
+        (group) => group.client.id === filters.client_id
+      );
+      return clientGroup?.client.currency || null;
+    }
+    // If no client filter, try to get currency from first entry
+    const firstEntry = date_groups[0]?.entries[0];
+    return firstEntry?.client_currency || null;
   };
+  const summaryCurrency = getSummaryCurrency();
 
   const totalEntries = date_groups.reduce(
     (sum, group) => sum + group.entries.length,
@@ -163,7 +175,7 @@ export default function WorkEntriesIndex() {
                     Total Amount:
                   </span>
                   <span className="text-lg font-bold text-stone-900 tabular-nums">
-                    {formatCurrency(Number(summary.total_amount || 0))}
+                    {formatCurrency(Number(summary.total_amount || 0), summaryCurrency, false)}
                   </span>
                 </div>
               </div>

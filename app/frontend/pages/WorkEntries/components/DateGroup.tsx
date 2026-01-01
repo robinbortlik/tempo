@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/components/CurrencyDisplay";
 import WorkEntryRow from "./WorkEntryRow";
 
 interface Project {
@@ -64,13 +65,6 @@ function formatTotalHours(hours: number): string {
   return formatted;
 }
 
-function formatCurrency(amount: number): string {
-  return amount.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
-
 export default function DateGroup({
   group,
   projects,
@@ -115,7 +109,7 @@ export default function DateGroup({
             <>
               <span className="text-stone-300">·</span>
               <span className="text-lg font-semibold text-stone-600 tabular-nums">
-                {formatCurrency(group.total_amount)}
+                {formatCurrency(group.total_amount, group.entries[0]?.client_currency, false)}
               </span>
             </>
           )}

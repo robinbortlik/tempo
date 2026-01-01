@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 import LineItemEditor from "./components/LineItemEditor";
 import LineItemDisplay from "./components/LineItemDisplay";
 
@@ -76,17 +77,6 @@ interface PageProps {
     notice?: string;
   };
   [key: string]: unknown;
-}
-
-function formatCurrency(amount: number, currency: string | null): string {
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatDate(dateString: string): string {

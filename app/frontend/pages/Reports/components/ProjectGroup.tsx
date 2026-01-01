@@ -4,6 +4,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 
 interface Entry {
   id: number;
@@ -26,22 +27,6 @@ interface ProjectGroupProps {
   totalAmount: number;
   currency: string;
   defaultOpen?: boolean;
-}
-
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  EUR: "\u20AC",
-  USD: "$",
-  GBP: "\u00A3",
-  CZK: "K\u010D",
-};
-
-function formatCurrency(amount: number | string, currency: string): string {
-  const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-  const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  return `${symbol}${numAmount.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })}`;
 }
 
 function formatDate(dateString: string): string {

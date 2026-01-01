@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 
 interface UnbilledClient {
   id: number;
@@ -22,21 +23,6 @@ interface UnbilledClient {
 
 interface UnbilledByClientTableProps {
   data: UnbilledClient[];
-}
-
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  EUR: "\u20AC",
-  USD: "$",
-  GBP: "\u00A3",
-  CZK: "K\u010D",
-};
-
-function formatCurrency(amount: number, currency: string): string {
-  const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  return `${symbol}${amount.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })}`;
 }
 
 export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
@@ -108,10 +94,10 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                     {client.total_hours.toFixed(1)}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right tabular-nums font-medium text-stone-900">
-                    {formatCurrency(client.total_amount, client.currency)}
+                    {formatCurrency(client.total_amount, client.currency, false)}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right text-sm text-stone-500">
-                    {formatCurrency(client.average_rate, client.currency)}/hr
+                    {formatCurrency(client.average_rate, client.currency, false)}/hr
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right">
                     <Button

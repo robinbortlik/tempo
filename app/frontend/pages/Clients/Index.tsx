@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatCurrency, formatRate } from "@/components/CurrencyDisplay";
 
 interface Client {
   id: number;
@@ -39,29 +40,6 @@ function getInitials(name: string): string {
     .join("")
     .toUpperCase()
     .slice(0, 2);
-}
-
-function formatCurrency(amount: number, currency: string | null): string {
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${amount.toLocaleString()}`;
-}
-
-function formatRate(rate: number | null, currency: string | null): string {
-  if (!rate) return "-";
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${rate}/hr`;
 }
 
 export default function ClientsIndex() {

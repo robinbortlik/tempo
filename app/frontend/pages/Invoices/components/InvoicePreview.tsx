@@ -1,3 +1,5 @@
+import { formatCurrency } from "@/components/CurrencyDisplay";
+
 export interface LineItem {
   id?: number;
   line_type: "time_aggregate" | "fixed";
@@ -16,17 +18,6 @@ interface InvoicePreviewProps {
   totalHours: number;
   totalAmount: number;
   currency: string;
-}
-
-function formatCurrency(amount: number, currency: string | null): string {
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatHours(hours: number): string {

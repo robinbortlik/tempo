@@ -2,6 +2,7 @@ import { Head, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 
 import { StatCard } from "./components/StatCard";
 import { TimeByClientChart } from "./components/TimeByClientChart";
@@ -61,21 +62,6 @@ interface PageProps {
     notice?: string;
   };
   [key: string]: unknown;
-}
-
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  EUR: "\u20AC",
-  USD: "$",
-  GBP: "\u00A3",
-  CZK: "K\u010D",
-};
-
-function formatCurrencyAmount(amount: number, currency: string): string {
-  const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  return `${symbol}${amount.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  })}`;
 }
 
 export default function DashboardIndex() {
@@ -138,9 +124,10 @@ export default function DashboardIndex() {
               </p>
             ) : unbilledAmountEntries.length === 1 ? (
               <p className="text-3xl font-semibold tabular-nums text-amber-900">
-                {formatCurrencyAmount(
+                {formatCurrency(
                   Number(unbilledAmountEntries[0][1]),
-                  unbilledAmountEntries[0][0]
+                  unbilledAmountEntries[0][0],
+                  false
                 )}
               </p>
             ) : (
@@ -150,7 +137,7 @@ export default function DashboardIndex() {
                     key={currency}
                     className="text-lg font-semibold tabular-nums text-amber-900"
                   >
-                    {formatCurrencyAmount(Number(amount), currency)}
+                    {formatCurrency(Number(amount), currency, false)}
                     <span className="text-sm font-normal text-amber-700 ml-1">
                       {currency}
                     </span>

@@ -2,11 +2,17 @@ import { router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputWithAddon } from "@/components/ui/input-with-addon";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  formatCurrency,
+  getCurrencySymbol,
+  isSymbolAfter,
+} from "@/components/CurrencyDisplay";
 import StatusBadge from "./StatusBadge";
 import EntryTypeBadge from "./EntryTypeBadge";
 import ProjectSelector from "./ProjectSelector";
@@ -61,11 +67,6 @@ function formatHours(hours: number | null): string {
     : `${numHours.toFixed(1)}`;
 }
 
-function formatCurrency(amount: number, currency?: string | null): string {
-  const currencySymbol = currency === "EUR" ? "\u20AC" : "$";
-  return `${currencySymbol}${amount.toLocaleString()}`;
-}
-
 export default function WorkEntryRow({
   entry,
   projects,
@@ -92,18 +93,26 @@ export default function WorkEntryRow({
   const isInvoiced = entry.status === "invoiced";
   const isTimeEntry = entry.entry_type === "time";
 
-  // Get the selected project's effective hourly rate
-  const getSelectedProjectRate = (): number | null => {
+  // Get the selected project's client group
+  const getSelectedClientGroup = (): ClientGroup | null => {
     if (!editData.project_id) return null;
     const pid = parseInt(editData.project_id);
     for (const group of projects) {
       const project = group.projects.find((p) => p.id === pid);
-      if (project) return project.effective_hourly_rate;
+      if (project) return group;
     }
     return null;
   };
 
-  const selectedProjectRate = getSelectedProjectRate();
+  const selectedClientGroup = getSelectedClientGroup();
+  const selectedProjectRate = selectedClientGroup
+    ? selectedClientGroup.projects.find(
+        (p) => p.id === parseInt(editData.project_id)
+      )?.effective_hourly_rate ?? null
+    : null;
+  const clientCurrency = selectedClientGroup?.client.currency;
+  const selectedCurrency = getCurrencySymbol(clientCurrency);
+  const currencyAfter = isSymbolAfter(clientCurrency);
   const hasCustomRate = editData.hourly_rate !== "";
   const displayRate = hasCustomRate
     ? parseFloat(editData.hourly_rate)
@@ -209,17 +218,19 @@ export default function WorkEntryRow({
               placeholder="Hours"
             />
           </div>
-          <div className="w-24">
-            <Input
+          <div className="w-28">
+            <InputWithAddon
               type="number"
-              step="0.01"
+              step="1"
               min="0"
               value={editData.amount}
               onChange={(e) =>
                 setEditData({ ...editData, amount: e.target.value })
               }
-              className="w-full px-3 py-2 bg-white border-stone-200 rounded-lg text-stone-900 tabular-nums text-sm"
-              placeholder="Amount"
+              startAddon={currencyAfter ? undefined : selectedCurrency}
+              endAddon={currencyAfter ? selectedCurrency : undefined}
+              className="w-full px-3 py-2 bg-white border-stone-200 text-stone-900 tabular-nums text-sm"
+              placeholder="500"
             />
           </div>
           <div className="flex-1">
@@ -272,7 +283,7 @@ export default function WorkEntryRow({
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span>Rate: ${displayRate}/h</span>
+              <span>Rate: {selectedCurrency}{displayRate}/h</span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <div className="flex items-end gap-3">
@@ -283,11 +294,11 @@ export default function WorkEntryRow({
                   >
                     Hourly Rate
                   </label>
-                  <Input
+                  <InputWithAddon
                     id={`hourly_rate_${entry.id}`}
                     type="number"
-                    step="0.01"
-                    min="0.01"
+                    step="1"
+                    min="1"
                     required
                     value={
                       editData.hourly_rate ||
@@ -298,7 +309,9 @@ export default function WorkEntryRow({
                       setEditData({ ...editData, hourly_rate: e.target.value })
                     }
                     disabled={isInvoiced}
-                    className="w-32 px-3 py-2 bg-white border-stone-200 rounded-lg tabular-nums text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    startAddon={currencyAfter ? undefined : selectedCurrency}
+                    endAddon={currencyAfter ? selectedCurrency : undefined}
+                    className="w-24 px-3 py-2 bg-white border-stone-200 tabular-nums text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 {isInvoiced && (
@@ -404,13 +417,14 @@ export default function WorkEntryRow({
                 <span className="text-sm text-stone-500 tabular-nums">
                   {formatCurrency(
                     entry.calculated_amount,
-                    entry.client_currency
+                    entry.client_currency,
+                    false
                   )}
                 </span>
               </>
             ) : (
               <span className="text-xl font-bold tabular-nums tracking-tight text-stone-900">
-                {formatCurrency(entry.calculated_amount, entry.client_currency)}
+                {formatCurrency(entry.calculated_amount, entry.client_currency, false)}
               </span>
             )}
           </div>

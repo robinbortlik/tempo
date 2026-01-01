@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 import LineItemEditor from "./components/LineItemEditor";
 import LineItemDisplay from "./components/LineItemDisplay";
 import {
@@ -60,17 +61,6 @@ interface PageProps {
     notice?: string;
   };
   [key: string]: unknown;
-}
-
-function formatCurrency(amount: number, currency: string | null): string {
-  const symbols: Record<string, string> = {
-    EUR: "\u20AC",
-    USD: "$",
-    GBP: "\u00A3",
-    CZK: "K\u010D",
-  };
-  const symbol = currency ? symbols[currency] || currency : "";
-  return `${symbol}${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatPeriod(start: string, end: string): string {

@@ -24,10 +24,10 @@ describe("CurrencyDisplay", () => {
     expect(display).toHaveTextContent("\u00A31,000.00");
   });
 
-  it("renders CZK currency with symbol", () => {
+  it("renders CZK currency with symbol after amount", () => {
     render(<CurrencyDisplay amount={1000} currency="CZK" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("K\u010D1,000.00");
+    expect(display).toHaveTextContent("1,000.00 K\u010D");
   });
 
   it("falls back to currency code for unknown currencies", () => {

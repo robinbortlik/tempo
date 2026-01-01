@@ -1,6 +1,7 @@
 import React from "react";
 import { router, usePage } from "@inertiajs/react";
 import PublicLayout from "@/components/PublicLayout";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 import { UnbilledSection } from "./components/UnbilledSection";
 import { InvoicedSection } from "./components/InvoicedSection";
 
@@ -77,22 +78,6 @@ const MONTHS = [
   "Nov",
   "Dec",
 ];
-
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  EUR: "\u20AC",
-  USD: "$",
-  GBP: "\u00A3",
-  CZK: "K\u010D",
-};
-
-function formatCurrency(amount: number | string, currency: string): string {
-  const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-  const symbol = CURRENCY_SYMBOLS[currency] || currency;
-  return `${symbol}${numAmount.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  })}`;
-}
 
 function formatHours(hours: number | string): string {
   // Convert to number if string (Rails may send as string)

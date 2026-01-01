@@ -2,11 +2,13 @@ import { router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputWithAddon } from "@/components/ui/input-with-addon";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { getCurrencySymbol, isSymbolAfter } from "@/components/CurrencyDisplay";
 import ProjectSelector from "./ProjectSelector";
 
 interface Project {
@@ -41,22 +43,73 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   const [showRateOverride, setShowRateOverride] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get the selected project's effective hourly rate
-  const getSelectedProjectRate = (): number | null => {
+  // Get the selected project's client group
+  const getSelectedClientGroup = (): ClientGroup | null => {
     if (!projectId) return null;
     const pid = parseInt(projectId);
     for (const group of projects) {
       const project = group.projects.find((p) => p.id === pid);
-      if (project) return project.effective_hourly_rate;
+      if (project) return group;
     }
     return null;
   };
 
-  const selectedProjectRate = getSelectedProjectRate();
+  const selectedClientGroup = getSelectedClientGroup();
+  const selectedProjectRate = selectedClientGroup
+    ? selectedClientGroup.projects.find((p) => p.id === parseInt(projectId))
+        ?.effective_hourly_rate ?? null
+    : null;
+  const clientCurrency = selectedClientGroup?.client.currency;
+  const selectedCurrency = getCurrencySymbol(clientCurrency);
+  const currencyAfter = isSymbolAfter(clientCurrency);
   const hasCustomRate = hourlyRate !== "";
   const displayRate = hasCustomRate
     ? parseFloat(hourlyRate)
     : selectedProjectRate;
+
+  // Calculate amount from hours and rate (returns integer)
+  const calculateAmount = (
+    hoursValue: string,
+    rateValue: number | null
+  ): string => {
+    const h = parseFloat(hoursValue);
+    if (!isNaN(h) && h > 0 && rateValue && rateValue > 0) {
+      return Math.round(h * rateValue).toString();
+    }
+    return "";
+  };
+
+  // Handle hours change - recalculate amount
+  const handleHoursChange = (value: string) => {
+    setHours(value);
+    const rate = hasCustomRate ? parseFloat(hourlyRate) : selectedProjectRate;
+    setAmount(calculateAmount(value, rate));
+  };
+
+  // Handle hourly rate change - recalculate amount
+  const handleRateChange = (value: string) => {
+    setHourlyRate(value);
+    const rate = parseFloat(value);
+    if (!isNaN(rate)) {
+      setAmount(calculateAmount(hours, rate));
+    }
+  };
+
+  // Handle project change - recalculate amount with new project's rate
+  const handleProjectChange = (value: string) => {
+    setProjectId(value);
+    // Only recalculate if not using custom rate and hours are entered
+    if (!hasCustomRate && hours) {
+      const pid = parseInt(value);
+      for (const group of projects) {
+        const project = group.projects.find((p) => p.id === pid);
+        if (project) {
+          setAmount(calculateAmount(hours, project.effective_hourly_rate));
+          break;
+        }
+      }
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -132,7 +185,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               id="Project"
               projects={projects}
               value={projectId}
-              onChange={setProjectId}
+              onChange={handleProjectChange}
               required
               className="w-full h-10"
             />
@@ -152,28 +205,30 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               min="0"
               max="24"
               value={hours}
-              onChange={(e) => setHours(e.target.value)}
+              onChange={(e) => handleHoursChange(e.target.value)}
               className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
               placeholder="8"
             />
           </div>
-          <div className="w-28">
+          <div className="w-32">
             <label
               htmlFor="Amount"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
               Amount
             </label>
-            <Input
+            <InputWithAddon
               id="Amount"
               name="Amount"
               type="number"
-              step="0.01"
+              step="1"
               min="0"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
-              placeholder="$500"
+              startAddon={currencyAfter ? undefined : selectedCurrency}
+              endAddon={currencyAfter ? selectedCurrency : undefined}
+              className="h-10 bg-stone-50 border-stone-200 tabular-nums"
+              placeholder="500"
             />
           </div>
           <div className="flex-1">
@@ -221,7 +276,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-              <span>Rate: ${displayRate}/h</span>
+              <span>Rate: {selectedCurrency}{displayRate}/h</span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <div className="flex items-end gap-3">
@@ -232,15 +287,17 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                   >
                     Hourly Rate
                   </label>
-                  <Input
+                  <InputWithAddon
                     id="hourly_rate"
                     type="number"
-                    step="0.01"
-                    min="0.01"
+                    step="1"
+                    min="1"
                     required
                     value={hourlyRate || selectedProjectRate?.toString() || ""}
-                    onChange={(e) => setHourlyRate(e.target.value)}
-                    className="w-32 h-10 bg-stone-50 border-stone-200 rounded-lg tabular-nums"
+                    onChange={(e) => handleRateChange(e.target.value)}
+                    startAddon={currencyAfter ? undefined : selectedCurrency}
+                    endAddon={currencyAfter ? selectedCurrency : undefined}
+                    className="w-24 h-10 bg-stone-50 border-stone-200 tabular-nums"
                   />
                 </div>
               </div>
