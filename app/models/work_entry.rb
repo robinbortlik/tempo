@@ -62,9 +62,9 @@ class WorkEntry < ApplicationRecord
     self.hourly_rate = project&.effective_hourly_rate
   end
 
-  # Prevent changes to hourly_rate on invoiced entries
+  # Prevent changes to hourly_rate on entries that were already invoiced
   def hourly_rate_locked_when_invoiced
-    return unless hourly_rate_changed? && invoiced?
+    return unless persisted? && hourly_rate_changed? && status_was == "invoiced"
 
     errors.add(:hourly_rate, "cannot be changed on invoiced entries")
   end
