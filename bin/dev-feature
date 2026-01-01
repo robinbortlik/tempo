@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -e
+
+# Development server with feature-specific isolation
+# Usage: bin/dev-feature <feature-name> [port-offset]
+#
+# Examples:
+#   bin/dev-feature auth        # Rails: 3001, Vite: 3137
+#   bin/dev-feature payments 2  # Rails: 3002, Vite: 3138
+#
+# This script:
+# - Sets unique ports for Rails and Vite servers
+# - Uses an isolated SQLite database per feature
+# - Loads .env.local if present for additional config
+
+FEATURE_NAME="${1:-}"
+PORT_OFFSET="${2:-1}"
+
+if [ -z "$FEATURE_NAME" ]; then
+  echo "Usage: bin/dev-feature <feature-name> [port-offset]"
+  echo ""
+  echo "Examples:"
+  echo "  bin/dev-feature auth        # Rails: 3001, Vite: 3137, DB: development-auth"
+  echo "  bin/dev-feature payments 2  # Rails: 3002, Vite: 3138, DB: development-payments"
+  echo ""
+  echo "Environment variables set:"
+  echo "  PORT           - Rails server port (3000 + offset)"
+  echo "  VITE_RUBY_PORT - Vite dev server port (3136 + offset)"
+  echo "  DATABASE_NAME  - SQLite database suffix"
+  exit 1
+fi
+
+# Calculate ports based on offset
+# Default ports: Rails 3000, Vite 3036
+# Feature ports: Rails 3000+offset, Vite 3136+offset (using 3136 to avoid conflicts)
+RAILS_PORT=$((3000 + PORT_OFFSET))
+VITE_PORT=$((3136 + PORT_OFFSET))
+
+echo "Starting development server for feature: $FEATURE_NAME"
+echo "  Rails:    http://localhost:$RAILS_PORT"
+echo "  Vite:     http://localhost:$VITE_PORT"
+echo "  Database: storage/development-$FEATURE_NAME.sqlite3"
+echo ""
+
+# Load .env.local if present
+if [ -f .env.local ]; then
+  set -a
+  source .env.local
+  set +a
+fi
+
+# Export environment variables and start foreman
+export PORT="$RAILS_PORT"
+export VITE_RUBY_PORT="$VITE_PORT"
+export DATABASE_NAME="$FEATURE_NAME"
+
+# Ensure database exists
+bin/rails db:prepare 2>/dev/null || true
+
+exec bin/dev "$@"

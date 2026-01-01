@@ -1,3 +1,6 @@
-
+# Port configuration for parallel development environments:
+# - PORT: Rails server port (default: 3000)
+# - VITE_RUBY_PORT: Vite dev server port (default: 3036 from config/vite.json)
+# Example: PORT=3001 VITE_RUBY_PORT=3136 bin/dev
 vite: bin/vite dev
-web: bin/rails s
+web: bin/rails s -p ${PORT:-3000}

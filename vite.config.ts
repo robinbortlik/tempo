@@ -15,4 +15,8 @@ export default defineConfig({
       '@': resolve(__dirname, 'app/frontend'),
     },
   },
+  server: {
+    // Allow port override via VITE_PORT for parallel development environments
+    port: process.env.VITE_PORT ? parseInt(process.env.VITE_PORT, 10) : undefined,
+  },
 })

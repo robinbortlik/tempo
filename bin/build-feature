@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -e
+
+# Build a new feature with Claude Code in an isolated worktree
+# Usage: bin/build-feature <branch-name> <feature-description>
+#
+# Examples:
+#   bin/build-feature "user-auth" "Add user authentication with login and logout"
+#   bin/build-feature "invoice-pdf" "Generate PDF invoices with company logo"
+
+BRANCH_NAME="${1:-}"
+FEATURE_PROMPT="${2:-}"
+
+if [ -z "$BRANCH_NAME" ] || [ -z "$FEATURE_PROMPT" ]; then
+  echo "Usage: bin/build-feature <branch-name> <feature-description>"
+  echo ""
+  echo "Creates a new worktree and starts Claude Code with /build command."
+  echo ""
+  echo "Arguments:"
+  echo "  branch-name          - Name for the feature branch (will be normalized)"
+  echo "  feature-description  - Initial prompt describing the feature to build"
+  echo ""
+  echo "Examples:"
+  echo "  bin/build-feature \"user-auth\" \"Add user authentication with login and logout\""
+  echo "  bin/build-feature \"invoice-pdf\" \"Generate PDF invoices with company logo\""
+  exit 1
+fi
+
+# Normalize branch name:
+# - Convert to lowercase
+# - Replace spaces and underscores with dashes
+# - Remove special characters except dashes
+# - Remove leading/trailing dashes
+# - Collapse multiple dashes
+NORMALIZED_NAME=$(echo "$BRANCH_NAME" | \
+  tr '[:upper:]' '[:lower:]' | \
+  tr ' _' '-' | \
+  sed 's/[^a-z0-9-]//g' | \
+  sed 's/--*/-/g' | \
+  sed 's/^-//' | \
+  sed 's/-$//')
+
+if [ -z "$NORMALIZED_NAME" ]; then
+  echo "Error: Branch name '$BRANCH_NAME' normalized to empty string"
+  exit 1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+PARENT_DIR="$(dirname "$PROJECT_DIR")"
+WORKTREE_PATH="$PARENT_DIR/invoicing-$NORMALIZED_NAME"
+
+echo "Building feature: $NORMALIZED_NAME"
+echo "Description: $FEATURE_PROMPT"
+echo ""
+
+# Create worktree if it doesn't exist
+if [ -d "$WORKTREE_PATH" ]; then
+  echo "Worktree already exists at $WORKTREE_PATH"
+  echo "Switching to existing worktree..."
+else
+  echo "Creating new worktree..."
+  "$SCRIPT_DIR/worktree-setup" "$NORMALIZED_NAME" "feature/$NORMALIZED_NAME"
+fi
+
+# Change to worktree directory
+cd "$WORKTREE_PATH"
+
+echo ""
+echo "Starting Claude Code with /build command..."
+echo ""
+
+# Start Claude Code with /build command and the feature prompt
+# Uses same parameters as cyolo alias
+exec env ENABLE_TOOL_SEARCH=true claude --dangerously-skip-permissions --prompt "/build $FEATURE_PROMPT"

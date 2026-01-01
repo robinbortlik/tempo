@@ -1,24 +1,104 @@
-# README
+# Invoicing
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Personal time tracking and invoicing application for independent developers working with multiple clients.
 
-Things you may want to cover:
+## Tech Stack
 
-* Ruby version
+- **Backend:** Rails 8.1 with Ruby 3.3
+- **Frontend:** React 19 + TypeScript via Inertia.js
+- **UI:** Tailwind CSS + shadcn/ui
+- **Database:** SQLite3
+- **PDF:** Grover (Puppeteer-based)
 
-* System dependencies
+## Setup
 
-* Configuration
+```bash
+bundle install
+npm install
+bin/rails db:prepare
+```
 
-* Database creation
+## Development
 
-* Database initialization
+```bash
+bin/dev                    # Start Rails + Vite dev servers
+```
 
-* How to run the test suite
+Access the app at http://localhost:3000
 
-* Services (job queues, cache servers, search engines, etc.)
+## Parallel Development
 
-* Deployment instructions
+Work on multiple features simultaneously with isolated environments.
 
-* ...
+### Quick Start
+
+```bash
+# Build a new feature with Claude Code
+bin/build-feature "feature-name" "Description of what to build"
+
+# Example
+bin/build-feature "invoice-reminders" "Add email reminders for unpaid invoices"
+```
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `bin/build-feature <name> <prompt>` | Create worktree and start Claude with /build |
+| `bin/worktree-setup <name>` | Create isolated worktree for manual development |
+| `bin/dev-feature <name>` | Run dev server with feature-specific ports (same directory) |
+
+### How It Works
+
+Each parallel environment gets:
+- **Separate directory:** `../invoicing-<feature-name>`
+- **Own git branch:** `feature/<feature-name>`
+- **Isolated database:** `storage/development-<feature-name>.sqlite3`
+- **Unique ports:** Rails 3001+, Vite 3137+
+
+### Example Workflow
+
+```bash
+# Terminal 1 - main development
+cd invoicing
+bin/dev                     # Rails: 3000, Vite: 3036
+
+# Terminal 2 - feature work
+bin/build-feature "auth" "Add user authentication"
+# Creates ../invoicing-auth and starts Claude
+
+# Terminal 3 - another feature
+bin/build-feature "reports" "Add monthly revenue reports"
+# Creates ../invoicing-reports and starts Claude
+```
+
+### Managing Worktrees
+
+```bash
+# List all worktrees
+git worktree list
+
+# Remove a worktree when done
+git worktree remove ../invoicing-<feature-name>
+
+# Clean up merged branches
+git branch -d feature/<feature-name>
+```
+
+## Testing
+
+```bash
+# Backend
+bundle exec rspec
+
+# Frontend
+npm test              # Watch mode
+npm run test:run      # Single run
+npm run typecheck     # TypeScript check
+```
+
+## Build
+
+```bash
+npm run build         # Production frontend build
+```
