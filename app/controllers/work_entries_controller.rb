@@ -82,7 +82,7 @@ class WorkEntriesController < ApplicationController
   end
 
   def work_entry_params
-    params.require(:work_entry).permit(:project_id, :date, :hours, :amount, :description)
+    params.require(:work_entry).permit(:project_id, :date, :hours, :amount, :description, :hourly_rate)
   end
 
   def filtered_work_entries
@@ -153,6 +153,7 @@ class WorkEntriesController < ApplicationController
       date: entry.date,
       hours: entry.hours,
       amount: entry.amount,
+      hourly_rate: entry.hourly_rate,
       entry_type: entry.entry_type,
       description: entry.description,
       status: entry.status,
@@ -171,6 +172,7 @@ class WorkEntriesController < ApplicationController
       date: entry.date,
       hours: entry.hours,
       amount: entry.amount,
+      hourly_rate: entry.hourly_rate,
       entry_type: entry.entry_type,
       description: entry.description,
       status: entry.status,
