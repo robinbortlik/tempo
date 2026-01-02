@@ -481,6 +481,10 @@
                 <span class="payment-header-value"><%= @settings.bank_swift %></span>
               </div>
             <% end %>
+            <div class="payment-header-item">
+              <span class="payment-header-label">Reference</span>
+              <span class="payment-header-value">#<%= @invoice.number %></span>
+            </div>
           </div>
         <% end %>
       </div>
@@ -597,25 +601,15 @@
       </div>
     <% end %>
 
-    <!-- Footer -->
-    <div class="footer-wrapper">
-      <div class="footer-content">
-        <% if @qr_code_data_url %>
-          <div class="qr-code-container">
-            <img src="<%= @qr_code_data_url %>" alt="Payment QR Code" class="qr-code" />
-            <p class="qr-instruction">Scan to pay</p>
-          </div>
-        <% else %>
-          <div></div>
-        <% end %>
-        <div class="footer-reference">
-          Payment reference: <strong>#<%= @invoice.number %></strong>
-          <% if @settings.invoice_message.present? %>
-            <br><%= @settings.invoice_message %>
-          <% end %>
+    <!-- Footer - QR Code -->
+    <% if @qr_code_data_url %>
+      <div class="footer-wrapper">
+        <div class="qr-code-container">
+          <img src="<%= @qr_code_data_url %>" alt="Payment QR Code" class="qr-code" />
+          <p class="qr-instruction">Scan to pay</p>
         </div>
       </div>
-    </div>
+    <% end %>
   </div>
 </body>
 </html>
