@@ -355,27 +355,69 @@
       color: #a8a29e;
     }
 
-    /* QR Payment section */
+    /* QR Payment section - bottom left */
     .qr-payment-section {
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid #e5e5e5;
-      text-align: center;
+      position: absolute;
+      bottom: 0;
+      left: 0;
     }
 
     .qr-code-container {
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .qr-code {
-      width: 3cm;
-      height: 3cm;
+      width: 2.5cm;
+      height: 2.5cm;
     }
 
     .qr-instruction {
-      margin-top: 5px;
+      margin-top: 4px;
+      font-size: 9px;
+      color: #78716c;
+    }
+
+    /* Payment details in header */
+    .payment-header {
+      display: flex;
+      gap: 24px;
       font-size: 10px;
-      color: #666;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e7e5e4;
+    }
+
+    .payment-header-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .payment-header-label {
+      color: #78716c;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .payment-header-value {
+      color: #1c1917;
+      font-weight: 500;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    }
+
+    /* Footer with QR positioning */
+    .footer-wrapper {
+      position: relative;
+      padding-top: 20px;
+      border-top: 1px solid #e7e5e4;
+      min-height: 80px;
+    }
+
+    .footer-reference {
+      font-size: 10px;
+      color: #78716c;
     }
 
     /* Status badge for draft invoices */
@@ -421,6 +463,28 @@
             <br>Reg: <%= @settings.company_registration %>
           <% end %>
         </div>
+        <% if @settings.iban.present? || @settings.bank_name.present? || @settings.bank_swift.present? %>
+          <div class="payment-header">
+            <% if @settings.bank_name.present? %>
+              <div class="payment-header-item">
+                <span class="payment-header-label">Bank</span>
+                <span class="payment-header-value"><%= @settings.bank_name %></span>
+              </div>
+            <% end %>
+            <% if @settings.iban.present? %>
+              <div class="payment-header-item">
+                <span class="payment-header-label">IBAN</span>
+                <span class="payment-header-value"><%= @settings.iban %></span>
+              </div>
+            <% end %>
+            <% if @settings.bank_swift.present? %>
+              <div class="payment-header-item">
+                <span class="payment-header-label">SWIFT/BIC</span>
+                <span class="payment-header-value"><%= @settings.bank_swift %></span>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
 
       <div class="invoice-title-section">
@@ -535,42 +599,8 @@
       </div>
     <% end %>
 
-    <!-- Footer / Payment Details -->
-    <div class="footer">
-      <div class="footer-title">Payment Details</div>
-      <div class="payment-details">
-        <% if @settings.bank_name.present? %>
-          <div class="payment-item">
-            <div class="payment-label">Bank</div>
-            <div class="payment-value"><%= @settings.bank_name %></div>
-          </div>
-        <% end %>
-        <% if @settings.bank_account.present? %>
-          <div class="payment-item">
-            <div class="payment-label">Account / IBAN</div>
-            <div class="payment-value"><%= @settings.bank_account %></div>
-          </div>
-        <% end %>
-        <% if @settings.bank_swift.present? %>
-          <div class="payment-item">
-            <div class="payment-label">SWIFT / BIC</div>
-            <div class="payment-value"><%= @settings.bank_swift %></div>
-          </div>
-        <% end %>
-        <% if @settings.iban.present? %>
-          <div class="payment-item">
-            <div class="payment-label">IBAN</div>
-            <div class="payment-value"><%= @settings.iban %></div>
-          </div>
-        <% end %>
-      </div>
-      <% if @settings.invoice_message.present? %>
-        <div class="payment-note"><%= @settings.invoice_message %></div>
-      <% end %>
-      <div class="payment-note">
-        Reference: <strong>#<%= @invoice.number %></strong>
-      </div>
-
+    <!-- Footer -->
+    <div class="footer-wrapper">
       <% if @qr_code_data_url %>
         <div class="qr-payment-section">
           <div class="qr-code-container">
@@ -579,6 +609,12 @@
           </div>
         </div>
       <% end %>
+      <div class="footer-reference">
+        Payment reference: <strong>#<%= @invoice.number %></strong>
+        <% if @settings.invoice_message.present? %>
+          <br><%= @settings.invoice_message %>
+        <% end %>
+      </div>
     </div>
   </div>
 </body>
