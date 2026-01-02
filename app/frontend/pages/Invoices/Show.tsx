@@ -68,10 +68,16 @@ interface Settings {
   logo_url: string | null;
 }
 
+interface QrCode {
+  data_url: string;
+  format: "epc" | "spayd";
+}
+
 interface PageProps {
   invoice: Invoice;
   line_items: LineItem[];
   settings: Settings;
+  qr_code: QrCode | null;
   flash: {
     alert?: string;
     notice?: string;
@@ -119,7 +125,8 @@ function StatusBadge({ status }: { status: "draft" | "final" }) {
 }
 
 export default function InvoiceShow() {
-  const { invoice, line_items, settings, flash } = usePage<PageProps>().props;
+  const { invoice, line_items, settings, qr_code, flash } =
+    usePage<PageProps>().props;
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
@@ -670,6 +677,17 @@ export default function InvoiceShow() {
               Please include invoice number <strong>#{invoice.number}</strong>{" "}
               in payment reference.
             </p>
+
+            {qr_code && (
+              <div className="mt-5 pt-4 border-t border-stone-200 text-center">
+                <img
+                  src={qr_code.data_url}
+                  alt="Payment QR Code"
+                  className="w-[113px] h-[113px] mx-auto"
+                />
+                <p className="text-xs text-stone-500 mt-1">Scan to pay</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

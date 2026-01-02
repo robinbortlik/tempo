@@ -355,6 +355,29 @@
       color: #a8a29e;
     }
 
+    /* QR Payment section */
+    .qr-payment-section {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #e5e5e5;
+      text-align: center;
+    }
+
+    .qr-code-container {
+      display: inline-block;
+    }
+
+    .qr-code {
+      width: 3cm;
+      height: 3cm;
+    }
+
+    .qr-instruction {
+      margin-top: 5px;
+      font-size: 10px;
+      color: #666;
+    }
+
     /* Status badge for draft invoices */
     .draft-badge {
       display: inline-block;
@@ -547,6 +570,15 @@
       <div class="payment-note">
         Reference: <strong>#<%= @invoice.number %></strong>
       </div>
+
+      <% if @qr_code_data_url %>
+        <div class="qr-payment-section">
+          <div class="qr-code-container">
+            <img src="<%= @qr_code_data_url %>" alt="Payment QR Code" class="qr-code" />
+            <p class="qr-instruction">Scan to pay</p>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </body>
