@@ -355,30 +355,6 @@
       color: #a8a29e;
     }
 
-    /* QR Payment section - bottom left */
-    .qr-payment-section {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .qr-code-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .qr-code {
-      width: 2.5cm;
-      height: 2.5cm;
-    }
-
-    .qr-instruction {
-      margin-top: 4px;
-      font-size: 9px;
-      color: #78716c;
-    }
-
     /* Payment details in header */
     .payment-header {
       display: flex;
@@ -409,15 +385,37 @@
 
     /* Footer with QR positioning */
     .footer-wrapper {
-      position: relative;
       padding-top: 20px;
       border-top: 1px solid #e7e5e4;
-      min-height: 80px;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .qr-code-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .qr-code {
+      width: 2cm;
+      height: 2cm;
+    }
+
+    .qr-instruction {
+      margin-top: 4px;
+      font-size: 9px;
+      color: #78716c;
     }
 
     .footer-reference {
       font-size: 10px;
       color: #78716c;
+      text-align: right;
     }
 
     /* Status badge for draft invoices */
@@ -601,19 +599,21 @@
 
     <!-- Footer -->
     <div class="footer-wrapper">
-      <% if @qr_code_data_url %>
-        <div class="qr-payment-section">
+      <div class="footer-content">
+        <% if @qr_code_data_url %>
           <div class="qr-code-container">
             <img src="<%= @qr_code_data_url %>" alt="Payment QR Code" class="qr-code" />
             <p class="qr-instruction">Scan to pay</p>
           </div>
-        </div>
-      <% end %>
-      <div class="footer-reference">
-        Payment reference: <strong>#<%= @invoice.number %></strong>
-        <% if @settings.invoice_message.present? %>
-          <br><%= @settings.invoice_message %>
+        <% else %>
+          <div></div>
         <% end %>
+        <div class="footer-reference">
+          Payment reference: <strong>#<%= @invoice.number %></strong>
+          <% if @settings.invoice_message.present? %>
+            <br><%= @settings.invoice_message %>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

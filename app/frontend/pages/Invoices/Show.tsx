@@ -663,20 +663,24 @@ export default function InvoiceShow() {
           )}
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-stone-200 relative min-h-[80px]">
-            {qr_code && (
-              <div className="absolute bottom-0 left-0">
-                <img
-                  src={qr_code.data_url}
-                  alt="Payment QR Code"
-                  className="w-[70px] h-[70px]"
-                />
-                <p className="text-[9px] text-stone-400 mt-1">Scan to pay</p>
-              </div>
-            )}
-            <p className="text-xs text-stone-500">
-              Payment reference: <strong className="text-stone-700">#{invoice.number}</strong>
-            </p>
+          <div className="mt-8 pt-6 border-t border-stone-200">
+            <div className="flex items-end justify-between">
+              {qr_code ? (
+                <div>
+                  <img
+                    src={qr_code.data_url}
+                    alt="Payment QR Code"
+                    className="w-[70px] h-[70px]"
+                  />
+                  <p className="text-[9px] text-stone-400 mt-1">Scan to pay</p>
+                </div>
+              ) : (
+                <div />
+              )}
+              <p className="text-xs text-stone-500 text-right">
+                Payment reference: <strong className="text-stone-700">#{invoice.number}</strong>
+              </p>
+            </div>
           </div>
         </div>
       </div>
