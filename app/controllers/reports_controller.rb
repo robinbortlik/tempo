@@ -5,7 +5,7 @@ class ReportsController < ApplicationController
   allow_unauthenticated_access
 
   def show
-    client = Client.find_by!(share_token: params[:share_token])
+    client = Client.find_by!(share_token: params[:share_token], sharing_enabled: true)
     service = ClientReportService.new(
       client: client,
       year: params[:year],
@@ -16,7 +16,7 @@ class ReportsController < ApplicationController
   end
 
   def invoice_pdf
-    client = Client.find_by!(share_token: params[:share_token])
+    client = Client.find_by!(share_token: params[:share_token], sharing_enabled: true)
     @invoice = client.invoices.final.find(params[:invoice_id])
     @settings = Setting.instance
     @logo_data_url = logo_as_data_url(@settings)

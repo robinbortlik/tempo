@@ -1,5 +1,5 @@
 class ClientsController < ApplicationController
-  before_action :set_client, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_client, only: [ :show, :edit, :update, :destroy, :toggle_sharing, :regenerate_share_token ]
 
   def index
     render inertia: "Clients/Index", props: {
@@ -55,6 +55,24 @@ class ClientsController < ApplicationController
     end
   end
 
+  def toggle_sharing
+    @client.update(sharing_enabled: !@client.sharing_enabled)
+
+    respond_to do |format|
+      format.html { redirect_to client_path(@client), notice: "Sharing #{@client.sharing_enabled? ? 'enabled' : 'disabled'} successfully." }
+      format.json { render json: { sharing_enabled: @client.sharing_enabled } }
+    end
+  end
+
+  def regenerate_share_token
+    @client.update(share_token: SecureRandom.uuid)
+
+    respond_to do |format|
+      format.html { redirect_to client_path(@client), notice: "Share link regenerated successfully." }
+      format.json { render json: { share_token: @client.share_token } }
+    end
+  end
+
   private
 
   def set_client
@@ -106,7 +124,8 @@ class ClientsController < ApplicationController
       hourly_rate: client.hourly_rate,
       currency: client.currency,
       default_vat_rate: client.default_vat_rate,
-      share_token: client.share_token
+      share_token: client.share_token,
+      sharing_enabled: client.sharing_enabled
     }
   end
 
