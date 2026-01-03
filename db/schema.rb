@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_01_210134) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_03_182201) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_01_210134) do
     t.string "name", null: false
     t.text "payment_terms"
     t.string "share_token", null: false
+    t.boolean "sharing_enabled", default: false, null: false
     t.datetime "updated_at", null: false
     t.string "vat_id"
     t.index ["share_token"], name: "index_clients_on_share_token", unique: true
