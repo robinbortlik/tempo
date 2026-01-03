@@ -47,6 +47,9 @@ gem "ibandit"
 # QR code generation [https://github.com/whomwah/rqrcode]
 gem "rqrcode"
 
+# Modern JSON serialization [https://github.com/okuramasafumi/alba]
+gem "alba"
+
 group :development, :test do
   # Load environment variables from .env files
   gem "dotenv-rails"

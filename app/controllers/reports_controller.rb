@@ -12,46 +12,26 @@ class ReportsController < ApplicationController
       month: params[:month]
     )
 
-    render inertia: "Reports/Show", props: service.report.merge(settings: settings_data)
+    render inertia: "Reports/Show", props: service.report.merge(
+      settings: { company_name: settings.company_name }
+    )
   end
 
   def invoice_pdf
     client = Client.find_by!(share_token: params[:share_token], sharing_enabled: true)
-    @invoice = client.invoices.final.find(params[:invoice_id])
-    @settings = Setting.instance
-    @logo_data_url = logo_as_data_url(@settings)
-    @line_items = @invoice.line_items.includes(:work_entries)
-    @work_entries = @invoice.work_entries.includes(project: :client).order(date: :asc)
+    invoice = client.invoices.final.find(params[:invoice_id])
 
-    html = render_to_string(
-      template: "invoices/pdf",
-      layout: false
-    )
+    pdf_service = InvoicePdfService.new(invoice: invoice, controller: self)
 
-    pdf = Grover.new(html, format: "A4").to_pdf
-    filename = "invoice-#{@invoice.number}.pdf"
-
-    send_data pdf,
-              filename: filename,
+    send_data pdf_service.generate,
+              filename: pdf_service.filename,
               type: "application/pdf",
               disposition: "attachment"
   end
 
   private
 
-  def settings_data
-    settings = Setting.instance
-    {
-      company_name: settings.company_name
-    }
-  end
-
-  def logo_as_data_url(settings)
-    return nil unless settings.logo?
-
-    blob = settings.logo.blob
-    content_type = blob.content_type
-    base64_data = Base64.strict_encode64(blob.download)
-    "data:#{content_type};base64,#{base64_data}"
+  def settings
+    @settings ||= Setting.instance
   end
 end

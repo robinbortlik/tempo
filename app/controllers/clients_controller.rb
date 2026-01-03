@@ -2,29 +2,32 @@ class ClientsController < ApplicationController
   before_action :set_client, only: [ :show, :edit, :update, :destroy, :toggle_sharing, :regenerate_share_token ]
 
   def index
+    clients = Client.includes(:projects).to_a
+    unbilled_stats = ClientStatsService.unbilled_stats_for_clients(clients.map(&:id))
+
     render inertia: "Clients/Index", props: {
-      clients: clients_json
+      clients: ClientSerializer::List.new(clients, params: { unbilled_stats: unbilled_stats }).serializable_hash
     }
   end
 
   def show
     render inertia: "Clients/Show", props: {
-      client: client_json(@client),
-      projects: projects_json(@client),
-      recent_work_entries: recent_work_entries_json(@client),
-      stats: client_stats(@client)
+      client: ClientSerializer.new(@client).serializable_hash,
+      projects: ProjectSerializer::ForClientShow.new(@client.projects).serializable_hash,
+      recent_work_entries: WorkEntrySerializer::Recent.new(recent_entries).serializable_hash,
+      stats: ClientStatsService.new(@client).stats
     }
   end
 
   def new
     render inertia: "Clients/New", props: {
-      client: empty_client_json
+      client: ClientSerializer::Empty.serializable_hash
     }
   end
 
   def edit
     render inertia: "Clients/Edit", props: {
-      client: client_json(@client)
+      client: ClientSerializer.new(@client).serializable_hash
     }
   end
 
@@ -34,7 +37,7 @@ class ClientsController < ApplicationController
     if @client.save
       redirect_to client_path(@client), notice: "Client created successfully."
     else
-      redirect_to new_client_path, alert: @client.errors.full_messages.first
+      redirect_to new_client_path, alert: @client.errors.full_messages.to_sentence
     end
   end
 
@@ -42,16 +45,18 @@ class ClientsController < ApplicationController
     if @client.update(client_params)
       redirect_to client_path(@client), notice: "Client updated successfully."
     else
-      redirect_to edit_client_path(@client), alert: @client.errors.full_messages.first
+      redirect_to edit_client_path(@client), alert: @client.errors.full_messages.to_sentence
     end
   end
 
   def destroy
-    if @client.projects.exists? || @client.invoices.exists?
-      redirect_to client_path(@client), alert: "Cannot delete client with associated projects or invoices."
-    else
+    result = DeletionValidator.can_delete_client?(@client)
+
+    if result[:valid]
       @client.destroy
       redirect_to clients_path, notice: "Client deleted successfully."
+    else
+      redirect_to client_path(@client), alert: result[:error]
     end
   end
 
@@ -95,115 +100,11 @@ class ClientsController < ApplicationController
     )
   end
 
-  def clients_json
-    Client.includes(:projects).map do |client|
-      {
-        id: client.id,
-        name: client.name,
-        email: client.email,
-        currency: client.currency,
-        hourly_rate: client.hourly_rate,
-        unbilled_hours: unbilled_hours_for(client),
-        unbilled_amount: unbilled_amount_for(client),
-        projects_count: client.projects.size
-      }
-    end
-  end
-
-  def client_json(client)
-    {
-      id: client.id,
-      name: client.name,
-      address: client.address,
-      email: client.email,
-      contact_person: client.contact_person,
-      vat_id: client.vat_id,
-      company_registration: client.company_registration,
-      bank_details: client.bank_details,
-      payment_terms: client.payment_terms,
-      hourly_rate: client.hourly_rate,
-      currency: client.currency,
-      default_vat_rate: client.default_vat_rate,
-      share_token: client.share_token,
-      sharing_enabled: client.sharing_enabled
-    }
-  end
-
-  def empty_client_json
-    {
-      id: nil,
-      name: "",
-      address: "",
-      email: "",
-      contact_person: "",
-      vat_id: "",
-      company_registration: "",
-      bank_details: "",
-      payment_terms: "",
-      hourly_rate: nil,
-      currency: "",
-      default_vat_rate: nil
-    }
-  end
-
-  def projects_json(client)
-    client.projects.map do |project|
-      {
-        id: project.id,
-        name: project.name,
-        hourly_rate: project.hourly_rate,
-        effective_hourly_rate: project.effective_hourly_rate,
-        active: project.active,
-        unbilled_hours: project.work_entries.time.unbilled.sum(:hours)
-      }
-    end
-  end
-
-  def recent_work_entries_json(client)
+  def recent_entries
     WorkEntry.joins(:project)
-             .where(projects: { client_id: client.id })
+             .where(projects: { client_id: @client.id })
              .order(date: :desc)
              .limit(10)
              .includes(project: :client)
-             .map do |entry|
-      {
-        id: entry.id,
-        date: entry.date,
-        hours: entry.hours,
-        amount: entry.amount,
-        entry_type: entry.entry_type,
-        description: entry.description,
-        status: entry.status,
-        project_name: entry.project.name,
-        calculated_amount: entry.calculated_amount
-      }
-    end
-  end
-
-  def client_stats(client)
-    work_entries = WorkEntry.joins(:project).where(projects: { client_id: client.id })
-    unbilled_entries = work_entries.unbilled
-
-    {
-      total_hours: work_entries.time.sum(:hours),
-      total_invoiced: client.invoices.final.sum(:total_amount),
-      unbilled_hours: unbilled_entries.time.sum(:hours),
-      unbilled_amount: unbilled_entries.includes(project: :client).sum { |e| e.calculated_amount || 0 }
-    }
-  end
-
-  def unbilled_hours_for(client)
-    WorkEntry.time.joins(:project)
-             .where(projects: { client_id: client.id })
-             .unbilled
-             .sum(:hours)
-  end
-
-  def unbilled_amount_for(client)
-    WorkEntry.joins(:project)
-             .where(projects: { client_id: client.id })
-             .unbilled
-             .includes(project: :client)
-             .sum { |entry| entry.calculated_amount || 0 }
   end
 end

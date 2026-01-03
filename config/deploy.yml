@@ -7,7 +7,7 @@ image: tempo
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - <%= ENV.fetch("DEPLOY_SERVER_IP") %>
   # job:
   #   hosts:
   #     - 192.168.0.1

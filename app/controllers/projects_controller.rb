@@ -4,34 +4,37 @@ class ProjectsController < ApplicationController
   def index
     @projects = params[:client_id].present? ? Project.where(client_id: params[:client_id]) : Project.all
     @projects = @projects.includes(:client, :work_entries)
+    unbilled_stats = ProjectStatsService.unbilled_hours_for_projects(@projects.map(&:id))
 
     render inertia: "Projects/Index", props: {
-      projects: projects_grouped_by_client(@projects),
-      clients: clients_for_filter,
+      projects: serialize_projects_grouped_by_client(@projects, unbilled_stats),
+      clients: ClientSerializer::ForFilter.new(Client.order(:name)).serializable_hash,
       selected_client_id: params[:client_id]&.to_i
     }
   end
 
   def show
+    work_entries = @project.work_entries.order(date: :desc).limit(50)
+
     render inertia: "Projects/Show", props: {
-      project: project_json(@project),
-      work_entries: work_entries_json(@project),
-      stats: project_stats(@project)
+      project: ProjectSerializer.new(@project).serializable_hash,
+      work_entries: WorkEntrySerializer::ForProjectShow.new(work_entries).serializable_hash,
+      stats: ProjectStatsService.new(@project).stats
     }
   end
 
   def new
     render inertia: "Projects/New", props: {
-      project: empty_project_json,
-      clients: clients_for_select,
+      project: ProjectSerializer::Empty.serializable_hash,
+      clients: ClientSerializer::ForSelect.new(Client.order(:name)).serializable_hash,
       preselected_client_id: params[:client_id]&.to_i
     }
   end
 
   def edit
     render inertia: "Projects/Edit", props: {
-      project: project_json(@project),
-      clients: clients_for_select
+      project: ProjectSerializer.new(@project).serializable_hash,
+      clients: ClientSerializer::ForSelect.new(Client.order(:name)).serializable_hash
     }
   end
 
@@ -41,7 +44,7 @@ class ProjectsController < ApplicationController
     if @project.save
       redirect_to project_path(@project), notice: "Project created successfully."
     else
-      redirect_to new_project_path(client_id: params[:project][:client_id]), alert: @project.errors.full_messages.first
+      redirect_to new_project_path(client_id: params[:project][:client_id]), alert: @project.errors.full_messages.to_sentence
     end
   end
 
@@ -49,16 +52,18 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       redirect_to project_path(@project), notice: "Project updated successfully."
     else
-      redirect_to edit_project_path(@project), alert: @project.errors.full_messages.first
+      redirect_to edit_project_path(@project), alert: @project.errors.full_messages.to_sentence
     end
   end
 
   def destroy
-    if @project.work_entries.invoiced.exists?
-      redirect_to project_path(@project), alert: "Cannot delete project with invoiced work entries."
-    else
+    result = DeletionValidator.can_delete_project?(@project)
+
+    if result[:valid]
       @project.destroy
       redirect_to projects_path, notice: "Project deleted successfully."
+    else
+      redirect_to project_path(@project), alert: result[:error]
     end
   end
 
@@ -77,98 +82,12 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(:name, :client_id, :hourly_rate, :active)
   end
 
-  def projects_grouped_by_client(projects)
+  def serialize_projects_grouped_by_client(projects, unbilled_stats)
     projects.group_by(&:client).map do |client, client_projects|
-      {
-        client: {
-          id: client.id,
-          name: client.name,
-          currency: client.currency
-        },
-        projects: client_projects.map { |project| project_list_json(project) }
-      }
-    end
-  end
-
-  def project_list_json(project)
-    {
-      id: project.id,
-      name: project.name,
-      hourly_rate: project.hourly_rate,
-      effective_hourly_rate: project.effective_hourly_rate,
-      active: project.active,
-      unbilled_hours: project.work_entries.unbilled.sum(:hours),
-      work_entries_count: project.work_entries.size
-    }
-  end
-
-  def project_json(project)
-    {
-      id: project.id,
-      name: project.name,
-      client_id: project.client_id,
-      client_name: project.client.name,
-      client_currency: project.client.currency,
-      hourly_rate: project.hourly_rate,
-      effective_hourly_rate: project.effective_hourly_rate,
-      active: project.active
-    }
-  end
-
-  def empty_project_json
-    {
-      id: nil,
-      name: "",
-      client_id: nil,
-      hourly_rate: nil,
-      active: true
-    }
-  end
-
-  def work_entries_json(project)
-    project.work_entries
-           .order(date: :desc)
-           .limit(50)
-           .map do |entry|
-      {
-        id: entry.id,
-        date: entry.date,
-        hours: entry.hours,
-        description: entry.description,
-        status: entry.status,
-        calculated_amount: entry.calculated_amount.to_f
-      }
-    end
-  end
-
-  def project_stats(project)
-    work_entries = project.work_entries
-    unbilled_entries = work_entries.unbilled
-
-    {
-      total_hours: work_entries.sum(:hours),
-      unbilled_hours: unbilled_entries.sum(:hours),
-      unbilled_amount: unbilled_entries.sum { |e| e.calculated_amount || 0 }.to_f
-    }
-  end
-
-  def clients_for_filter
-    Client.order(:name).map do |client|
-      {
-        id: client.id,
-        name: client.name
-      }
-    end
-  end
-
-  def clients_for_select
-    Client.order(:name).map do |client|
-      {
-        id: client.id,
-        name: client.name,
-        hourly_rate: client.hourly_rate,
-        currency: client.currency
-      }
+      ProjectSerializer::GroupedByClient.new(
+        { client: client, projects: client_projects },
+        params: { unbilled_stats: unbilled_stats }
+      ).serializable_hash
     end
   end
 end

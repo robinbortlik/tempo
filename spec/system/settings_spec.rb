@@ -53,8 +53,9 @@ RSpec.describe "Settings", type: :system do
         vat_id: "US123456",
         company_registration: "REG123",
         bank_name: "Test Bank",
-        bank_account: "US1234567890",
-        bank_swift: "TESTUSXX"
+        bank_account: "1234567890",
+        bank_swift: "TESTUSXX",
+        iban: "DE89370400440532013000"
       )
 
       visit settings_path
@@ -65,7 +66,8 @@ RSpec.describe "Settings", type: :system do
       expect(page).to have_field("VAT ID", with: "US123456")
       expect(page).to have_field("Company Registration", with: "REG123")
       expect(page).to have_field("Bank Name", with: "Test Bank")
-      expect(page).to have_field("IBAN", with: "US1234567890")
+      expect(page).to have_field("Bank Account", with: "1234567890")
+      expect(page).to have_field("IBAN", with: "DE89370400440532013000")
       expect(page).to have_field("SWIFT/BIC", with: "TESTUSXX")
     end
   end
@@ -81,7 +83,8 @@ RSpec.describe "Settings", type: :system do
       fill_in "VAT ID", with: "CZ87654321"
       fill_in "Company Registration", with: "87654321"
       fill_in "Bank Name", with: "My Bank"
-      fill_in "IBAN", with: "CZ9876543210"
+      fill_in "Bank Account", with: "123456789"
+      fill_in "IBAN", with: "CZ6508000000192000145399"
       fill_in "SWIFT/BIC", with: "MYBACZPP"
 
       click_button "Save Changes"
@@ -98,7 +101,8 @@ RSpec.describe "Settings", type: :system do
       expect(setting.vat_id).to eq("CZ87654321")
       expect(setting.company_registration).to eq("87654321")
       expect(setting.bank_name).to eq("My Bank")
-      expect(setting.bank_account).to eq("CZ9876543210")
+      expect(setting.bank_account).to eq("123456789")
+      expect(setting.iban).to eq("CZ6508000000192000145399")
       expect(setting.bank_swift).to eq("MYBACZPP")
     end
 

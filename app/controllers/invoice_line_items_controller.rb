@@ -5,13 +5,13 @@ class InvoiceLineItemsController < ApplicationController
 
   def create
     @line_item = @invoice.line_items.build(line_item_params)
-    @line_item.position = @invoice.line_items.maximum(:position).to_i + 1
+    @line_item.position = position_manager.next_position
 
     if @line_item.save
       @invoice.calculate_totals!
       redirect_to invoice_path(@invoice), notice: "Line item added successfully."
     else
-      redirect_to invoice_path(@invoice), alert: @line_item.errors.full_messages.first
+      redirect_to invoice_path(@invoice), alert: @line_item.errors.full_messages.to_sentence
     end
   end
 
@@ -20,7 +20,7 @@ class InvoiceLineItemsController < ApplicationController
       @invoice.calculate_totals!
       redirect_to invoice_path(@invoice), notice: "Line item updated successfully."
     else
-      redirect_to invoice_path(@invoice), alert: @line_item.errors.full_messages.first
+      redirect_to invoice_path(@invoice), alert: @line_item.errors.full_messages.to_sentence
     end
   end
 
@@ -37,21 +37,7 @@ class InvoiceLineItemsController < ApplicationController
   end
 
   def reorder
-    direction = params[:direction]
-    current_position = @line_item.position
-
-    if direction == "up" && current_position > 0
-      swap_with = @invoice.line_items.find_by(position: current_position - 1)
-      if swap_with
-        swap_positions(@line_item, swap_with)
-      end
-    elsif direction == "down"
-      swap_with = @invoice.line_items.find_by(position: current_position + 1)
-      if swap_with
-        swap_positions(@line_item, swap_with)
-      end
-    end
-
+    position_manager.reorder(@line_item, params[:direction])
     redirect_to invoice_path(@invoice)
   end
 
@@ -75,16 +61,7 @@ class InvoiceLineItemsController < ApplicationController
     params.require(:line_item).permit(:description, :amount, :line_type, :quantity, :unit_price, :vat_rate)
   end
 
-  def swap_positions(item1, item2)
-    pos1 = item1.position
-    pos2 = item2.position
-
-    InvoiceLineItem.transaction do
-      # Use a high temporary position to avoid unique constraint issues
-      temp_position = [ pos1, pos2 ].max + 1000
-      item1.update!(position: temp_position)
-      item2.update!(position: pos1)
-      item1.update!(position: pos2)
-    end
+  def position_manager
+    @position_manager ||= PositionManager.new(@invoice.line_items)
   end
 end

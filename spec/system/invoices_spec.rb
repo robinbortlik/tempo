@@ -253,16 +253,16 @@ RSpec.describe "Invoices", type: :system do
     it "displays invoice details" do
       visit invoice_path(invoice)
 
-      expect(page).to have_content("INVOICE")
-      expect(page).to have_content("#2024-001")
-      expect(page).to have_content("Issue Date")
-      expect(page).to have_content("Due Date")
+      expect(page).to have_content("Invoice 2024-001")
+      expect(page).to have_content("TAX DOCUMENT")
+      expect(page).to have_content("Issued on")
+      expect(page).to have_content("Due on")
     end
 
     it "displays client information" do
       visit invoice_path(invoice)
 
-      expect(page).to have_content("Bill To:")
+      expect(page).to have_content("CUSTOMER")
       expect(page).to have_content("Acme Corporation")
     end
 
@@ -276,8 +276,7 @@ RSpec.describe "Invoices", type: :system do
     it "displays totals" do
       visit invoice_path(invoice)
 
-      expect(page).to have_content("Subtotal")
-      expect(page).to have_content("Total Due")
+      expect(page).to have_content("Total w/o VAT")
     end
 
     it "displays notes when present" do
