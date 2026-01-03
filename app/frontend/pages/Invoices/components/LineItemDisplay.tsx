@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 
 interface LineItem {
   id?: number;
@@ -41,32 +41,34 @@ export default function LineItemDisplay({
 
   return (
     <tr className="border-b border-stone-100 last:border-b-0 group">
-      <td className="px-4 py-3 text-stone-700">
+      {/* Quantity */}
+      <td className="px-2 py-3 text-stone-900 font-medium w-12">
+        {lineItem.line_type === "time_aggregate" && lineItem.quantity
+          ? Math.round(lineItem.quantity)
+          : ""}
+      </td>
+      {/* Unit */}
+      <td className="px-2 py-3 text-stone-500 w-12">
+        {lineItem.line_type === "time_aggregate" && lineItem.quantity
+          ? "hrs"
+          : ""}
+      </td>
+      {/* Description */}
+      <td className="px-2 py-3 text-stone-700">
         {lineItem.description || "No description"}
       </td>
-      {lineItem.line_type === "time_aggregate" ? (
-        <>
-          <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-600">
-            {formatHours(lineItem.quantity || 0)}h
-          </td>
-          <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-500 whitespace-nowrap">
-            {formatCurrency(lineItem.unit_price || 0, currency, false)}/h
-          </td>
-        </>
-      ) : (
-        <>
-          <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-400">
-            -
-          </td>
-          <td className="px-4 py-3 text-right tabular-nums w-28 text-stone-400 whitespace-nowrap">
-            -
-          </td>
-        </>
-      )}
-      <td className="px-4 py-3 text-right tabular-nums w-16 text-stone-500">
-        {lineItem.vat_rate}%
+      {/* VAT */}
+      <td className="px-2 py-3 text-right tabular-nums w-16 text-stone-500">
+        {lineItem.vat_rate} %
       </td>
-      <td className="px-4 py-3 text-right tabular-nums text-stone-900 font-medium w-32 whitespace-nowrap">
+      {/* Unit Price */}
+      <td className="px-2 py-3 text-right tabular-nums w-24 text-stone-500 whitespace-nowrap">
+        {lineItem.line_type === "time_aggregate" && lineItem.unit_price
+          ? formatCurrency(lineItem.unit_price, currency)
+          : ""}
+      </td>
+      {/* Total w/o VAT */}
+      <td className="px-2 py-3 text-right tabular-nums text-stone-900 font-medium w-28 whitespace-nowrap">
         {formatCurrency(lineItem.amount, currency)}
       </td>
       {isDraft && (

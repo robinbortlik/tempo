@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
+import { formatCurrency } from "@/components/CurrencyDisplay";
 import LineItemEditor from "./components/LineItemEditor";
 import LineItemDisplay from "./components/LineItemDisplay";
 
@@ -52,6 +52,7 @@ interface Invoice {
   client_address: string | null;
   client_email: string | null;
   client_vat_id: string | null;
+  client_company_registration: string | null;
   client_default_vat_rate: number | null;
 }
 
@@ -64,7 +65,9 @@ interface Settings {
   company_registration: string | null;
   bank_name: string | null;
   bank_account: string | null;
+  iban: string | null;
   bank_swift: string | null;
+  invoice_message: string | null;
   logo_url: string | null;
 }
 
@@ -245,11 +248,6 @@ export default function InvoiceShow() {
 
   const isDraft = invoice.status === "draft";
 
-  // Calculate totals from line items
-  const calculatedTotalHours = line_items
-    .filter((item) => item.line_type === "time_aggregate")
-    .reduce((sum, item) => sum + (item.quantity || 0), 0);
-
   return (
     <>
       <Head title={`Invoice ${invoice.number}`} />
@@ -392,151 +390,162 @@ export default function InvoiceShow() {
 
         {/* Invoice Preview */}
         <div className="bg-white rounded-xl border border-stone-200 p-8 max-w-4xl">
-          {/* Header */}
-          <div className="flex justify-between mb-8 pb-8 border-b border-stone-200">
-            <div>
-              <div className="w-12 h-12 bg-stone-900 rounded-lg flex items-center justify-center mb-4 overflow-hidden">
-                {settings.logo_url ? (
-                  <img
-                    src={settings.logo_url}
-                    alt="Company Logo"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                )}
+          {/* Invoice Header */}
+          <div className="text-right mb-8">
+            <div className="w-48 h-0.5 bg-stone-900 ml-auto mb-3"></div>
+            <p className="text-2xl font-semibold">
+              <span className="text-stone-900">Invoice </span>
+              <span className="text-stone-500">{invoice.number}</span>
+            </p>
+            <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">
+              Tax Document
+            </p>
+          </div>
+
+          {/* Supplier and Customer Section */}
+          <div className="flex gap-10 mb-10">
+            {/* Supplier Column */}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-5 h-0.5 bg-stone-900"></div>
+                <span className="text-xs text-stone-500 uppercase tracking-wide">
+                  Supplier
+                </span>
               </div>
-              <p className="font-semibold text-stone-900">
+              <p className="font-semibold text-stone-900 mb-1">
                 {settings.company_name || "Your Company"}
               </p>
               {settings.address && (
-                <p className="text-sm text-stone-500 whitespace-pre-line">
+                <p className="text-sm text-stone-600 whitespace-pre-line mb-4">
                   {settings.address}
                 </p>
               )}
-              {(settings.email || settings.phone) && (
-                <p className="text-sm text-stone-500">
-                  {[settings.email, settings.phone].filter(Boolean).join(" | ")}
-                </p>
-              )}
-              {settings.vat_id && (
-                <p className="text-sm text-stone-500">VAT: {settings.vat_id}</p>
-              )}
-              {(settings.bank_name ||
-                settings.bank_account ||
-                settings.bank_swift) && (
-                <div className="flex gap-6 mt-3 pt-3 border-t border-stone-200">
-                  {settings.bank_name && (
-                    <div>
-                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">
-                        Bank
-                      </p>
-                      <p className="text-xs text-stone-900 font-medium font-mono">
-                        {settings.bank_name}
-                      </p>
-                    </div>
+              <table className="w-full text-sm">
+                <tbody>
+                  {settings.company_registration && (
+                    <tr className="h-6">
+                      <td className="text-stone-500">Reg. no.</td>
+                      <td className="text-right text-stone-900 font-medium">
+                        {settings.company_registration}
+                      </td>
+                    </tr>
+                  )}
+                  {settings.vat_id && (
+                    <tr className="h-6">
+                      <td className="text-stone-500">VAT ID</td>
+                      <td className="text-right text-stone-900 font-medium">
+                        {settings.vat_id}
+                      </td>
+                    </tr>
                   )}
                   {settings.bank_account && (
-                    <div>
-                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">
-                        IBAN
-                      </p>
-                      <p className="text-xs text-stone-900 font-medium font-mono">
+                    <tr className="h-6">
+                      <td className="text-stone-500">Bank account</td>
+                      <td className="text-right text-stone-900 font-medium">
                         {settings.bank_account}
-                      </p>
-                    </div>
+                      </td>
+                    </tr>
+                  )}
+                  {settings.iban && (
+                    <tr className="h-6">
+                      <td className="text-stone-500">IBAN</td>
+                      <td className="text-right text-stone-900 font-medium">
+                        {settings.iban}
+                      </td>
+                    </tr>
                   )}
                   {settings.bank_swift && (
-                    <div>
-                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">
-                        SWIFT/BIC
-                      </p>
-                      <p className="text-xs text-stone-900 font-medium font-mono">
+                    <tr className="h-6">
+                      <td className="text-stone-500">SWIFT/BIC</td>
+                      <td className="text-right text-stone-900 font-medium">
                         {settings.bank_swift}
-                      </p>
-                    </div>
+                      </td>
+                    </tr>
                   )}
-                  <div>
-                    <p className="text-[9px] text-stone-400 uppercase tracking-wide">
-                      Reference
-                    </p>
-                    <p className="text-xs text-stone-900 font-medium font-mono">
-                      #{invoice.number}
-                    </p>
-                  </div>
-                </div>
-              )}
+                  <tr className="h-6">
+                    <td className="text-stone-500">Reference</td>
+                    <td className="text-right text-stone-900 font-medium">
+                      {invoice.number}
+                    </td>
+                  </tr>
+                  <tr className="h-6">
+                    <td className="text-stone-500">Payment method</td>
+                    <td className="text-right text-stone-900 font-medium">
+                      Bank transfer
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div className="text-right">
-              <p className="text-3xl font-semibold text-stone-900 font-mono">
-                INVOICE
-              </p>
-              <p className="text-lg font-mono text-stone-500 mt-1">
-                #{invoice.number}
-              </p>
-              <dl className="mt-4 text-sm space-y-1">
-                <div className="flex justify-end gap-4">
-                  <dt className="text-stone-500">Issue Date:</dt>
-                  <dd className="text-stone-900">
-                    {formatDate(invoice.issue_date)}
-                  </dd>
-                </div>
-                <div className="flex justify-end gap-4">
-                  <dt className="text-stone-500">Due Date:</dt>
-                  <dd className="text-stone-900">
-                    {formatDate(invoice.due_date)}
-                  </dd>
-                </div>
-                <div className="flex justify-end gap-4">
-                  <dt className="text-stone-500">Period:</dt>
-                  <dd className="text-stone-900">
-                    {formatPeriod(invoice.period_start, invoice.period_end)}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
 
-          {/* Bill To */}
-          <div className="mb-8">
-            <p className="text-sm text-stone-500 mb-2">Bill To:</p>
-            <p className="font-semibold text-stone-900">
-              {invoice.client_name}
-            </p>
-            {invoice.client_address && (
-              <p className="text-sm text-stone-500 whitespace-pre-line">
-                {invoice.client_address}
+            {/* Customer Column */}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-5 h-0.5 bg-stone-900"></div>
+                <span className="text-xs text-stone-500 uppercase tracking-wide">
+                  Customer
+                </span>
+              </div>
+              <p className="font-semibold text-stone-900 mb-1">
+                {invoice.client_name}
               </p>
-            )}
-            {invoice.client_vat_id && (
-              <p className="text-sm text-stone-500 mt-1">
-                VAT: {invoice.client_vat_id}
-              </p>
-            )}
+              {invoice.client_address && (
+                <p className="text-sm text-stone-600 whitespace-pre-line mb-4">
+                  {invoice.client_address}
+                </p>
+              )}
+              <table className="w-full text-sm">
+                <tbody>
+                  {invoice.client_company_registration && (
+                    <tr className="h-6">
+                      <td className="text-stone-500">Reg. no.</td>
+                      <td className="text-right text-stone-900 font-medium">
+                        {invoice.client_company_registration}
+                      </td>
+                    </tr>
+                  )}
+                  {invoice.client_vat_id && (
+                    <tr className="h-6">
+                      <td className="text-stone-500">VAT ID</td>
+                      <td className="text-right text-stone-900 font-medium">
+                        {invoice.client_vat_id}
+                      </td>
+                    </tr>
+                  )}
+                  <tr className="h-6">
+                    <td className="text-stone-500">Issued on</td>
+                    <td className="text-right text-stone-900 font-medium">
+                      {formatDate(invoice.issue_date)}
+                    </td>
+                  </tr>
+                  <tr className="h-6">
+                    <td className="text-stone-500">Due on</td>
+                    <td className="text-right text-stone-900 font-medium">
+                      {formatDate(invoice.due_date)}
+                    </td>
+                  </tr>
+                  <tr className="h-6">
+                    <td className="text-stone-500">Date of taxable supply</td>
+                    <td className="text-right text-stone-900 font-medium">
+                      {formatDate(invoice.issue_date)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Line Items */}
           <div className="mb-8">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm text-stone-500 border-b border-stone-200">
-                  <th className="pb-3 font-medium">Description</th>
-                  <th className="pb-3 font-medium text-right w-16">Hours</th>
-                  <th className="pb-3 font-medium text-right w-24">Rate</th>
+                <tr className="text-sm text-stone-500 border-b border-stone-200">
+                  <th className="pb-3 font-medium text-left w-12"></th>
+                  <th className="pb-3 font-medium text-left w-12"></th>
+                  <th className="pb-3 font-medium text-left"></th>
                   <th className="pb-3 font-medium text-right w-16">VAT</th>
-                  <th className="pb-3 font-medium text-right w-28">Amount</th>
+                  <th className="pb-3 font-medium text-right w-24">Unit Price</th>
+                  <th className="pb-3 font-medium text-right w-28">Total w/o VAT</th>
                   {isDraft && <th className="pb-3 font-medium w-36"></th>}
                 </tr>
               </thead>
@@ -631,13 +640,9 @@ export default function InvoiceShow() {
 
           {/* Totals */}
           <div className="flex justify-end">
-            <dl className="w-64 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <dt className="text-stone-500">
-                  Subtotal
-                  {calculatedTotalHours > 0 &&
-                    ` (${formatHours(calculatedTotalHours)} hrs)`}
-                </dt>
+            <dl className="w-72 text-sm">
+              <div className="flex justify-between py-2 border-b border-stone-200">
+                <dt className="text-stone-500">Total w/o VAT</dt>
                 <dd className="tabular-nums text-stone-900">
                   {formatCurrency(invoice.subtotal, invoice.currency)}
                 </dd>
@@ -647,8 +652,11 @@ export default function InvoiceShow() {
                 .filter(([rate, amount]) => parseFloat(rate) > 0 || amount > 0)
                 .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
                 .map(([rate, amount]) => (
-                  <div key={rate} className="flex justify-between">
-                    <dt className="text-stone-500">VAT {parseFloat(rate)}%</dt>
+                  <div
+                    key={rate}
+                    className="flex justify-between py-2"
+                  >
+                    <dt className="text-stone-500">VAT {parseFloat(rate)} %</dt>
                     <dd className="tabular-nums text-stone-900">
                       {formatCurrency(amount, invoice.currency)}
                     </dd>
@@ -658,16 +666,15 @@ export default function InvoiceShow() {
               {Object.keys(invoice.vat_totals_by_rate || {}).length === 0 ||
               (Object.keys(invoice.vat_totals_by_rate || {}).length === 1 &&
                 Object.keys(invoice.vat_totals_by_rate)[0] === "0") ? (
-                <div className="flex justify-between">
-                  <dt className="text-stone-500">VAT (0%)</dt>
+                <div className="flex justify-between py-2">
+                  <dt className="text-stone-500">VAT 0 %</dt>
                   <dd className="tabular-nums text-stone-900">
                     {formatCurrency(0, invoice.currency)}
                   </dd>
                 </div>
               ) : null}
-              <div className="flex justify-between pt-3 border-t border-stone-200 text-lg">
-                <dt className="font-semibold text-stone-900">Total Due</dt>
-                <dd className="tabular-nums font-semibold text-stone-900">
+              <div className="flex justify-end pt-3 border-t-2 border-stone-900">
+                <dd className="tabular-nums font-bold text-lg text-stone-900">
                   {formatCurrency(invoice.grand_total, invoice.currency)}
                 </dd>
               </div>
@@ -695,6 +702,15 @@ export default function InvoiceShow() {
                 />
                 <p className="text-[9px] text-stone-400 mt-1">Scan to pay</p>
               </div>
+            </div>
+          )}
+
+          {/* Invoice Message */}
+          {settings.invoice_message && (
+            <div className="mt-8 pt-5 border-t border-stone-200">
+              <p className="text-sm text-stone-500 whitespace-pre-line">
+                {settings.invoice_message}
+              </p>
             </div>
           )}
         </div>

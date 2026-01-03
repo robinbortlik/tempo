@@ -206,6 +206,7 @@ class InvoicesController < ApplicationController
       client_address: invoice.client.address,
       client_email: invoice.client.email,
       client_vat_id: invoice.client.vat_id,
+      client_company_registration: invoice.client.company_registration,
       client_default_vat_rate: invoice.client.default_vat_rate&.to_f
     }
   end
@@ -334,7 +335,9 @@ class InvoicesController < ApplicationController
       company_registration: settings.company_registration,
       bank_name: settings.bank_name,
       bank_account: settings.bank_account,
+      iban: settings.iban,
       bank_swift: settings.bank_swift,
+      invoice_message: settings.invoice_message,
       logo_url: settings.logo? ? url_for(settings.logo) : nil
     }
   end

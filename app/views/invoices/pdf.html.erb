@@ -40,131 +40,101 @@
       padding: 0;
     }
 
-    /* Header section */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 40px;
-      padding-bottom: 30px;
-      border-bottom: 1px solid #e7e5e4;
-    }
-
-    .company-info {
-      flex: 1;
-    }
-
-    .company-logo {
-      width: 48px;
-      height: 48px;
-      background: #1c1917;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-
-    .company-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .company-logo svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    .company-name {
-      font-weight: 600;
-      font-size: 14px;
-      color: #1c1917;
-      margin-bottom: 4px;
-    }
-
-    .company-details {
-      font-size: 11px;
-      color: #78716c;
-      white-space: pre-line;
-    }
-
-    .invoice-title-section {
+    /* Header section with invoice title */
+    .invoice-header {
       text-align: right;
+      margin-bottom: 30px;
+    }
+
+    .invoice-header-line {
+      width: 200px;
+      height: 2px;
+      background: #1c1917;
+      margin-left: auto;
+      margin-bottom: 12px;
     }
 
     .invoice-title {
       font-size: 28px;
       font-weight: 600;
       color: #1c1917;
-      letter-spacing: 1px;
     }
 
-    .invoice-number {
-      font-size: 14px;
+    .invoice-title .number {
       color: #78716c;
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    }
+
+    .invoice-subtitle {
+      font-size: 11px;
+      color: #78716c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       margin-top: 4px;
     }
 
-    .invoice-meta {
-      margin-top: 16px;
-    }
-
-    .invoice-meta dl {
+    /* Two-column layout for supplier/customer */
+    .parties-section {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      gap: 40px;
+      margin-bottom: 40px;
     }
 
-    .invoice-meta-row {
+    .party-column {
+      flex: 1;
+    }
+
+    .party-header {
       display: flex;
-      justify-content: flex-end;
-      gap: 16px;
-      font-size: 11px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .invoice-meta dt {
-      color: #78716c;
+    .party-header-line {
+      width: 20px;
+      height: 2px;
+      background: #1c1917;
     }
 
-    .invoice-meta dd {
-      color: #1c1917;
-      font-weight: 500;
-      min-width: 100px;
-      text-align: right;
-    }
-
-    /* Client section */
-    .client-section {
-      margin-bottom: 30px;
-    }
-
-    .section-label {
+    .party-label {
       font-size: 11px;
       color: #78716c;
-      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .client-name {
+    .party-name {
       font-weight: 600;
       font-size: 14px;
       color: #1c1917;
       margin-bottom: 4px;
     }
 
-    .client-details {
+    .party-address {
       font-size: 11px;
-      color: #78716c;
+      color: #44403c;
       white-space: pre-line;
+      margin-bottom: 16px;
     }
 
-    .client-vat {
+    .party-details-table {
+      width: 100%;
       font-size: 11px;
+    }
+
+    .party-details-table tr {
+      height: 24px;
+    }
+
+    .party-details-table td:first-child {
       color: #78716c;
-      margin-top: 8px;
+      padding-right: 16px;
+    }
+
+    .party-details-table td:last-child {
+      text-align: right;
+      color: #1c1917;
+      font-weight: 500;
     }
 
     /* Line items table */
@@ -174,12 +144,12 @@
       margin-bottom: 30px;
     }
 
-    .line-items thead {
-      border-bottom: 2px solid #e7e5e4;
+    .line-items thead tr {
+      border-bottom: 1px solid #e7e5e4;
     }
 
     .line-items th {
-      text-align: left;
+      text-align: right;
       padding: 12px 8px;
       font-size: 11px;
       font-weight: 500;
@@ -188,8 +158,10 @@
       letter-spacing: 0.5px;
     }
 
-    .line-items th.text-right {
-      text-align: right;
+    .line-items th:first-child,
+    .line-items th:nth-child(2),
+    .line-items th:nth-child(3) {
+      text-align: left;
     }
 
     .line-items tbody tr {
@@ -203,28 +175,30 @@
     .line-items td {
       padding: 12px 8px;
       font-size: 11px;
-      vertical-align: top;
+      vertical-align: middle;
     }
 
-    .line-items .date-col {
-      width: 80px;
-      color: #78716c;
-    }
-
-    .line-items .project-col {
-      width: 100px;
-      color: #1c1917;
+    .line-items .qty-col {
+      width: 40px;
+      text-align: left;
       font-weight: 500;
+      color: #1c1917;
+    }
+
+    .line-items .unit-col {
+      width: 40px;
+      text-align: left;
+      color: #78716c;
     }
 
     .line-items .description-col {
       color: #44403c;
     }
 
-    .line-items .hours-col {
+    .line-items .vat-col {
       width: 60px;
       text-align: right;
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+      color: #78716c;
       font-variant-numeric: tabular-nums;
     }
 
@@ -232,24 +206,14 @@
       width: 100px;
       text-align: right;
       color: #78716c;
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
 
-    .line-items .vat-col {
-      width: 60px;
-      text-align: right;
-      color: #78716c;
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-      font-variant-numeric: tabular-nums;
-    }
-
     .line-items .amount-col {
-      width: 110px;
+      width: 120px;
       text-align: right;
       font-weight: 500;
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
@@ -262,14 +226,18 @@
     }
 
     .totals-table {
-      width: 250px;
+      width: 280px;
     }
 
     .totals-row {
       display: flex;
       justify-content: space-between;
       padding: 8px 0;
-      font-size: 11px;
+      font-size: 12px;
+    }
+
+    .totals-row:first-child {
+      border-bottom: 1px solid #e7e5e4;
     }
 
     .totals-row dt {
@@ -277,22 +245,22 @@
     }
 
     .totals-row dd {
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
       font-variant-numeric: tabular-nums;
       color: #1c1917;
       white-space: nowrap;
+      text-align: right;
     }
 
     .totals-row.total {
-      border-top: 2px solid #e7e5e4;
+      border-top: 2px solid #1c1917;
+      border-bottom: none;
       padding-top: 12px;
       margin-top: 4px;
-      font-size: 14px;
     }
 
-    .totals-row.total dt,
     .totals-row.total dd {
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 18px;
       color: #1c1917;
     }
 
@@ -316,83 +284,10 @@
       white-space: pre-line;
     }
 
-    /* Footer / Payment details */
-    .footer {
-      padding-top: 30px;
-      border-top: 1px solid #e7e5e4;
-    }
-
-    .footer-title {
-      font-size: 11px;
-      font-weight: 500;
-      color: #44403c;
-      margin-bottom: 12px;
-    }
-
-    .payment-details {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .payment-item {
-      font-size: 11px;
-    }
-
-    .payment-label {
-      color: #78716c;
-      margin-bottom: 2px;
-    }
-
-    .payment-value {
-      color: #1c1917;
-      font-weight: 500;
-    }
-
-    .payment-note {
-      margin-top: 16px;
-      font-size: 10px;
-      color: #a8a29e;
-    }
-
-    /* Payment details in header */
-    .payment-header {
-      display: flex;
-      gap: 24px;
-      font-size: 10px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid #e7e5e4;
-    }
-
-    .payment-header-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .payment-header-label {
-      color: #78716c;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .payment-header-value {
-      color: #1c1917;
-      font-weight: 500;
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-    }
-
     /* Footer with QR positioning */
     .footer-wrapper {
       padding-top: 20px;
       border-top: 1px solid #e7e5e4;
-    }
-
-    .footer-content {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
     }
 
     .qr-code-container {
@@ -412,153 +307,149 @@
       color: #78716c;
     }
 
-    .footer-reference {
-      font-size: 10px;
+    /* Invoice message */
+    .invoice-message {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e7e5e4;
+      font-size: 11px;
       color: #78716c;
-      text-align: right;
-    }
-
-    /* Status badge for draft invoices */
-    .draft-badge {
-      display: inline-block;
-      background: #fef3c7;
-      color: #b45309;
-      padding: 4px 12px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-left: 12px;
+      white-space: pre-line;
     }
   </style>
 </head>
 <body>
   <div class="invoice-container">
-    <!-- Header Section -->
-    <div class="header">
-      <div class="company-info">
-        <div class="company-logo">
-          <% if @logo_data_url.present? %>
-            <img src="<%= @logo_data_url %>" alt="Company Logo">
-          <% else %>
-            <svg fill="none" stroke="white" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          <% end %>
-        </div>
-        <div class="company-name"><%= @settings.company_name || "Your Company" %></div>
-        <div class="company-details">
-          <%= @settings.address %>
-          <% if @settings.email.present? || @settings.phone.present? %>
-            <br>
-            <%= [@settings.email, @settings.phone].compact.join(" | ") %>
-          <% end %>
-          <% if @settings.vat_id.present? %>
-            <br>VAT: <%= @settings.vat_id %>
-          <% end %>
-          <% if @settings.company_registration.present? %>
-            <br>Reg: <%= @settings.company_registration %>
-          <% end %>
-        </div>
-        <% if @settings.iban.present? || @settings.bank_name.present? || @settings.bank_swift.present? %>
-          <div class="payment-header">
-            <% if @settings.bank_name.present? %>
-              <div class="payment-header-item">
-                <span class="payment-header-label">Bank</span>
-                <span class="payment-header-value"><%= @settings.bank_name %></span>
-              </div>
-            <% end %>
-            <% if @settings.iban.present? %>
-              <div class="payment-header-item">
-                <span class="payment-header-label">IBAN</span>
-                <span class="payment-header-value"><%= @settings.iban %></span>
-              </div>
-            <% end %>
-            <% if @settings.bank_swift.present? %>
-              <div class="payment-header-item">
-                <span class="payment-header-label">SWIFT/BIC</span>
-                <span class="payment-header-value"><%= @settings.bank_swift %></span>
-              </div>
-            <% end %>
-            <div class="payment-header-item">
-              <span class="payment-header-label">Reference</span>
-              <span class="payment-header-value">#<%= @invoice.number %></span>
-            </div>
-          </div>
-        <% end %>
+    <!-- Invoice Header -->
+    <div class="invoice-header">
+      <div class="invoice-header-line"></div>
+      <div class="invoice-title">
+        Invoice <span class="number"><%= @invoice.number %></span>
       </div>
-
-      <div class="invoice-title-section">
-        <div class="invoice-title">
-          INVOICE
-          <% if @invoice.draft? %>
-            <span class="draft-badge">Draft</span>
-          <% end %>
-        </div>
-        <div class="invoice-number">#<%= @invoice.number %></div>
-
-        <div class="invoice-meta">
-          <dl>
-            <div class="invoice-meta-row">
-              <dt>Issue Date:</dt>
-              <dd><%= @invoice.issue_date&.strftime("%b %d, %Y") || "Not set" %></dd>
-            </div>
-            <div class="invoice-meta-row">
-              <dt>Due Date:</dt>
-              <dd><%= @invoice.due_date&.strftime("%b %d, %Y") || "Not set" %></dd>
-            </div>
-            <div class="invoice-meta-row">
-              <dt>Period:</dt>
-              <dd><%= format_period(@invoice.period_start, @invoice.period_end) %></dd>
-            </div>
-          </dl>
-        </div>
-      </div>
+      <div class="invoice-subtitle">Tax Document</div>
     </div>
 
-    <!-- Client Section -->
-    <div class="client-section">
-      <div class="section-label">Bill To</div>
-      <div class="client-name"><%= @invoice.client.name %></div>
-      <% if @invoice.client.address.present? %>
-        <div class="client-details"><%= @invoice.client.address %></div>
-      <% end %>
-      <% if @invoice.client.vat_id.present? %>
-        <div class="client-vat">VAT: <%= @invoice.client.vat_id %></div>
-      <% end %>
+    <!-- Supplier and Customer Section -->
+    <div class="parties-section">
+      <!-- Supplier Column -->
+      <div class="party-column">
+        <div class="party-header">
+          <div class="party-header-line"></div>
+          <span class="party-label">Supplier</span>
+        </div>
+        <div class="party-name"><%= @settings.company_name || "Your Company" %></div>
+        <div class="party-address"><%= @settings.address %></div>
+        <table class="party-details-table">
+          <% if @settings.company_registration.present? %>
+            <tr>
+              <td>Reg. no.</td>
+              <td><%= @settings.company_registration %></td>
+            </tr>
+          <% end %>
+          <% if @settings.vat_id.present? %>
+            <tr>
+              <td>VAT ID</td>
+              <td><%= @settings.vat_id %></td>
+            </tr>
+          <% end %>
+          <% if @settings.bank_account.present? %>
+            <tr>
+              <td>Bank account</td>
+              <td><%= @settings.bank_account %></td>
+            </tr>
+          <% end %>
+          <% if @settings.iban.present? %>
+            <tr>
+              <td>IBAN</td>
+              <td><%= @settings.iban %></td>
+            </tr>
+          <% end %>
+          <% if @settings.bank_swift.present? %>
+            <tr>
+              <td>SWIFT/BIC</td>
+              <td><%= @settings.bank_swift %></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td>Reference</td>
+            <td><%= @invoice.number %></td>
+          </tr>
+          <tr>
+            <td>Payment method</td>
+            <td>Bank transfer</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Customer Column -->
+      <div class="party-column">
+        <div class="party-header">
+          <div class="party-header-line"></div>
+          <span class="party-label">Customer</span>
+        </div>
+        <div class="party-name"><%= @invoice.client.name %></div>
+        <div class="party-address"><%= @invoice.client.address %></div>
+        <table class="party-details-table">
+          <% if @invoice.client.company_registration.present? %>
+            <tr>
+              <td>Reg. no.</td>
+              <td><%= @invoice.client.company_registration %></td>
+            </tr>
+          <% end %>
+          <% if @invoice.client.vat_id.present? %>
+            <tr>
+              <td>VAT ID</td>
+              <td><%= @invoice.client.vat_id %></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td>Issued on</td>
+            <td><%= @invoice.issue_date&.strftime("%b %d, %Y") || "Not set" %></td>
+          </tr>
+          <tr>
+            <td>Due on</td>
+            <td><%= @invoice.due_date&.strftime("%b %d, %Y") || "Not set" %></td>
+          </tr>
+          <tr>
+            <td>Date of taxable supply</td>
+            <td><%= @invoice.issue_date&.strftime("%b %d, %Y") || "Not set" %></td>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <!-- Line Items Table -->
     <table class="line-items">
       <thead>
         <tr>
-          <th>Description</th>
-          <th class="text-right">Hours</th>
-          <th class="text-right">Rate</th>
-          <th class="text-right">VAT</th>
-          <th class="text-right">Amount</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>VAT</th>
+          <th>Unit Price</th>
+          <th>Total w/o VAT</th>
         </tr>
       </thead>
       <tbody>
         <% @invoice.line_items.each do |item| %>
           <tr>
-            <td class="description-col"><%= item.description %></td>
-            <td class="hours-col">
+            <td class="qty-col">
               <% if item.time_aggregate? && item.quantity.present? %>
-                <%= format_hours(item.quantity) %>h
-              <% else %>
-                -
+                <%= item.quantity.to_i %>
               <% end %>
             </td>
+            <td class="unit-col">
+              <% if item.time_aggregate? && item.quantity.present? %>
+                hrs
+              <% end %>
+            </td>
+            <td class="description-col"><%= item.description %></td>
+            <td class="vat-col"><%= number_with_precision(item.vat_rate, precision: 0) %> %</td>
             <td class="rate-col">
               <% if item.time_aggregate? && item.unit_price.present? %>
                 <%= format_rate(item.unit_price, @invoice.currency) %>
-              <% else %>
-                -
               <% end %>
             </td>
-            <td class="vat-col"><%= number_with_precision(item.vat_rate, precision: 0) %>%</td>
             <td class="amount-col"><%= format_currency(item.amount, @invoice.currency) %></td>
           </tr>
         <% end %>
@@ -569,25 +460,25 @@
     <div class="totals-section">
       <dl class="totals-table">
         <div class="totals-row">
-          <dt>Subtotal<% if @invoice.total_hours.to_f > 0 %> (<%= format_hours(@invoice.total_hours) %> hrs)<% end %></dt>
+          <dt>Total w/o VAT</dt>
           <dd><%= format_currency(@invoice.subtotal, @invoice.currency) %></dd>
         </div>
         <% vat_totals = @invoice.vat_totals_by_rate %>
         <% if vat_totals.values.any? { |v| v > 0 } %>
           <% vat_totals.select { |rate, amount| rate.to_f > 0 }.sort_by { |rate, _| -rate.to_f }.each do |rate, amount| %>
             <div class="totals-row">
-              <dt>VAT <%= number_with_precision(rate, precision: 0) %>%</dt>
+              <dt>VAT <%= number_with_precision(rate, precision: 0) %> %</dt>
               <dd><%= format_currency(amount, @invoice.currency) %></dd>
             </div>
           <% end %>
         <% else %>
           <div class="totals-row">
-            <dt>VAT (0%)</dt>
+            <dt>VAT 0 %</dt>
             <dd><%= format_currency(0, @invoice.currency) %></dd>
           </div>
         <% end %>
         <div class="totals-row total">
-          <dt>Total Due</dt>
+          <dt></dt>
           <dd><%= format_currency(@invoice.grand_total, @invoice.currency) %></dd>
         </div>
       </dl>
@@ -608,6 +499,13 @@
           <img src="<%= @qr_code_data_url %>" alt="Payment QR Code" class="qr-code" />
           <p class="qr-instruction">Scan to pay</p>
         </div>
+      </div>
+    <% end %>
+
+    <!-- Invoice Message -->
+    <% if @settings.invoice_message.present? %>
+      <div class="invoice-message">
+        <%= @settings.invoice_message %>
       </div>
     <% end %>
   </div>
