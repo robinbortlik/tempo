@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ReportsController, type: :request do
-  let(:client) { create(:client, name: "Acme Corp", hourly_rate: 100, currency: "EUR") }
+  let(:client) { create(:client, name: "Acme Corp", hourly_rate: 100, currency: "EUR", sharing_enabled: true) }
   let(:project) { create(:project, client: client, name: "Project Alpha", hourly_rate: 100) }
 
   describe "GET /reports/:share_token" do
@@ -163,6 +163,27 @@ RSpec.describe ReportsController, type: :request do
       it "returns 404 for UUID-like but non-existent tokens" do
         fake_uuid = SecureRandom.uuid
         get report_path(fake_uuid)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when sharing is disabled" do
+      let(:disabled_client) { create(:client, name: "Disabled Corp", sharing_enabled: false) }
+
+      it "returns 404 when sharing_enabled is false" do
+        get report_path(disabled_client.share_token)
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns success when sharing_enabled is true" do
+        disabled_client.update(sharing_enabled: true)
+        get report_path(disabled_client.share_token)
+        expect(response).to have_http_status(:success)
+      end
+
+      it "returns 404 for invoice_pdf when sharing_enabled is false" do
+        invoice = create(:invoice, client: disabled_client, status: :final)
+        get report_invoice_pdf_path(disabled_client.share_token, invoice)
         expect(response).to have_http_status(:not_found)
       end
     end

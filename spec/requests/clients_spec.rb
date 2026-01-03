@@ -106,6 +106,7 @@ RSpec.describe ClientsController, type: :request do
         expect(client_data['hourly_rate']).to eq("120.0")
         expect(client_data['currency']).to eq("EUR")
         expect(client_data['share_token']).to be_present
+        expect(client_data['sharing_enabled']).to eq(false)
       end
 
       it "returns associated projects" do
@@ -541,6 +542,81 @@ RSpec.describe ClientsController, type: :request do
       it "redirects to login" do
         client = create(:client)
         delete client_path(client)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
+  describe "PATCH /clients/:id/toggle_sharing" do
+    context "when authenticated" do
+      before { sign_in }
+
+      it "toggles sharing_enabled from false to true" do
+        client = create(:client, sharing_enabled: false)
+
+        patch toggle_sharing_client_path(client), as: :json
+
+        expect(client.reload.sharing_enabled).to eq(true)
+      end
+
+      it "toggles sharing_enabled from true to false" do
+        client = create(:client, sharing_enabled: true)
+
+        patch toggle_sharing_client_path(client), as: :json
+
+        expect(client.reload.sharing_enabled).to eq(false)
+      end
+
+      it "returns JSON with updated sharing_enabled status" do
+        client = create(:client, sharing_enabled: false)
+
+        patch toggle_sharing_client_path(client), as: :json
+
+        expect(response).to have_http_status(:success)
+        json_response = JSON.parse(response.body)
+        expect(json_response['sharing_enabled']).to eq(true)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to login" do
+        client = create(:client)
+        patch toggle_sharing_client_path(client)
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
+  describe "PATCH /clients/:id/regenerate_share_token" do
+    context "when authenticated" do
+      before { sign_in }
+
+      it "generates a new share_token different from original" do
+        client = create(:client)
+        original_token = client.share_token
+
+        patch regenerate_share_token_client_path(client), as: :json
+
+        expect(client.reload.share_token).not_to eq(original_token)
+      end
+
+      it "returns JSON with new share_token" do
+        client = create(:client)
+        original_token = client.share_token
+
+        patch regenerate_share_token_client_path(client), as: :json
+
+        expect(response).to have_http_status(:success)
+        json_response = JSON.parse(response.body)
+        expect(json_response['share_token']).to be_present
+        expect(json_response['share_token']).not_to eq(original_token)
+      end
+    end
+
+    context "when not authenticated" do
+      it "redirects to login" do
+        client = create(:client)
+        patch regenerate_share_token_client_path(client)
         expect(response).to redirect_to(new_session_path)
       end
     end
