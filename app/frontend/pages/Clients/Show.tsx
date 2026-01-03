@@ -16,6 +16,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatCurrency, formatRate } from "@/components/CurrencyDisplay";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface Client {
   id: number;
@@ -30,6 +32,7 @@ interface Client {
   hourly_rate: number | null;
   currency: string | null;
   share_token: string;
+  sharing_enabled: boolean;
 }
 
 interface Project {
@@ -72,6 +75,9 @@ export default function ClientShow() {
   const { client, projects, stats, flash } = usePage<PageProps>().props;
   const [isDeleting, setIsDeleting] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [sharingEnabled, setSharingEnabled] = useState(client.sharing_enabled);
+  const [shareToken, setShareToken] = useState(client.share_token);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   useEffect(() => {
     if (flash.notice) {
@@ -82,7 +88,7 @@ export default function ClientShow() {
     }
   }, [flash.notice, flash.alert]);
 
-  const shareUrl = `${window.location.origin}/reports/${client.share_token}`;
+  const shareUrl = `${window.location.origin}/reports/${shareToken}`;
 
   const handleCopyLink = async () => {
     try {
@@ -100,6 +106,50 @@ export default function ClientShow() {
     router.delete(`/clients/${client.id}`, {
       onFinish: () => setIsDeleting(false),
     });
+  };
+
+  const handleToggleSharing = () => {
+    const previousValue = sharingEnabled;
+    setSharingEnabled(!sharingEnabled);
+    router.patch(
+      `/clients/${client.id}/toggle_sharing`,
+      {},
+      {
+        preserveState: true,
+        onSuccess: () => {
+          toast.success(
+            !previousValue
+              ? "Report sharing enabled"
+              : "Report sharing disabled"
+          );
+        },
+        onError: () => {
+          setSharingEnabled(previousValue);
+          toast.error("Failed to update sharing status");
+        },
+      }
+    );
+  };
+
+  const handleRegenerateToken = () => {
+    setIsRegenerating(true);
+    router.patch(
+      `/clients/${client.id}/regenerate_share_token`,
+      {},
+      {
+        preserveState: true,
+        onSuccess: (page) => {
+          const newClient = (page.props as unknown as PageProps).client;
+          setShareToken(newClient.share_token);
+          toast.success("Share link regenerated");
+          setIsRegenerating(false);
+        },
+        onError: () => {
+          toast.error("Failed to regenerate share link");
+          setIsRegenerating(false);
+        },
+      }
+    );
   };
 
   return (
@@ -166,35 +216,91 @@ export default function ClientShow() {
 
         {/* Share Link */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <svg
-              className="w-5 h-5 text-amber-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="sharing-toggle"
+                checked={sharingEnabled}
+                onCheckedChange={handleToggleSharing}
               />
-            </svg>
-            <div>
-              <p className="text-sm font-medium text-amber-800">
-                Client Report Portal
-              </p>
-              <p className="text-sm text-amber-600 font-mono truncate max-w-md">
-                {shareUrl}
-              </p>
+              <Label
+                htmlFor="sharing-toggle"
+                className="text-sm font-medium text-amber-800 cursor-pointer"
+              >
+                Report Sharing
+              </Label>
+            </div>
+            <div className="h-6 w-px bg-amber-300" />
+            <div
+              className={`flex items-center gap-3 ${!sharingEnabled ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              <svg
+                className="w-5 h-5 text-amber-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                />
+              </svg>
+              <div>
+                <p className="text-sm font-medium text-amber-800">
+                  Client Report Portal
+                </p>
+                <p className="text-sm text-amber-600 font-mono truncate max-w-md">
+                  {shareUrl}
+                </p>
+              </div>
             </div>
           </div>
-          <Button
-            onClick={handleCopyLink}
-            className="px-3 py-1.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors"
-          >
-            {copySuccess ? "Copied!" : "Copy Link"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <div
+              className={
+                !sharingEnabled ? "opacity-50 pointer-events-none" : ""
+              }
+            >
+              <Button
+                onClick={handleCopyLink}
+                className="px-3 py-1.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors"
+              >
+                {copySuccess ? "Copied!" : "Copy Link"}
+              </Button>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="px-3 py-1.5 border border-amber-300 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-100 transition-colors"
+                >
+                  Regenerate Link
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Regenerate share link?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will create a new share link. The old link will stop
+                    working immediately and anyone with the old link will no
+                    longer be able to access reports.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleRegenerateToken}
+                    disabled={isRegenerating}
+                    className="bg-amber-600 hover:bg-amber-700"
+                  >
+                    {isRegenerating ? "Regenerating..." : "Regenerate"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
 
         {/* Tabs */}
