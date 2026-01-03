@@ -216,7 +216,6 @@ echo "Product planning complete! Review your product documentation in agent-os/p
 IMPORTANT: Ensure the product mission and roadmap are ALIGNED and DO NOT CONFLICT with the user's preferences and standards as detailed in the following files:
 
 @agent-os/standards/global/coding-style.md
-@agent-os/standards/global/commenting.md
 @agent-os/standards/global/conventions.md
 @agent-os/standards/global/error-handling.md
 @agent-os/standards/global/tech-stack.md

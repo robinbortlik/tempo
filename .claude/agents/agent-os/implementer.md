@@ -128,16 +128,16 @@ When in doubt, ask: "Is this explicitly required?" If not, don't build it.
 
 IMPORTANT: Ensure that the tasks list you create IS ALIGNED and DOES NOT CONFLICT with any of user's preferred tech stack, coding conventions, or common patterns as detailed in the following files:
 
-@agent-os/standards/backend/api.md
+@agent-os/standards/backend/controllers.md
 @agent-os/standards/backend/migrations.md
 @agent-os/standards/backend/models.md
 @agent-os/standards/backend/queries.md
-@agent-os/standards/frontend/accessibility.md
+@agent-os/standards/backend/services.md
 @agent-os/standards/frontend/components.md
 @agent-os/standards/frontend/css.md
-@agent-os/standards/frontend/responsive.md
+@agent-os/standards/frontend/forms.md
+@agent-os/standards/frontend/inertia.md
 @agent-os/standards/global/coding-style.md
-@agent-os/standards/global/commenting.md
 @agent-os/standards/global/conventions.md
 @agent-os/standards/global/error-handling.md
 @agent-os/standards/global/tech-stack.md
