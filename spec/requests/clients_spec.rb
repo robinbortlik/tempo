@@ -106,7 +106,7 @@ RSpec.describe ClientsController, type: :request do
         expect(client_data['hourly_rate']).to eq("120.0")
         expect(client_data['currency']).to eq("EUR")
         expect(client_data['share_token']).to be_present
-        expect(client_data['sharing_enabled']).to eq(false)
+        expect(client_data['sharing_enabled']).to eq(true)
       end
 
       it "returns associated projects" do

@@ -434,29 +434,47 @@ export default function InvoiceShow() {
               {settings.vat_id && (
                 <p className="text-sm text-stone-500">VAT: {settings.vat_id}</p>
               )}
-              {(settings.bank_name || settings.bank_account || settings.bank_swift) && (
+              {(settings.bank_name ||
+                settings.bank_account ||
+                settings.bank_swift) && (
                 <div className="flex gap-6 mt-3 pt-3 border-t border-stone-200">
                   {settings.bank_name && (
                     <div>
-                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">Bank</p>
-                      <p className="text-xs text-stone-900 font-medium font-mono">{settings.bank_name}</p>
+                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">
+                        Bank
+                      </p>
+                      <p className="text-xs text-stone-900 font-medium font-mono">
+                        {settings.bank_name}
+                      </p>
                     </div>
                   )}
                   {settings.bank_account && (
                     <div>
-                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">IBAN</p>
-                      <p className="text-xs text-stone-900 font-medium font-mono">{settings.bank_account}</p>
+                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">
+                        IBAN
+                      </p>
+                      <p className="text-xs text-stone-900 font-medium font-mono">
+                        {settings.bank_account}
+                      </p>
                     </div>
                   )}
                   {settings.bank_swift && (
                     <div>
-                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">SWIFT/BIC</p>
-                      <p className="text-xs text-stone-900 font-medium font-mono">{settings.bank_swift}</p>
+                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">
+                        SWIFT/BIC
+                      </p>
+                      <p className="text-xs text-stone-900 font-medium font-mono">
+                        {settings.bank_swift}
+                      </p>
                     </div>
                   )}
                   <div>
-                    <p className="text-[9px] text-stone-400 uppercase tracking-wide">Reference</p>
-                    <p className="text-xs text-stone-900 font-medium font-mono">#{invoice.number}</p>
+                    <p className="text-[9px] text-stone-400 uppercase tracking-wide">
+                      Reference
+                    </p>
+                    <p className="text-xs text-stone-900 font-medium font-mono">
+                      #{invoice.number}
+                    </p>
                   </div>
                 </div>
               )}
