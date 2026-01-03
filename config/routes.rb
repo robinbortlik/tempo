@@ -11,7 +11,12 @@ Rails.application.routes.draw do
     get :earnings_over_time, on: :member
     get :hours_trend, on: :member
   end
-  resources :clients
+  resources :clients do
+    member do
+      patch :toggle_sharing
+      patch :regenerate_share_token
+    end
+  end
   resources :projects do
     member do
       patch :toggle_active
