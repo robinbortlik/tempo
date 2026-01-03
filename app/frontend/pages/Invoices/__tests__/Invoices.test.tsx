@@ -74,7 +74,8 @@ describe("InvoicePreview", () => {
     expect(screen.getByText("Logo design deliverable")).toBeInTheDocument();
 
     // Should show totals (appears in header, project group, and totals section)
-    expect(screen.getAllByText("$3,500.00").length).toBeGreaterThan(0);
+    // Czech locale uses space as thousands separator and comma as decimal
+    expect(screen.getAllByText("$3 500,00").length).toBeGreaterThan(0);
   });
 
   it("displays empty state when no line items", () => {
@@ -103,13 +104,15 @@ describe("InvoicePreview", () => {
     );
 
     // Time aggregate should show hours and rate
+    // Rate uses formatCurrency with showDecimals=false
     expect(screen.getByText("20h")).toBeInTheDocument();
-    expect(screen.getByText("$150.00/h")).toBeInTheDocument();
+    expect(screen.getByText("$150/h")).toBeInTheDocument();
 
     // Fixed item should show just description and amount
+    // Czech locale uses comma as decimal separator
     const fixedRow = screen.getByText("Logo design deliverable").closest("tr");
     expect(fixedRow).toBeInTheDocument();
-    expect(within(fixedRow!).getByText("$500.00")).toBeInTheDocument();
+    expect(within(fixedRow!).getByText("$500,00")).toBeInTheDocument();
   });
 });
 

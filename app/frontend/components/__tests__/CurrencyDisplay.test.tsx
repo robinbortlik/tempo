@@ -5,54 +5,55 @@ import {
   CURRENCY_SYMBOLS,
 } from "../CurrencyDisplay";
 
+// Czech locale (cs-CZ) uses space as thousands separator and comma as decimal
 describe("CurrencyDisplay", () => {
   it("renders EUR currency with symbol", () => {
     render(<CurrencyDisplay amount={1000} currency="EUR" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("\u20AC1,000.00");
+    expect(display).toHaveTextContent("€1 000,00");
   });
 
   it("renders USD currency with symbol", () => {
     render(<CurrencyDisplay amount={1000} currency="USD" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("$1,000.00");
+    expect(display).toHaveTextContent("$1 000,00");
   });
 
   it("renders GBP currency with symbol", () => {
     render(<CurrencyDisplay amount={1000} currency="GBP" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("\u00A31,000.00");
+    expect(display).toHaveTextContent("£1 000,00");
   });
 
   it("renders CZK currency with symbol after amount", () => {
     render(<CurrencyDisplay amount={1000} currency="CZK" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("1,000.00 K\u010D");
+    expect(display).toHaveTextContent("1 000,00 Kč");
   });
 
   it("falls back to currency code for unknown currencies", () => {
     render(<CurrencyDisplay amount={1000} currency="JPY" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("JPY1,000.00");
+    expect(display).toHaveTextContent("JPY1 000,00");
   });
 
   it("formats large numbers with separators", () => {
     render(<CurrencyDisplay amount={1234567.89} currency="EUR" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("\u20AC1,234,567.89");
+    expect(display).toHaveTextContent("€1 234 567,89");
   });
 
   it("formats zero amount", () => {
     render(<CurrencyDisplay amount={0} currency="EUR" />);
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("\u20AC0.00");
+    expect(display).toHaveTextContent("€0,00");
   });
 
   it("formats negative amounts", () => {
     render(<CurrencyDisplay amount={-500.5} currency="USD" />);
     const display = screen.getByTestId("currency-display");
-    // toLocaleString formats negative numbers as "$-500.50"
-    expect(display).toHaveTextContent("$-500.50");
+    // cs-CZ locale formats negative numbers as "$-500,50"
+    expect(display).toHaveTextContent("$-500,50");
   });
 
   it("hides decimals when showDecimals is false", () => {
@@ -60,7 +61,7 @@ describe("CurrencyDisplay", () => {
       <CurrencyDisplay amount={1234.56} currency="EUR" showDecimals={false} />
     );
     const display = screen.getByTestId("currency-display");
-    expect(display).toHaveTextContent("\u20AC1,235");
+    expect(display).toHaveTextContent("€1 235");
   });
 
   it("applies tabular-nums class by default", () => {
@@ -80,15 +81,16 @@ describe("CurrencyDisplay", () => {
 
 describe("formatCurrency utility", () => {
   it("formats EUR correctly", () => {
-    expect(formatCurrency(1000, "EUR")).toBe("\u20AC1,000.00");
+    // Czech locale uses non-breaking space as thousands separator
+    expect(formatCurrency(1000, "EUR")).toBe("€1\u00A0000,00");
   });
 
   it("formats USD correctly", () => {
-    expect(formatCurrency(1000, "USD")).toBe("$1,000.00");
+    expect(formatCurrency(1000, "USD")).toBe("$1\u00A0000,00");
   });
 
   it("formats without decimals when specified", () => {
-    expect(formatCurrency(1234.56, "EUR", false)).toBe("\u20AC1,235");
+    expect(formatCurrency(1234.56, "EUR", false)).toBe("€1\u00A0235");
   });
 });
 
