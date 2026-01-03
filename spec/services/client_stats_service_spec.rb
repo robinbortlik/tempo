@@ -53,7 +53,7 @@ RSpec.describe ClientStatsService do
       create(:work_entry, project: project1, hours: 8, status: :unbilled)
       create(:work_entry, project: project2, hours: 10, status: :unbilled)
 
-      result = described_class.unbilled_stats_for_clients([client1.id, client2.id])
+      result = described_class.unbilled_stats_for_clients([ client1.id, client2.id ])
 
       expect(result[client1.id][:hours]).to eq(8.0)
       expect(result[client1.id][:amount]).to eq(800.0)
@@ -66,7 +66,7 @@ RSpec.describe ClientStatsService do
       project = create(:project, client: client)
       create(:work_entry, project: project, hours: 8, status: :invoiced)
 
-      result = described_class.unbilled_stats_for_clients([client.id])
+      result = described_class.unbilled_stats_for_clients([ client.id ])
 
       expect(result[client.id][:hours]).to eq(0)
       expect(result[client.id][:amount]).to eq(0)
@@ -83,7 +83,7 @@ RSpec.describe ClientStatsService do
       create(:work_entry, project: project, hours: 8, status: :unbilled)
       create(:work_entry, project: project, hours: 10, status: :invoiced)
 
-      result = described_class.unbilled_stats_for_clients([client.id])
+      result = described_class.unbilled_stats_for_clients([ client.id ])
 
       expect(result[client.id][:hours]).to eq(8.0)
       expect(result[client.id][:amount]).to eq(800.0)
@@ -97,7 +97,7 @@ RSpec.describe ClientStatsService do
       create(:work_entry, project: project1, hours: 8, status: :unbilled)
       create(:work_entry, project: project2, hours: 4, status: :unbilled)
 
-      result = described_class.unbilled_stats_for_clients([client.id])
+      result = described_class.unbilled_stats_for_clients([ client.id ])
 
       expect(result[client.id][:hours]).to eq(12.0)
       expect(result[client.id][:amount]).to eq(1400.0)
@@ -116,7 +116,7 @@ RSpec.describe ClientStatsService do
       create(:work_entry, project: project1, status: :unbilled)
       create(:work_entry, project: project2, status: :unbilled)
 
-      result = described_class.unbilled_counts_for_clients([client1.id, client2.id])
+      result = described_class.unbilled_counts_for_clients([ client1.id, client2.id ])
 
       expect(result[client1.id]).to eq(2)
       expect(result[client2.id]).to eq(1)
@@ -129,7 +129,7 @@ RSpec.describe ClientStatsService do
       create(:work_entry, project: project, status: :unbilled)
       create(:work_entry, project: project, status: :invoiced)
 
-      result = described_class.unbilled_counts_for_clients([client.id])
+      result = described_class.unbilled_counts_for_clients([ client.id ])
 
       expect(result[client.id]).to eq(1)
     end
@@ -143,7 +143,7 @@ RSpec.describe ClientStatsService do
       project = create(:project, client: client)
       create(:work_entry, project: project, status: :invoiced)
 
-      result = described_class.unbilled_counts_for_clients([client.id])
+      result = described_class.unbilled_counts_for_clients([ client.id ])
 
       expect(result[client.id]).to be_nil
     end

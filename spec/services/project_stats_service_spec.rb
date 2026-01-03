@@ -48,7 +48,7 @@ RSpec.describe ProjectStatsService do
       create(:work_entry, project: project1, hours: 8, status: :unbilled)
       create(:work_entry, project: project2, hours: 10, status: :unbilled)
 
-      result = described_class.unbilled_hours_for_projects([project1.id, project2.id])
+      result = described_class.unbilled_hours_for_projects([ project1.id, project2.id ])
 
       expect(result[project1.id]).to eq(8.0)
       expect(result[project2.id]).to eq(10.0)
@@ -60,7 +60,7 @@ RSpec.describe ProjectStatsService do
       create(:work_entry, project: project, hours: 8, status: :unbilled)
       create(:work_entry, project: project, hours: 10, status: :invoiced)
 
-      result = described_class.unbilled_hours_for_projects([project.id])
+      result = described_class.unbilled_hours_for_projects([ project.id ])
 
       expect(result[project.id]).to eq(8.0)
     end
@@ -73,7 +73,7 @@ RSpec.describe ProjectStatsService do
       project = create(:project)
       create(:work_entry, project: project, hours: 8, status: :invoiced)
 
-      result = described_class.unbilled_hours_for_projects([project.id])
+      result = described_class.unbilled_hours_for_projects([ project.id ])
 
       expect(result[project.id]).to be_nil
     end
@@ -84,7 +84,7 @@ RSpec.describe ProjectStatsService do
       create(:work_entry, project: project, hours: 8, status: :unbilled)
       create(:work_entry, project: project, hours: 4, status: :unbilled)
 
-      result = described_class.unbilled_hours_for_projects([project.id])
+      result = described_class.unbilled_hours_for_projects([ project.id ])
 
       expect(result[project.id]).to eq(12.0)
     end

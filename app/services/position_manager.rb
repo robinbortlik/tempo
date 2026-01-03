@@ -12,7 +12,7 @@ class PositionManager
     pos2 = item2.position
 
     item1.class.transaction do
-      temp_position = [pos1, pos2].max + 1000
+      temp_position = [ pos1, pos2 ].max + 1000
       item1.update!(position: temp_position)
       item2.update!(position: pos1)
       item1.update!(position: pos2)

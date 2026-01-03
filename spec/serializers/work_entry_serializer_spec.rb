@@ -118,7 +118,7 @@ RSpec.describe WorkEntrySerializer do
       data = {
         date: Date.current,
         formatted_date: "Today",
-        entries: [entry1, entry2]
+        entries: [ entry1, entry2 ]
       }
 
       result = described_class.new(data).serializable_hash
@@ -132,7 +132,7 @@ RSpec.describe WorkEntrySerializer do
       data = {
         date: Date.current,
         formatted_date: "Today",
-        entries: [entry1, entry2]
+        entries: [ entry1, entry2 ]
       }
 
       result = described_class.new(data).serializable_hash
@@ -144,7 +144,7 @@ RSpec.describe WorkEntrySerializer do
       data = {
         date: Date.current,
         formatted_date: "Today",
-        entries: [entry1]
+        entries: [ entry1 ]
       }
 
       result = described_class.new(data).serializable_hash

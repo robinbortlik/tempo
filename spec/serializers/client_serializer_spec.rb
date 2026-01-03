@@ -66,7 +66,7 @@ RSpec.describe ClientSerializer do
     it "serializes collection" do
       client2 = create(:client, name: "Client 2")
 
-      result = described_class.new([client, client2]).serializable_hash
+      result = described_class.new([ client, client2 ]).serializable_hash
 
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)

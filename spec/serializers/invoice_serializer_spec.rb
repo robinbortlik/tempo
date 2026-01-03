@@ -57,7 +57,7 @@ RSpec.describe InvoiceSerializer do
     it "serializes collection" do
       invoice2 = create(:invoice, client: client)
 
-      result = described_class.new([invoice, invoice2]).serializable_hash
+      result = described_class.new([ invoice, invoice2 ]).serializable_hash
 
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)
@@ -70,7 +70,7 @@ RSpec.describe InvoiceSerializer do
     let(:entry2) { create(:work_entry, :time_entry, project: project, hours: 4) }
 
     it "serializes project group data" do
-      data = { project: project, entries: [entry1, entry2] }
+      data = { project: project, entries: [ entry1, entry2 ] }
 
       result = described_class.new(data).serializable_hash
 
@@ -79,7 +79,7 @@ RSpec.describe InvoiceSerializer do
     end
 
     it "calculates total_hours from time entries" do
-      data = { project: project, entries: [entry1, entry2] }
+      data = { project: project, entries: [ entry1, entry2 ] }
 
       result = described_class.new(data).serializable_hash
 
@@ -87,7 +87,7 @@ RSpec.describe InvoiceSerializer do
     end
 
     it "calculates total_amount from all entries" do
-      data = { project: project, entries: [entry1, entry2] }
+      data = { project: project, entries: [ entry1, entry2 ] }
 
       result = described_class.new(data).serializable_hash
 
@@ -95,7 +95,7 @@ RSpec.describe InvoiceSerializer do
     end
 
     it "serializes entries using ForInvoiceProjectGroup" do
-      data = { project: project, entries: [entry1] }
+      data = { project: project, entries: [ entry1 ] }
 
       result = described_class.new(data).serializable_hash
 

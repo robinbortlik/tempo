@@ -88,7 +88,7 @@ RSpec.describe InvoiceLineItemSerializer do
     let(:item2) { create(:invoice_line_item, invoice: invoice, position: 2) }
 
     it "serializes array of line items" do
-      result = described_class.new([item1, item2]).serializable_hash
+      result = described_class.new([ item1, item2 ]).serializable_hash
 
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)

@@ -104,7 +104,7 @@ RSpec.describe ProjectSerializer do
     end
 
     it "serializes grouped data" do
-      data = { client: client, projects: [project1, project2] }
+      data = { client: client, projects: [ project1, project2 ] }
       unbilled_stats = { project1.id => 10, project2.id => 5 }
 
       result = described_class.new(data, params: { unbilled_stats: unbilled_stats }).serializable_hash
@@ -115,7 +115,7 @@ RSpec.describe ProjectSerializer do
     end
 
     it "includes unbilled_hours per project" do
-      data = { client: client, projects: [project1] }
+      data = { client: client, projects: [ project1 ] }
       unbilled_stats = { project1.id => 10 }
 
       result = described_class.new(data, params: { unbilled_stats: unbilled_stats }).serializable_hash
@@ -129,7 +129,7 @@ RSpec.describe ProjectSerializer do
     let(:project) { create(:project, client: client, name: "Form Project") }
 
     it "serializes minimal project data for forms" do
-      data = { client: client, projects: [project] }
+      data = { client: client, projects: [ project ] }
 
       result = described_class.new(data).serializable_hash
 
