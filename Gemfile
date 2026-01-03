@@ -44,6 +44,9 @@ gem "grover"
 # IBAN validation [https://github.com/gocardless/ibandit]
 gem "ibandit"
 
+# QR code generation [https://github.com/whomwah/rqrcode]
+gem "rqrcode"
+
 group :development, :test do
   # Load environment variables from .env files
   gem "dotenv-rails"

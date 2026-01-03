@@ -68,10 +68,16 @@ interface Settings {
   logo_url: string | null;
 }
 
+interface QrCode {
+  data_url: string;
+  format: "epc" | "spayd";
+}
+
 interface PageProps {
   invoice: Invoice;
   line_items: LineItem[];
   settings: Settings;
+  qr_code: QrCode | null;
   flash: {
     alert?: string;
     notice?: string;
@@ -119,7 +125,8 @@ function StatusBadge({ status }: { status: "draft" | "final" }) {
 }
 
 export default function InvoiceShow() {
-  const { invoice, line_items, settings, flash } = usePage<PageProps>().props;
+  const { invoice, line_items, settings, qr_code, flash } =
+    usePage<PageProps>().props;
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
@@ -427,6 +434,32 @@ export default function InvoiceShow() {
               {settings.vat_id && (
                 <p className="text-sm text-stone-500">VAT: {settings.vat_id}</p>
               )}
+              {(settings.bank_name || settings.bank_account || settings.bank_swift) && (
+                <div className="flex gap-6 mt-3 pt-3 border-t border-stone-200">
+                  {settings.bank_name && (
+                    <div>
+                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">Bank</p>
+                      <p className="text-xs text-stone-900 font-medium font-mono">{settings.bank_name}</p>
+                    </div>
+                  )}
+                  {settings.bank_account && (
+                    <div>
+                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">IBAN</p>
+                      <p className="text-xs text-stone-900 font-medium font-mono">{settings.bank_account}</p>
+                    </div>
+                  )}
+                  {settings.bank_swift && (
+                    <div>
+                      <p className="text-[9px] text-stone-400 uppercase tracking-wide">SWIFT/BIC</p>
+                      <p className="text-xs text-stone-900 font-medium font-mono">{settings.bank_swift}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-[9px] text-stone-400 uppercase tracking-wide">Reference</p>
+                    <p className="text-xs text-stone-900 font-medium font-mono">#{invoice.number}</p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="text-right">
               <p className="text-3xl font-semibold text-stone-900 font-mono">
@@ -633,44 +666,19 @@ export default function InvoiceShow() {
             </div>
           )}
 
-          {/* Footer */}
-          <div className="mt-8 pt-8 border-t border-stone-200 text-sm text-stone-500">
-            <p className="font-medium text-stone-700 mb-2">Payment Details</p>
-            {(settings.bank_name ||
-              settings.bank_account ||
-              settings.bank_swift) && (
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                {settings.bank_name && (
-                  <div>
-                    <p className="text-stone-500">Bank</p>
-                    <p className="text-stone-900 font-medium">
-                      {settings.bank_name}
-                    </p>
-                  </div>
-                )}
-                {settings.bank_account && (
-                  <div>
-                    <p className="text-stone-500">Account / IBAN</p>
-                    <p className="text-stone-900 font-medium">
-                      {settings.bank_account}
-                    </p>
-                  </div>
-                )}
-                {settings.bank_swift && (
-                  <div>
-                    <p className="text-stone-500">SWIFT / BIC</p>
-                    <p className="text-stone-900 font-medium">
-                      {settings.bank_swift}
-                    </p>
-                  </div>
-                )}
+          {/* Footer - QR Code */}
+          {qr_code && (
+            <div className="mt-8 pt-6 border-t border-stone-200">
+              <div>
+                <img
+                  src={qr_code.data_url}
+                  alt="Payment QR Code"
+                  className="w-[70px] h-[70px]"
+                />
+                <p className="text-[9px] text-stone-400 mt-1">Scan to pay</p>
               </div>
-            )}
-            <p>
-              Please include invoice number <strong>#{invoice.number}</strong>{" "}
-              in payment reference.
-            </p>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
