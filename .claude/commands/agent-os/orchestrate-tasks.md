@@ -218,11 +218,11 @@ The compiled list of standards should look something like this, where each file 
 @agent-os/standards/global/coding-style.md
 @agent-os/standards/global/conventions.md
 @agent-os/standards/global/tech-stack.md
-@agent-os/standards/backend/api/authentication.md
-@agent-os/standards/backend/api/endpoints.md
-@agent-os/standards/backend/api/responses.md
+@agent-os/standards/backend/controllers.md
+@agent-os/standards/backend/services.md
+@agent-os/standards/backend/serializers.md
+@agent-os/standards/frontend/components.md
 @agent-os/standards/frontend/css.md
-@agent-os/standards/frontend/responsive.md
 ```
 
 

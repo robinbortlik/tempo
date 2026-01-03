@@ -19,6 +19,7 @@
 ### Database & Storage
 - **Database:** SQLite3 (development/production)
 - **ORM:** ActiveRecord
+- **Serialization:** Alba (JSON serialization)
 - **Caching:** Solid Cache (database-backed)
 - **Background Jobs:** Solid Queue (database-backed)
 - **WebSockets:** Solid Cable (database-backed)

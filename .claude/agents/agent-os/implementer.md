@@ -132,6 +132,7 @@ IMPORTANT: Ensure that the tasks list you create IS ALIGNED and DOES NOT CONFLIC
 @agent-os/standards/backend/migrations.md
 @agent-os/standards/backend/models.md
 @agent-os/standards/backend/queries.md
+@agent-os/standards/backend/serializers.md
 @agent-os/standards/backend/services.md
 @agent-os/standards/frontend/components.md
 @agent-os/standards/frontend/css.md

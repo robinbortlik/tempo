@@ -171,6 +171,7 @@ IMPORTANT: Ensure that the spec you create IS ALIGNED and DOES NOT CONFLICT with
 @agent-os/standards/backend/migrations.md
 @agent-os/standards/backend/models.md
 @agent-os/standards/backend/queries.md
+@agent-os/standards/backend/serializers.md
 @agent-os/standards/backend/services.md
 @agent-os/standards/frontend/components.md
 @agent-os/standards/frontend/css.md
