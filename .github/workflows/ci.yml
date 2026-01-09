@@ -81,6 +81,7 @@ jobs:
       - name: Run RSpec tests
         env:
           RAILS_ENV: test
+          GROVER_NO_SANDBOX: "true"
         run: |
           bin/rails db:test:prepare
           bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
