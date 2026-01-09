@@ -22,6 +22,9 @@ Personal time tracking and invoicing application for independent developers work
 ### Settings
 ![Settings](docs/screenshots/settings.png)
 
+### Customer Report (Shareable)
+![Customer Report](docs/screenshots/customer-report.png)
+
 ## Tech Stack
 
 - **Backend:** Rails 8.1 with Ruby 3.3
