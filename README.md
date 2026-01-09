@@ -2,6 +2,26 @@
 
 Personal time tracking and invoicing application for independent developers working with multiple clients.
 
+## Screenshots
+
+### Dashboard
+![Dashboard](docs/screenshots/dashboard.png)
+
+### Log Work
+![Log Work](docs/screenshots/log-work.png)
+
+### Clients
+![Clients](docs/screenshots/clients.png)
+
+### Projects
+![Projects](docs/screenshots/projects.png)
+
+### Invoices
+![Invoices](docs/screenshots/invoices.png)
+
+### Settings
+![Settings](docs/screenshots/settings.png)
+
 ## Tech Stack
 
 - **Backend:** Rails 8.1 with Ruby 3.3
