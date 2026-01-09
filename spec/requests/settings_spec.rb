@@ -255,4 +255,37 @@ RSpec.describe SettingsController, type: :request do
       end
     end
   end
+
+  describe "PATCH /settings/locale" do
+    context "when authenticated" do
+      let(:user) { create(:user, locale: "en") }
+
+      before { sign_in(user) }
+
+      it "updates user locale" do
+        patch locale_settings_path, params: { locale: "cs" }
+
+        expect(user.reload.locale).to eq("cs")
+        expect(response).to redirect_to(settings_path)
+      end
+    end
+  end
+
+  describe "locale sharing via Inertia" do
+    context "when authenticated" do
+      let(:user) { create(:user, locale: "cs") }
+
+      before { sign_in(user) }
+
+      it "shares locale via Inertia props" do
+        get settings_path, headers: {
+          "X-Inertia" => "true",
+          "X-Inertia-Version" => ViteRuby.digest
+        }
+
+        json_response = JSON.parse(response.body)
+        expect(json_response["props"]["locale"]).to eq("cs")
+      end
+    end
+  end
 end

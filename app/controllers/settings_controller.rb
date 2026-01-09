@@ -13,6 +13,14 @@ class SettingsController < ApplicationController
     end
   end
 
+  def update_locale
+    if Current.session.user.update(locale: params[:locale])
+      redirect_to settings_path, notice: "Language updated successfully."
+    else
+      redirect_to settings_path, alert: Current.session.user.errors.full_messages.to_sentence
+    end
+  end
+
   private
 
   def settings

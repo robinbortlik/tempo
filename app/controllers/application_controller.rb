@@ -23,4 +23,9 @@ class ApplicationController < ActionController::Base
       {}
     end
   }
+
+  # Share user locale with all Inertia pages
+  inertia_share locale: -> {
+    Current.session&.user&.locale || "en"
+  }
 end

@@ -72,4 +72,18 @@ RSpec.describe User, type: :model do
       expect(user.authenticate("wrongpassword")).to be_falsey
     end
   end
+
+  describe "locale" do
+    it "accepts 'en' and 'cs' values and rejects invalid values" do
+      user = build(:user, locale: "en")
+      expect(user).to be_valid
+
+      user.locale = "cs"
+      expect(user).to be_valid
+
+      user.locale = "de"
+      expect(user).not_to be_valid
+      expect(user.errors[:locale]).to include("is not included in the list")
+    end
+  end
 end
