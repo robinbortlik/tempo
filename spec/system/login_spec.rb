@@ -16,7 +16,6 @@ RSpec.describe "Login", type: :system do
       expect(page).to have_field("Email")
       expect(page).to have_field("Password")
       expect(page).to have_button("Sign in")
-      expect(page).to have_link("Forgot password?")
     end
 
     it "displays the Tempo logo" do
@@ -123,19 +122,6 @@ RSpec.describe "Login", type: :system do
       # Should be able to access root
       expect(page).to have_current_path(root_path)
       expect(page).to have_content("Tempo")
-    end
-  end
-
-  describe "forgot password link" do
-    it "is present but non-functional (placeholder)" do
-      visit new_session_path
-
-      forgot_link = find_link("Forgot password?")
-      expect(forgot_link).to be_present
-
-      # Link should not navigate anywhere (placeholder)
-      forgot_link.click
-      expect(page).to have_current_path(new_session_path)
     end
   end
 

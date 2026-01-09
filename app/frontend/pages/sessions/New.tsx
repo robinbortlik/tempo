@@ -124,15 +124,6 @@ export default function Login() {
                 </Button>
               </form>
 
-              <div className="mt-4 text-center">
-                <a
-                  href="#"
-                  className="text-sm text-stone-500 hover:text-stone-700"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Forgot password?
-                </a>
-              </div>
             </CardContent>
           </Card>
         </div>
