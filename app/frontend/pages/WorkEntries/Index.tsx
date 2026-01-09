@@ -67,11 +67,15 @@ interface Summary {
 }
 
 interface Filters {
-  start_date: string | null;
-  end_date: string | null;
   client_id: number | null;
   project_id: number | null;
   entry_type: string | null;
+}
+
+interface Period {
+  year: number;
+  month: number | null;
+  available_years: number[];
 }
 
 interface PageProps {
@@ -79,6 +83,7 @@ interface PageProps {
   projects: ClientGroup[];
   clients: { id: number; name: string }[];
   filters: Filters;
+  period: Period;
   summary: Summary;
   flash: {
     alert?: string;
@@ -88,7 +93,7 @@ interface PageProps {
 }
 
 export default function WorkEntriesIndex() {
-  const { date_groups, projects, clients, filters, summary, flash } =
+  const { date_groups, projects, clients, filters, period, summary, flash } =
     usePage<PageProps>().props;
   const [deleteEntryId, setDeleteEntryId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -157,7 +162,7 @@ export default function WorkEntriesIndex() {
 
         {/* Data Section: Filters + Summary + Entries */}
         <div className="border border-stone-200 rounded-xl overflow-hidden">
-          <FilterBar clients={clients} projects={projects} filters={filters} />
+          <FilterBar clients={clients} projects={projects} filters={filters} period={period} />
 
           {/* Summary Stats Bar */}
           {totalEntries > 0 && (

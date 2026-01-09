@@ -29,11 +29,15 @@ const mockProjects = [
 const mockClients = [{ id: 1, name: "Acme Corp" }];
 
 const mockFilters = {
-  start_date: null,
-  end_date: null,
   client_id: null,
   project_id: null,
   entry_type: null,
+};
+
+const mockPeriod = {
+  year: 2026,
+  month: 1,
+  available_years: [2026, 2025, 2024],
 };
 
 describe("QuickEntryForm", () => {
@@ -96,6 +100,7 @@ describe("FilterBar", () => {
         clients={mockClients}
         projects={mockProjects}
         filters={mockFilters}
+        period={mockPeriod}
       />
     );
 
@@ -105,6 +110,75 @@ describe("FilterBar", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Time" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Fixed" })).toBeInTheDocument();
+  });
+
+  it("renders year dropdown with available years", () => {
+    render(
+      <FilterBar
+        clients={mockClients}
+        projects={mockProjects}
+        filters={mockFilters}
+        period={mockPeriod}
+      />
+    );
+
+    expect(screen.getByLabelText("Year")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "2026" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "2025" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "2024" })).toBeInTheDocument();
+  });
+
+  it("renders month pills with All option first", () => {
+    render(
+      <FilterBar
+        clients={mockClients}
+        projects={mockProjects}
+        filters={mockFilters}
+        period={mockPeriod}
+      />
+    );
+
+    expect(screen.getByRole("button", { name: "All" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Jan" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Dec" })).toBeInTheDocument();
+  });
+
+  it("applies selected styling to current month", () => {
+    render(
+      <FilterBar
+        clients={mockClients}
+        projects={mockProjects}
+        filters={mockFilters}
+        period={mockPeriod}
+      />
+    );
+
+    const janButton = screen.getByRole("button", { name: "Jan" });
+    expect(janButton).toHaveClass("bg-stone-900", "text-white");
+
+    const febButton = screen.getByRole("button", { name: "Feb" });
+    expect(febButton).toHaveClass("text-stone-500");
+  });
+
+  it("triggers navigation when month pill is clicked", async () => {
+    const { router } = await import("@inertiajs/react");
+    const user = userEvent.setup();
+
+    render(
+      <FilterBar
+        clients={mockClients}
+        projects={mockProjects}
+        filters={mockFilters}
+        period={mockPeriod}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: "Feb" }));
+    expect(router.get).toHaveBeenCalledWith(
+      "/work_entries",
+      expect.objectContaining({ year: 2026, month: 2 }),
+      expect.objectContaining({ preserveState: true, preserveScroll: true })
+    );
   });
 });
 
