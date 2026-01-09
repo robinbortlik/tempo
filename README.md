@@ -47,7 +47,7 @@ bin/rails db:prepare
 bin/dev                    # Start Rails + Vite dev servers
 ```
 
-Access the app at http://localhost:3000
+Access the app at http://localhost:5100
 
 ## Parallel Development
 
@@ -84,7 +84,7 @@ Each parallel environment gets:
 ```bash
 # Terminal 1 - main development
 cd invoicing
-bin/dev                     # Rails: 3000, Vite: 3036
+bin/dev                     # Rails: 5100, Vite: 3036
 
 # Terminal 2 - feature work
 bin/build-feature "auth" "Add user authentication"

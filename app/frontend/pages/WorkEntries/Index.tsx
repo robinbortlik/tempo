@@ -15,7 +15,7 @@ import {
 import { formatCurrency } from "@/components/CurrencyDisplay";
 import QuickEntryForm from "./components/QuickEntryForm";
 import FilterBar from "./components/FilterBar";
-import DateGroup from "./components/DateGroup";
+import WorkEntryRow from "./components/WorkEntryRow";
 
 interface Project {
   id: number;
@@ -216,15 +216,18 @@ export default function WorkEntriesIndex() {
               </p>
             </div>
           ) : (
-            <div className="bg-white border-t border-stone-200 divide-y divide-stone-200">
-              {date_groups.map((group) => (
-                <DateGroup
-                  key={group.date}
-                  group={group}
-                  projects={projects}
-                  onDeleteEntry={handleDeleteEntry}
-                />
-              ))}
+            <div className="bg-white border-t border-stone-200 divide-y divide-stone-100">
+              {date_groups.flatMap((group) =>
+                group.entries.map((entry) => (
+                  <WorkEntryRow
+                    key={entry.id}
+                    entry={entry}
+                    projects={projects}
+                    onDelete={handleDeleteEntry}
+                    showDate
+                  />
+                ))
+              )}
             </div>
           )}
         </div>

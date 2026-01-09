@@ -56,6 +56,28 @@ interface WorkEntryRowProps {
   onDelete: (id: number) => void;
   isFirst?: boolean;
   isLast?: boolean;
+  showDate?: boolean;
+}
+
+function formatShortDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  // Check if it's today
+  if (date.toDateString() === today.toDateString()) {
+    return "Today";
+  }
+  // Check if it's yesterday
+  if (date.toDateString() === yesterday.toDateString()) {
+    return "Yesterday";
+  }
+  // Otherwise show "Jan 9" format
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export default function WorkEntryRow({
@@ -64,6 +86,7 @@ export default function WorkEntryRow({
   onDelete,
   isFirst = false,
   isLast = false,
+  showDate = false,
 }: WorkEntryRowProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -329,7 +352,16 @@ export default function WorkEntryRow({
       `}
       data-testid={`work-entry-row-${entry.id}`}
     >
-      <div className="flex items-center px-4 py-2.5 gap-4">
+      <div className="flex items-center px-4 py-3 gap-4">
+        {/* Date (when showDate is true) */}
+        {showDate && (
+          <div className="w-16 shrink-0">
+            <span className="text-sm font-medium text-stone-500 tabular-nums">
+              {formatShortDate(entry.date)}
+            </span>
+          </div>
+        )}
+
         {/* Left section: Project and description */}
         <div className="flex-1 min-w-0 flex items-center gap-3">
           {/* Project info */}
