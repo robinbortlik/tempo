@@ -155,13 +155,13 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
   const isValid = date && projectId && (hasHours || hasAmount);
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-emerald-500 p-6 mb-6">
+    <div className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-emerald-500 p-4 md:p-6 mb-4 md:mb-6">
       <h3 className="font-semibold text-stone-900 mb-4">
         {t("pages.workEntries.quickEntry")}
       </h3>
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="flex items-end gap-4">
-          <div className="w-40">
+        <div className="grid grid-cols-2 md:flex md:items-end gap-3 md:gap-4">
+          <div className="col-span-1 md:w-40">
             <label
               htmlFor="Date"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -178,7 +178,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
             />
           </div>
-          <div className="w-64">
+          <div className="col-span-1 md:w-64">
             <label
               htmlFor="Project"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -194,7 +194,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               className="w-full h-10"
             />
           </div>
-          <div className="w-24">
+          <div className="col-span-1 md:w-24">
             <label
               htmlFor="Hours"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -214,7 +214,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               placeholder="8"
             />
           </div>
-          <div className="w-32">
+          <div className="col-span-1 md:w-32">
             <label
               htmlFor="Amount"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -235,7 +235,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               placeholder="500"
             />
           </div>
-          <div className="flex-1">
+          <div className="col-span-2 md:flex-1">
             <label
               htmlFor="Description"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -252,15 +252,17 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               placeholder={t("pages.workEntries.form.descriptionPlaceholder")}
             />
           </div>
-          <Button
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            className="h-10 px-6 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
-          >
-            {isSubmitting
-              ? t("common.adding")
-              : t("pages.workEntries.addEntry")}
-          </Button>
+          <div className="col-span-2 md:col-span-1">
+            <Button
+              type="submit"
+              disabled={!isValid || isSubmitting}
+              className="w-full md:w-auto h-10 px-6 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
+            >
+              {isSubmitting
+                ? t("common.adding")
+                : t("pages.workEntries.addEntry")}
+            </Button>
+          </div>
         </div>
 
         {hasHours && projectId && (

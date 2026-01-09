@@ -157,10 +157,10 @@ export default function FilterBar({
     filters.client_id || filters.project_id || filters.entry_type;
 
   return (
-    <div className="bg-stone-100 px-6 py-4">
-      <div className="flex flex-col gap-4">
+    <div className="bg-stone-100 px-4 md:px-6 py-4">
+      <div className="flex flex-col gap-3 md:gap-4">
         {/* Year and Month Selector */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
           {/* Year Selector */}
           <select
             id="filter-year"
@@ -181,7 +181,7 @@ export default function FilterBar({
             <button
               type="button"
               onClick={() => handleMonthChange(null)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              className={`px-2 md:px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                 period.month === null
                   ? "bg-stone-900 text-white"
                   : "text-stone-500 hover:bg-white"
@@ -194,7 +194,7 @@ export default function FilterBar({
                 type="button"
                 key={month}
                 onClick={() => handleMonthChange(index + 1)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                className={`px-2 md:px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                   period.month === index + 1
                     ? "bg-stone-900 text-white"
                     : "text-stone-500 hover:bg-white"
@@ -207,8 +207,8 @@ export default function FilterBar({
         </div>
 
         {/* Other Filters */}
-        <div className="flex flex-wrap gap-4 items-end">
-          <div className="w-48">
+        <div className="flex flex-wrap gap-2 md:gap-3 items-end">
+          <div className="w-full sm:w-auto sm:flex-1 md:w-48 md:flex-none">
             <label
               htmlFor="filter-client"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -231,7 +231,7 @@ export default function FilterBar({
               ))}
             </select>
           </div>
-          <div className="w-48">
+          <div className="w-full sm:w-auto sm:flex-1 md:w-48 md:flex-none">
             <label
               htmlFor="filter-project"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -256,7 +256,7 @@ export default function FilterBar({
               )}
             </select>
           </div>
-          <div className="w-36">
+          <div className="w-[calc(50%-4px)] sm:w-auto sm:flex-1 md:w-36 md:flex-none">
             <label
               htmlFor="filter-entry-type"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -280,7 +280,7 @@ export default function FilterBar({
             <button
               type="button"
               onClick={handleClearFilters}
-              className="h-10 px-2 text-sm text-stone-500 hover:text-stone-700"
+              className="h-10 min-h-11 px-2 text-sm text-stone-500 hover:text-stone-700"
             >
               {t("common.clear")}
             </button>

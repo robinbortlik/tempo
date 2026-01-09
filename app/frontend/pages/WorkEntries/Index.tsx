@@ -150,13 +150,13 @@ export default function WorkEntriesIndex() {
       <Head title={t("pages.workEntries.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
+      <div className="p-4 md:p-6 lg:p-8">
+        <div className="mb-6 md:mb-8 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">
+            <h1 className="text-xl md:text-2xl font-semibold text-stone-900">
               {t("pages.workEntries.title")}
             </h1>
-            <p className="text-stone-500 mt-1">
+            <p className="text-stone-500 mt-1 text-sm md:text-base">
               {t("pages.workEntries.subtitle")}
             </p>
           </div>
@@ -175,14 +175,14 @@ export default function WorkEntriesIndex() {
 
           {/* Summary Stats Bar */}
           {totalEntries > 0 && (
-            <div className="bg-stone-50 border-t border-stone-200 px-6 py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-8">
+            <div className="bg-stone-50 border-t border-stone-200 px-4 md:px-6 py-3">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-stone-500">
                       {t("pages.workEntries.summary.totalHours")}
                     </span>
-                    <span className="text-lg font-bold text-stone-900 tabular-nums">
+                    <span className="text-base md:text-lg font-bold text-stone-900 tabular-nums">
                       {Math.round(Number(summary.total_hours || 0))}h
                     </span>
                   </div>
@@ -190,7 +190,7 @@ export default function WorkEntriesIndex() {
                     <span className="text-sm font-medium text-stone-500">
                       {t("pages.workEntries.summary.totalAmount")}
                     </span>
-                    <span className="text-lg font-bold text-stone-900 tabular-nums">
+                    <span className="text-base md:text-lg font-bold text-stone-900 tabular-nums">
                       {formatCurrency(
                         Number(summary.total_amount || 0),
                         summaryCurrency,
@@ -199,7 +199,7 @@ export default function WorkEntriesIndex() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-6 text-sm text-stone-500">
+                <div className="flex items-center gap-4 md:gap-6 text-sm text-stone-500">
                   <span>
                     {t("pages.workEntries.summary.timeEntries", {
                       count: summary.time_entries_count || 0,
