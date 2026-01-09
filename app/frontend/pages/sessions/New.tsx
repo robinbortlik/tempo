@@ -1,5 +1,6 @@
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ interface PageProps {
 
 export default function Login() {
   const { flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     email_address: "",
     password: "",
@@ -27,7 +29,7 @@ export default function Login() {
 
   return (
     <>
-      <Head title="Sign in" />
+      <Head title={t("pages.login.title")} />
       <div className="min-h-screen flex items-center justify-center p-4 bg-stone-50">
         <div className="w-full max-w-sm">
           {/* Logo and Header */}
@@ -72,7 +74,7 @@ export default function Login() {
                     htmlFor="email"
                     className="block text-sm font-medium text-stone-700 mb-1.5"
                   >
-                    Email
+                    {t("pages.login.emailLabel")}
                   </Label>
                   <Input
                     id="email"
@@ -97,7 +99,7 @@ export default function Login() {
                     htmlFor="password"
                     className="block text-sm font-medium text-stone-700 mb-1.5"
                   >
-                    Password
+                    {t("pages.login.passwordLabel")}
                   </Label>
                   <Input
                     id="password"
@@ -120,7 +122,7 @@ export default function Login() {
                   disabled={processing}
                   className="w-full py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
                 >
-                  {processing ? "Signing in..." : "Sign in"}
+                  {processing ? t("pages.login.signingIn") : t("pages.login.submitButton")}
                 </Button>
               </form>
             </CardContent>

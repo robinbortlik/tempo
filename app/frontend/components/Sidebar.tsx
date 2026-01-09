@@ -1,4 +1,5 @@
 import { Link, usePage } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
 
 interface SidebarProps {
   onNavigate?: () => void;
@@ -168,6 +169,7 @@ const ClockIcon = () => (
 
 export default function Sidebar({ onNavigate }: SidebarProps) {
   const { url } = usePage();
+  const { t } = useTranslation();
 
   // Helper to check if a path is active
   const isActive = (path: string) => {
@@ -178,11 +180,11 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
   };
 
   const mainNavItems = [
-    { href: "/", icon: <DashboardIcon />, label: "Dashboard" },
-    { href: "/work_entries", icon: <TimeEntriesIcon />, label: "Log Work" },
-    { href: "/clients", icon: <ClientsIcon />, label: "Clients" },
-    { href: "/projects", icon: <ProjectsIcon />, label: "Projects" },
-    { href: "/invoices", icon: <InvoicesIcon />, label: "Invoices" },
+    { href: "/", icon: <DashboardIcon />, label: t("nav.dashboard") },
+    { href: "/work_entries", icon: <TimeEntriesIcon />, label: t("nav.logWork") },
+    { href: "/clients", icon: <ClientsIcon />, label: t("nav.clients") },
+    { href: "/projects", icon: <ProjectsIcon />, label: t("nav.projects") },
+    { href: "/invoices", icon: <InvoicesIcon />, label: t("nav.invoices") },
   ];
 
   return (
@@ -219,7 +221,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
         <NavItem
           href="/settings"
           icon={<SettingsIcon />}
-          label="Settings"
+          label={t("nav.settings")}
           isActive={isActive("/settings")}
           onClick={onNavigate}
         />
@@ -233,7 +235,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
           onClick={onNavigate}
         >
           <LogoutIcon />
-          Sign out
+          {t("nav.signOut")}
         </Link>
       </div>
     </aside>

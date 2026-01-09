@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import {
@@ -95,6 +96,7 @@ interface PageProps {
 export default function WorkEntriesIndex() {
   const { date_groups, projects, clients, filters, period, summary, flash } =
     usePage<PageProps>().props;
+  const { t } = useTranslation();
   const [deleteEntryId, setDeleteEntryId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -145,15 +147,15 @@ export default function WorkEntriesIndex() {
 
   return (
     <>
-      <Head title="Log Work" />
+      <Head title={t("pages.workEntries.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">Log Work</h1>
+            <h1 className="text-2xl font-semibold text-stone-900">{t("pages.workEntries.title")}</h1>
             <p className="text-stone-500 mt-1">
-              Track your time and fixed-price work
+              {t("pages.workEntries.subtitle")}
             </p>
           </div>
         </div>
@@ -212,7 +214,7 @@ export default function WorkEntriesIndex() {
           {totalEntries === 0 ? (
             <div className="bg-white border-t border-stone-200 p-8 text-center">
               <p className="text-stone-500">
-                No work entries found. Add your first entry above.
+                {t("pages.workEntries.noEntriesDescription")}
               </p>
             </div>
           ) : (

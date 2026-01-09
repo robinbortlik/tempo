@@ -1,11 +1,13 @@
 import { Head, useForm, usePage, router } from "@inertiajs/react";
 import { FormEvent, useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
+import i18n, { supportedLocales, type SupportedLocale } from "@/lib/i18n";
 
 interface Settings {
   id: number;
@@ -25,6 +27,7 @@ interface Settings {
 
 interface PageProps {
   settings: Settings;
+  locale: SupportedLocale;
   flash: {
     alert?: string;
     notice?: string;
@@ -33,13 +36,15 @@ interface PageProps {
 }
 
 export default function SettingsShow() {
-  const { settings, flash } = usePage<PageProps>().props;
+  const { settings, locale, flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(
     settings.logo_url
   );
   const [emailError, setEmailError] = useState<string | null>(null);
   const [ibanError, setIbanError] = useState<string | null>(null);
+  const [currentLocale, setCurrentLocale] = useState<SupportedLocale>(locale);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data, setData } = useForm({
@@ -97,6 +102,16 @@ export default function SettingsShow() {
     fileInputRef.current?.click();
   };
 
+  const handleLocaleChange = (newLocale: SupportedLocale) => {
+    setCurrentLocale(newLocale);
+    i18n.changeLanguage(newLocale);
+    router.patch(
+      "/settings/locale",
+      { locale: newLocale },
+      { preserveScroll: true }
+    );
+  };
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
@@ -139,20 +154,53 @@ export default function SettingsShow() {
 
   return (
     <>
-      <Head title="Settings" />
+      <Head title={t("pages.settings.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-stone-900">Settings</h1>
-          <p className="text-stone-500 mt-1">Configure your business details</p>
+          <h1 className="text-2xl font-semibold text-stone-900">{t("pages.settings.title")}</h1>
+          <p className="text-stone-500 mt-1">{t("pages.settings.subtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
+          {/* Preferences Section */}
+          <div className="bg-white rounded-xl border border-stone-200 p-6">
+            <h3 className="font-semibold text-stone-900 mb-6">
+              {t("pages.settings.preferences.title")}
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <Label
+                  htmlFor="language"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
+                  {t("pages.settings.preferences.language")}
+                </Label>
+                <select
+                  id="language"
+                  value={currentLocale}
+                  onChange={(e) => handleLocaleChange(e.target.value as SupportedLocale)}
+                  className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+                  data-testid="language-selector"
+                >
+                  {supportedLocales.map((loc) => (
+                    <option key={loc} value={loc}>
+                      {t(`languages.${loc}`)}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1.5 text-sm text-stone-500">
+                  {t("pages.settings.preferences.languageDescription")}
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Business Details Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
             <h3 className="font-semibold text-stone-900 mb-6">
-              Business Details
+              {t("pages.settings.businessDetails.title")}
             </h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -161,7 +209,7 @@ export default function SettingsShow() {
                     htmlFor="company_name"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Company Name
+                    {t("pages.settings.businessDetails.companyName")}
                   </Label>
                   <Input
                     id="company_name"
@@ -176,7 +224,7 @@ export default function SettingsShow() {
                     htmlFor="email"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Email
+                    {t("pages.settings.businessDetails.email")}
                   </Label>
                   <Input
                     id="email"
@@ -200,7 +248,7 @@ export default function SettingsShow() {
                   htmlFor="address"
                   className="block text-sm font-medium text-stone-600 mb-1.5"
                 >
-                  Address
+                  {t("pages.settings.businessDetails.address")}
                 </Label>
                 <Textarea
                   id="address"
@@ -217,7 +265,7 @@ export default function SettingsShow() {
                     htmlFor="phone"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Phone
+                    {t("pages.settings.businessDetails.phone")}
                   </Label>
                   <Input
                     id="phone"
@@ -232,7 +280,7 @@ export default function SettingsShow() {
                     htmlFor="vat_id"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    VAT ID
+                    {t("pages.settings.businessDetails.vatId")}
                   </Label>
                   <Input
                     id="vat_id"
@@ -249,7 +297,7 @@ export default function SettingsShow() {
                   htmlFor="company_registration"
                   className="block text-sm font-medium text-stone-600 mb-1.5"
                 >
-                  Company Registration
+                  {t("pages.settings.businessDetails.companyRegistration")}
                 </Label>
                 <Input
                   id="company_registration"
@@ -266,14 +314,14 @@ export default function SettingsShow() {
 
           {/* Bank Details Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-6">Bank Details</h3>
+            <h3 className="font-semibold text-stone-900 mb-6">{t("pages.settings.bankDetails.title")}</h3>
             <div className="space-y-4">
               <div>
                 <Label
                   htmlFor="bank_name"
                   className="block text-sm font-medium text-stone-600 mb-1.5"
                 >
-                  Bank Name
+                  {t("pages.settings.bankDetails.bankName")}
                 </Label>
                 <Input
                   id="bank_name"
@@ -290,7 +338,7 @@ export default function SettingsShow() {
                     htmlFor="bank_account"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Bank Account
+                    {t("pages.settings.bankDetails.bankAccount")}
                   </Label>
                   <Input
                     id="bank_account"
@@ -305,7 +353,7 @@ export default function SettingsShow() {
                     htmlFor="bank_swift"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    SWIFT/BIC
+                    {t("pages.settings.bankDetails.swift")}
                   </Label>
                   <Input
                     id="bank_swift"
@@ -322,7 +370,7 @@ export default function SettingsShow() {
                   htmlFor="iban"
                   className="block text-sm font-medium text-stone-600 mb-1.5"
                 >
-                  IBAN
+                  {t("pages.settings.bankDetails.iban")}
                 </Label>
                 <Input
                   id="iban"
@@ -346,7 +394,7 @@ export default function SettingsShow() {
           {/* Invoice Settings Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
             <h3 className="font-semibold text-stone-900 mb-6">
-              Invoice Settings
+              {t("pages.settings.invoiceSettings.title")}
             </h3>
             <div className="space-y-4">
               <div>
@@ -354,7 +402,7 @@ export default function SettingsShow() {
                   htmlFor="invoice_message"
                   className="block text-sm font-medium text-stone-600 mb-1.5"
                 >
-                  Invoice Message
+                  {t("pages.settings.invoiceSettings.invoiceMessage")}
                 </Label>
                 <Textarea
                   id="invoice_message"
@@ -362,7 +410,7 @@ export default function SettingsShow() {
                   maxLength={500}
                   value={data.invoice_message}
                   onChange={(e) => setData("invoice_message", e.target.value)}
-                  placeholder="Custom message to display on all invoices"
+                  placeholder={t("pages.settings.invoiceSettings.invoiceMessagePlaceholder")}
                   className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
                 />
                 <p className="mt-1 text-sm text-stone-500">
@@ -374,7 +422,7 @@ export default function SettingsShow() {
 
           {/* Company Logo Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-6">Company Logo</h3>
+            <h3 className="font-semibold text-stone-900 mb-6">{t("pages.settings.companyLogo.title")}</h3>
             <div className="flex items-start gap-6">
               <div className="w-24 h-24 bg-stone-100 rounded-xl flex items-center justify-center overflow-hidden">
                 {logoPreview ? (
@@ -401,8 +449,7 @@ export default function SettingsShow() {
               </div>
               <div className="flex-1">
                 <p className="text-sm text-stone-600 mb-3">
-                  Upload your company logo to display on invoices. Recommended
-                  size: 200x200px.
+                  {t("pages.settings.companyLogo.description")}
                 </p>
                 <input
                   ref={fileInputRef}
@@ -417,7 +464,7 @@ export default function SettingsShow() {
                   onClick={handleUploadClick}
                   className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
                 >
-                  Upload Logo
+                  {t("pages.settings.companyLogo.uploadButton")}
                 </Button>
               </div>
             </div>
@@ -430,7 +477,7 @@ export default function SettingsShow() {
               disabled={isSubmitting || !!emailError || !!ibanError}
               className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
             >
-              {isSubmitting ? "Saving..." : "Save Changes"}
+              {isSubmitting ? t("common.saving") : t("common.saveChanges")}
             </Button>
           </div>
         </form>

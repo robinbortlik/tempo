@@ -95,48 +95,48 @@ This implementation adds internationalization (i18n) support with English and Cz
 #### Task Group 3: Component Translations and Settings UI
 **Dependencies:** Task Group 2
 
-- [ ] 3.0 Complete UI translations and language selector
-  - [ ] 3.1 Write 4 focused tests for translated components
+- [x] 3.0 Complete UI translations and language selector
+  - [x] 3.1 Write 4 focused tests for translated components
     - Test Sidebar renders translated navigation labels
     - Test Header renders translated menu items
     - Test Settings page language selector changes locale
     - Test page component renders translated content
-  - [ ] 3.2 Update Sidebar component with translations
+  - [x] 3.2 Update Sidebar component with translations
     - Add `useTranslation()` hook to `app/frontend/components/Sidebar.tsx`
     - Replace hardcoded labels: Dashboard, Log Work, Clients, Projects, Invoices, Settings, Sign out
     - Use `t('nav.dashboard')`, `t('nav.logWork')`, etc.
-  - [ ] 3.3 Update Header component with translations
+  - [x] 3.3 Update Header component with translations
     - Add `useTranslation()` hook to `app/frontend/components/Header.tsx`
     - Translate Settings menu item and Sign out button
-  - [ ] 3.4 Add language selector to Settings page
+  - [x] 3.4 Add language selector to Settings page
     - Add "Preferences" section to `app/frontend/pages/Settings/Show.tsx`
     - Use native `<select>` element matching existing currency selector pattern
     - Display options: "English" and "Cestina"
     - On change, submit locale update via `router.patch('/settings/locale')`
     - Call `i18n.changeLanguage()` for immediate effect
     - Style: `w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg`
-  - [ ] 3.5 Translate Dashboard page
+  - [x] 3.5 Translate Dashboard page
     - Update `app/frontend/pages/Dashboard/Index.tsx` with translations
     - Translate stat card labels, chart titles, table headers
-  - [ ] 3.6 Translate Clients pages
+  - [x] 3.6 Translate Clients pages
     - Update `app/frontend/pages/Clients/Index.tsx`, `Form.tsx`, `Show.tsx`
     - Translate page titles, form labels, table headers, empty states
-  - [ ] 3.7 Translate Projects pages
+  - [x] 3.7 Translate Projects pages
     - Update `app/frontend/pages/Projects/Index.tsx`, `Form.tsx`, `Show.tsx`
     - Translate page titles, form labels, table headers
-  - [ ] 3.8 Translate Invoices pages
+  - [x] 3.8 Translate Invoices pages
     - Update `app/frontend/pages/Invoices/Index.tsx`, `New.tsx`, `Show.tsx`, `Edit.tsx`
     - Translate page titles, status labels, table headers
-  - [ ] 3.9 Translate WorkEntries page
+  - [x] 3.9 Translate WorkEntries page
     - Update `app/frontend/pages/WorkEntries/Index.tsx` and components
     - Translate filter labels, table headers, form fields
-  - [ ] 3.10 Translate Settings page
+  - [x] 3.10 Translate Settings page
     - Update `app/frontend/pages/Settings/Show.tsx`
     - Translate section headers, form labels, button text
-  - [ ] 3.11 Translate remaining pages
+  - [x] 3.11 Translate remaining pages
     - Update `app/frontend/pages/sessions/New.tsx` (login page)
     - Update `app/frontend/pages/Reports/Show.tsx` if applicable
-  - [ ] 3.12 Ensure UI component tests pass
+  - [x] 3.12 Ensure UI component tests pass
     - Run ONLY the 4 tests written in 3.1
     - Verify translations render correctly
 

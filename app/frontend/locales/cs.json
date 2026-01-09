@@ -88,10 +88,13 @@
     },
     "dashboard": {
       "title": "Prehled",
+      "subtitle": "Prehled vaseho sledovani casu",
       "stats": {
         "unbilledHours": "Nevyfakturovane hodiny",
         "unbilledAmount": "Nevyfakturovana castka",
+        "unbilledTotal": "Celkem nevyfakturovano",
         "pendingInvoices": "Cekajici faktury",
+        "thisWeek": "Tento tyden",
         "thisMonth": "Tento mesic"
       },
       "recentActivity": "Posledni aktivita",

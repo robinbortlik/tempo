@@ -88,10 +88,13 @@
     },
     "dashboard": {
       "title": "Dashboard",
+      "subtitle": "Overview of your time tracking",
       "stats": {
         "unbilledHours": "Unbilled Hours",
         "unbilledAmount": "Unbilled Amount",
+        "unbilledTotal": "Unbilled Total",
         "pendingInvoices": "Pending Invoices",
+        "thisWeek": "This Week",
         "thisMonth": "This Month"
       },
       "recentActivity": "Recent Activity",

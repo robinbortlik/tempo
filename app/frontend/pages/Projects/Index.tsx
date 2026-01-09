@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -39,6 +40,7 @@ interface PageProps {
 
 export default function ProjectsIndex() {
   const { projects, flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (flash.notice) {
@@ -60,15 +62,15 @@ export default function ProjectsIndex() {
 
   return (
     <>
-      <Head title="Projects" />
+      <Head title={t("pages.projects.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">Projects</h1>
+            <h1 className="text-2xl font-semibold text-stone-900">{t("pages.projects.title")}</h1>
             <p className="text-stone-500 mt-1">
-              Manage your projects across clients
+              {t("pages.projects.subtitle")}
             </p>
           </div>
           <Button
@@ -88,20 +90,20 @@ export default function ProjectsIndex() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            Add Project
+            {t("pages.projects.addFirstProject")}
           </Button>
         </div>
 
         {totalProjects === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
             <p className="text-stone-500 mb-4">
-              No projects yet. Add your first project to get started.
+              {t("pages.projects.noProjectsDescription")}
             </p>
             <Button
               onClick={() => router.visit("/projects/new")}
               className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
             >
-              Add Project
+              {t("pages.projects.addFirstProject")}
             </Button>
           </div>
         ) : (
