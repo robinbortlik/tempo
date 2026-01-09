@@ -42,7 +42,7 @@ function formatDate(dateString: string): string {
 export function ProjectGroup({
   project,
   entries,
-  totalHours,
+  totalHours: _totalHours,
   totalAmount,
   currency,
   defaultOpen = true,

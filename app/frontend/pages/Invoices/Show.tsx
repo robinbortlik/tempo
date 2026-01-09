@@ -544,8 +544,12 @@ export default function InvoiceShow() {
                   <th className="pb-3 font-medium text-left w-12"></th>
                   <th className="pb-3 font-medium text-left"></th>
                   <th className="pb-3 font-medium text-right w-16">VAT</th>
-                  <th className="pb-3 font-medium text-right w-24">Unit Price</th>
-                  <th className="pb-3 font-medium text-right w-28">Total w/o VAT</th>
+                  <th className="pb-3 font-medium text-right w-24">
+                    Unit Price
+                  </th>
+                  <th className="pb-3 font-medium text-right w-28">
+                    Total w/o VAT
+                  </th>
                   {isDraft && <th className="pb-3 font-medium w-36"></th>}
                 </tr>
               </thead>
@@ -652,10 +656,7 @@ export default function InvoiceShow() {
                 .filter(([rate, amount]) => parseFloat(rate) > 0 || amount > 0)
                 .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
                 .map(([rate, amount]) => (
-                  <div
-                    key={rate}
-                    className="flex justify-between py-2"
-                  >
+                  <div key={rate} className="flex justify-between py-2">
                     <dt className="text-stone-500">VAT {parseFloat(rate)} %</dt>
                     <dd className="tabular-nums text-stone-900">
                       {formatCurrency(amount, invoice.currency)}

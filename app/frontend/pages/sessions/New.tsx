@@ -123,7 +123,6 @@ export default function Login() {
                   {processing ? "Signing in..." : "Sign in"}
                 </Button>
               </form>
-
             </CardContent>
           </Card>
         </div>
