@@ -157,7 +157,7 @@ export default function SettingsShow() {
       <Head title={t("pages.settings.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-stone-900">
             {t("pages.settings.title")}
@@ -165,7 +165,7 @@ export default function SettingsShow() {
           <p className="text-stone-500 mt-1">{t("pages.settings.subtitle")}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
+        <form onSubmit={handleSubmit} className="w-full md:max-w-2xl space-y-8">
           {/* Preferences Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
             <h3 className="font-semibold text-stone-900 mb-6">
@@ -207,7 +207,7 @@ export default function SettingsShow() {
               {t("pages.settings.businessDetails.title")}
             </h3>
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label
                     htmlFor="company_name"
@@ -263,7 +263,7 @@ export default function SettingsShow() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label
                     htmlFor="phone"
@@ -338,7 +338,7 @@ export default function SettingsShow() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label
                     htmlFor="bank_account"
@@ -433,7 +433,7 @@ export default function SettingsShow() {
             <h3 className="font-semibold text-stone-900 mb-6">
               {t("pages.settings.companyLogo.title")}
             </h3>
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col md:flex-row items-start gap-6">
               <div className="w-24 h-24 bg-stone-100 rounded-xl flex items-center justify-center overflow-hidden">
                 {logoPreview ? (
                   <img
@@ -485,7 +485,7 @@ export default function SettingsShow() {
             <Button
               type="submit"
               disabled={isSubmitting || !!emailError || !!ibanError}
-              className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
+              className="w-full md:w-auto px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
             >
               {isSubmitting ? t("common.saving") : t("common.saveChanges")}
             </Button>
