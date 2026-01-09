@@ -67,6 +67,78 @@ RSpec.describe WorkEntriesController, type: :request do
     end
   end
 
+  describe "year/month URL structure" do
+    let!(:entry_jan_2026) { create(:work_entry, project: project, date: Date.new(2026, 1, 15)) }
+    let!(:entry_feb_2026) { create(:work_entry, project: project, date: Date.new(2026, 2, 10)) }
+    let!(:entry_jan_2025) { create(:work_entry, project: project, date: Date.new(2025, 1, 20)) }
+
+    it "defaults to current year with all months when no year/month params" do
+      current_entry = create(:work_entry, project: project, date: Date.current)
+
+      get work_entries_path, headers: inertia_headers
+      json = JSON.parse(response.body)
+
+      period = json['props']['period']
+      expect(period['year']).to eq(Date.current.year)
+      expect(period['month']).to be_nil # All months selected by default
+    end
+
+    it "filters by year only when year param provided without month" do
+      get work_entries_path(year: 2026), headers: inertia_headers
+      json = JSON.parse(response.body)
+
+      entries = json['props']['date_groups'].flat_map { |g| g['entries'] }
+      entry_ids = entries.map { |e| e['id'] }
+
+      expect(entry_ids).to include(entry_jan_2026.id, entry_feb_2026.id)
+      expect(entry_ids).not_to include(entry_jan_2025.id)
+
+      period = json['props']['period']
+      expect(period['year']).to eq(2026)
+      expect(period['month']).to be_nil
+    end
+
+    it "filters by year and month when both params provided" do
+      get work_entries_path(year: 2026, month: 1), headers: inertia_headers
+      json = JSON.parse(response.body)
+
+      entries = json['props']['date_groups'].flat_map { |g| g['entries'] }
+      entry_ids = entries.map { |e| e['id'] }
+
+      expect(entry_ids).to include(entry_jan_2026.id)
+      expect(entry_ids).not_to include(entry_feb_2026.id, entry_jan_2025.id)
+
+      period = json['props']['period']
+      expect(period['year']).to eq(2026)
+      expect(period['month']).to eq(1)
+    end
+
+    it "combines year/month filters with client_id filter" do
+      other_client = create(:client)
+      other_project = create(:project, client: other_client)
+      other_entry = create(:work_entry, project: other_project, date: Date.new(2026, 1, 18))
+
+      get work_entries_path(year: 2026, month: 1, client_id: client.id), headers: inertia_headers
+      json = JSON.parse(response.body)
+
+      entries = json['props']['date_groups'].flat_map { |g| g['entries'] }
+      entry_ids = entries.map { |e| e['id'] }
+
+      expect(entry_ids).to include(entry_jan_2026.id)
+      expect(entry_ids).not_to include(other_entry.id)
+    end
+
+    it "includes available_years in period props" do
+      get work_entries_path, headers: inertia_headers
+      json = JSON.parse(response.body)
+
+      available_years = json['props']['period']['available_years']
+
+      expect(available_years).to include(2026, 2025, Date.current.year)
+      expect(available_years).to eq(available_years.sort.reverse)
+    end
+  end
+
   private
 
   def inertia_headers
