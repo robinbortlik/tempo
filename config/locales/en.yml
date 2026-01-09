@@ -1,31 +1,44 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  flash:
+    settings:
+      saved: "Settings saved successfully."
+      language_updated: "Language updated successfully."
+    clients:
+      created: "Client created successfully."
+      updated: "Client updated successfully."
+      deleted: "Client deleted successfully."
+      sharing_enabled: "Sharing enabled successfully."
+      sharing_disabled: "Sharing disabled successfully."
+      share_link_regenerated: "Share link regenerated successfully."
+    projects:
+      created: "Project created successfully."
+      updated: "Project updated successfully."
+      deleted: "Project deleted successfully."
+      activated: "Project activated successfully."
+      deactivated: "Project deactivated successfully."
+    invoices:
+      created: "Invoice created successfully."
+      updated: "Invoice updated successfully."
+      deleted: "Invoice deleted successfully."
+      finalized: "Invoice finalized successfully."
+      cannot_edit_finalized: "Cannot edit a finalized invoice."
+      cannot_update_finalized: "Cannot update a finalized invoice."
+      cannot_delete_finalized: "Cannot delete a finalized invoice."
+      already_finalized: "Invoice is already finalized."
+      cannot_modify_finalized: "Cannot modify a finalized invoice."
+    invoice_line_items:
+      added: "Line item added successfully."
+      updated: "Line item updated successfully."
+      removed: "Line item removed successfully."
+    work_entries:
+      created: "Work entry created successfully."
+      updated: "Work entry updated successfully."
+      deleted: "Work entry deleted successfully."
+      deleted_count:
+        one: "1 work entry deleted successfully."
+        other: "%{count} work entries deleted successfully."
+      cannot_update_invoiced: "Cannot update an invoiced work entry."
+      cannot_delete_invoiced: "Cannot delete an invoiced work entry."
+    sessions:
+      invalid_credentials: "Try another email address or password."
+      rate_limited: "Try again later."

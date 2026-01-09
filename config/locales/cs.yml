@@ -1,0 +1,45 @@
+cs:
+  flash:
+    settings:
+      saved: "Nastavení bylo úspěšně uloženo."
+      language_updated: "Jazyk byl úspěšně změněn."
+    clients:
+      created: "Klient byl úspěšně vytvořen."
+      updated: "Klient byl úspěšně aktualizován."
+      deleted: "Klient byl úspěšně smazán."
+      sharing_enabled: "Sdílení bylo úspěšně povoleno."
+      sharing_disabled: "Sdílení bylo úspěšně zakázáno."
+      share_link_regenerated: "Odkaz pro sdílení byl úspěšně obnoven."
+    projects:
+      created: "Projekt byl úspěšně vytvořen."
+      updated: "Projekt byl úspěšně aktualizován."
+      deleted: "Projekt byl úspěšně smazán."
+      activated: "Projekt byl úspěšně aktivován."
+      deactivated: "Projekt byl úspěšně deaktivován."
+    invoices:
+      created: "Faktura byla úspěšně vytvořena."
+      updated: "Faktura byla úspěšně aktualizována."
+      deleted: "Faktura byla úspěšně smazána."
+      finalized: "Faktura byla úspěšně dokončena."
+      cannot_edit_finalized: "Nelze upravit dokončenou fakturu."
+      cannot_update_finalized: "Nelze aktualizovat dokončenou fakturu."
+      cannot_delete_finalized: "Nelze smazat dokončenou fakturu."
+      already_finalized: "Faktura je již dokončena."
+      cannot_modify_finalized: "Nelze upravit dokončenou fakturu."
+    invoice_line_items:
+      added: "Položka byla úspěšně přidána."
+      updated: "Položka byla úspěšně aktualizována."
+      removed: "Položka byla úspěšně odebrána."
+    work_entries:
+      created: "Záznam práce byl úspěšně vytvořen."
+      updated: "Záznam práce byl úspěšně aktualizován."
+      deleted: "Záznam práce byl úspěšně smazán."
+      deleted_count:
+        one: "1 záznam práce byl úspěšně smazán."
+        few: "%{count} záznamy práce byly úspěšně smazány."
+        other: "%{count} záznamů práce bylo úspěšně smazáno."
+      cannot_update_invoiced: "Nelze aktualizovat vyfakturovaný záznam práce."
+      cannot_delete_invoiced: "Nelze smazat vyfakturovaný záznam práce."
+    sessions:
+      invalid_credentials: "Zkuste jiný e-mail nebo heslo."
+      rate_limited: "Zkuste to později."
