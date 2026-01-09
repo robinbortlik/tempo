@@ -10,6 +10,11 @@ class WorkEntriesController < ApplicationController
       projects: serialize_projects_for_form,
       clients: ClientSerializer::ForFilter.new(Client.order(:name)).serializable_hash,
       filters: current_filters,
+      period: {
+        year: filter_service.year,
+        month: filter_service.month,
+        available_years: filter_service.available_years
+      },
       summary: filter_service.summary
     }
   end
@@ -67,8 +72,8 @@ class WorkEntriesController < ApplicationController
 
   def filter_params
     {
-      start_date: params[:start_date],
-      end_date: params[:end_date],
+      year: params[:year],
+      month: params[:month],
       client_id: params[:client_id],
       project_id: params[:project_id],
       entry_type: params[:entry_type]
@@ -109,8 +114,6 @@ class WorkEntriesController < ApplicationController
 
   def current_filters
     {
-      start_date: params[:start_date],
-      end_date: params[:end_date],
       client_id: params[:client_id]&.to_i,
       project_id: params[:project_id]&.to_i,
       entry_type: params[:entry_type]

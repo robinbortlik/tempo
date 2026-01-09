@@ -6,11 +6,28 @@ class WorkEntryFilterService
 
   def filter
     @scope = @scope.includes(project: :client).order(date: :desc, created_at: :desc)
-    @scope = filter_by_date_range
+    @scope = filter_by_period
     @scope = filter_by_client
     @scope = filter_by_project
     @scope = filter_by_entry_type
     @scope
+  end
+
+  def available_years
+    years_with_entries = WorkEntry
+      .distinct
+      .pluck(Arel.sql("strftime('%Y', date)"))
+      .map(&:to_i)
+
+    (years_with_entries + [ Date.current.year ]).uniq.sort.reverse
+  end
+
+  def year
+    @year ||= (@params[:year] || Date.current.year).to_i
+  end
+
+  def month
+    @month ||= @params[:month]&.to_i
   end
 
   def summary
@@ -28,15 +45,39 @@ class WorkEntryFilterService
 
   private
 
-  def filter_by_date_range
-    return @scope unless @params[:start_date].present? || @params[:end_date].present?
+  def filter_by_period
+    # Backward compatibility: if start_date/end_date present, use legacy behavior
+    if @params[:start_date].present? || @params[:end_date].present?
+      return filter_by_date_range
+    end
 
+    # Default to current month filtering using year/month params
+    @scope.for_date_range(period_start, period_end)
+  end
+
+  def filter_by_date_range
     if @params[:start_date].present? && @params[:end_date].present?
       @scope.for_date_range(parse_date(@params[:start_date]), parse_date(@params[:end_date]))
     elsif @params[:start_date].present?
       @scope.where("date >= ?", parse_date(@params[:start_date]))
     else
       @scope.where("date <= ?", parse_date(@params[:end_date]))
+    end
+  end
+
+  def period_start
+    if month
+      Date.new(year, month, 1)
+    else
+      Date.new(year, 1, 1)
+    end
+  end
+
+  def period_end
+    if month
+      Date.new(year, month, 1).end_of_month
+    else
+      Date.new(year, 12, 31)
     end
   end
 
