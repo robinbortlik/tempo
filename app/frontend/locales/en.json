@@ -48,7 +48,7 @@
       "title": "Sign In",
       "emailLabel": "Email",
       "passwordLabel": "Password",
-      "submitButton": "Sign In",
+      "submitButton": "Sign in",
       "signingIn": "Signing in..."
     },
     "settings": {
@@ -103,7 +103,7 @@
     },
     "clients": {
       "title": "Clients",
-      "subtitle": "Manage your clients",
+      "subtitle": "Manage your client relationships",
       "newClient": "New Client",
       "editClient": "Edit Client",
       "clientDetails": "Client Details",
@@ -127,7 +127,7 @@
     },
     "projects": {
       "title": "Projects",
-      "subtitle": "Manage your projects",
+      "subtitle": "Manage your projects across clients",
       "newProject": "New Project",
       "editProject": "Edit Project",
       "projectDetails": "Project Details",
@@ -180,6 +180,7 @@
       },
       "status": {
         "draft": "Draft",
+        "final": "Final",
         "sent": "Sent",
         "paid": "Paid",
         "overdue": "Overdue",

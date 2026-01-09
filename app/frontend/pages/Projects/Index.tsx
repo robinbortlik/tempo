@@ -97,7 +97,7 @@ export default function ProjectsIndex() {
         {totalProjects === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
             <p className="text-stone-500 mb-4">
-              {t("pages.projects.noProjectsDescription")}
+              {t("pages.projects.noProjects")}
             </p>
             <Button
               onClick={() => router.visit("/projects/new")}

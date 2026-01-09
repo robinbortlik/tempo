@@ -180,6 +180,7 @@
       },
       "status": {
         "draft": "Koncept",
+        "final": "Finalni",
         "sent": "Odeslana",
         "paid": "Zaplacena",
         "overdue": "Po splatnosti",

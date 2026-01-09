@@ -200,7 +200,7 @@ export default function InvoicesIndex() {
                     colSpan={6}
                     className="px-6 py-8 text-center text-stone-500"
                   >
-                    {t("pages.invoices.noInvoicesDescription")}
+                    {t("pages.invoices.noInvoices")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -224,7 +224,7 @@ export default function InvoicesIndex() {
                     <TableCell className="px-6 py-4">
                       <StatusBadge
                         status={invoice.status}
-                        label={invoice.status === "draft" ? t("pages.invoices.status.draft") : t("pages.invoices.status.sent")}
+                        label={t(`pages.invoices.status.${invoice.status}`)}
                       />
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right tabular-nums font-medium text-stone-900">

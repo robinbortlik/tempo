@@ -121,7 +121,7 @@ export default function ClientsIndex() {
                     colSpan={6}
                     className="px-6 py-8 text-center text-stone-500"
                   >
-                    {t("pages.clients.noClientsDescription")}
+                    {t("pages.clients.noClients")}
                   </TableCell>
                 </TableRow>
               ) : (
