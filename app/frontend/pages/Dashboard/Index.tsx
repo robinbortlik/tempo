@@ -88,8 +88,8 @@ export default function DashboardIndex() {
       <Head title={t("pages.dashboard.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8">
+      <div className="p-4 md:p-6 lg:p-8">
+        <div className="mb-6 md:mb-8">
           <h1 className="text-2xl font-semibold text-stone-900">
             {t("pages.dashboard.title")}
           </h1>
@@ -97,7 +97,7 @@ export default function DashboardIndex() {
         </div>
 
         {/* Stats Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 md:mb-8">
           <StatCard
             title={t("pages.dashboard.stats.thisWeek")}
             value={Math.round(stats.hours_this_week).toString()}
@@ -157,13 +157,13 @@ export default function DashboardIndex() {
         </div>
 
         {/* Charts Row 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
           <TimeByClientChart data={charts.time_by_client} />
           <EarningsChart data={charts.earnings_over_time} />
         </div>
 
         {/* Charts Row 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
           <TimeByProjectChart data={charts.time_by_project} />
           <HoursTrendChart data={charts.hours_trend} />
         </div>

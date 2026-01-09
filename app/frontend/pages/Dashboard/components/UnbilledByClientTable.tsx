@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/components/CurrencyDisplay";
+import { MobileCard } from "@/components/MobileCard";
 
 interface UnbilledClient {
   id: number;
@@ -64,7 +65,40 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
         </Button>
       </CardHeader>
       <CardContent className="p-0">
-        <Table>
+        {/* Mobile Card List */}
+        <div className="block md:hidden p-4 space-y-3">
+          {data.length === 0 ? (
+            <p className="py-4 text-center text-stone-500">
+              No unbilled time entries
+            </p>
+          ) : (
+            data.map((client) => (
+              <MobileCard
+                key={client.id}
+                title={client.name}
+                subtitle={`${client.project_count} ${client.project_count === 1 ? "project" : "projects"}`}
+                details={[
+                  { label: "Hours", value: Math.round(client.total_hours).toString() },
+                  { label: "Amount", value: formatCurrency(client.total_amount, client.currency, false) },
+                  { label: "Rate", value: formatRates(client.project_rates, client.currency) },
+                ]}
+                onClick={() => handleRowClick(client.id)}
+                action={
+                  <Button
+                    variant="link"
+                    className="text-stone-900 hover:text-stone-700 font-medium p-0 h-auto min-h-11"
+                    onClick={(e) => handleCreateInvoice(e, client.id)}
+                  >
+                    Invoice
+                  </Button>
+                }
+              />
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table */}
+        <Table className="hidden md:table">
           <TableHeader>
             <TableRow className="text-left text-sm text-stone-500 border-b border-stone-100">
               <TableHead className="px-6 py-3 font-medium">
