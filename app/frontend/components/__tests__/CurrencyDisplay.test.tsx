@@ -1,9 +1,16 @@
 import { render, screen } from "@testing-library/react";
+import { beforeEach } from "vitest";
 import {
   CurrencyDisplay,
   formatCurrency,
   CURRENCY_SYMBOLS,
 } from "../CurrencyDisplay";
+import i18n from "@/lib/i18n";
+
+// Reset to Czech locale before each test (to match original behavior)
+beforeEach(async () => {
+  await i18n.changeLanguage("cs");
+});
 
 // Czech locale (cs-CZ) uses space as thousands separator and comma as decimal
 describe("CurrencyDisplay", () => {
@@ -79,6 +86,26 @@ describe("CurrencyDisplay", () => {
   });
 });
 
+describe("CurrencyDisplay locale formatting", () => {
+  it("formats according to locale (en-US vs cs-CZ)", async () => {
+    // Test with Czech locale (comma decimal, space thousands)
+    await i18n.changeLanguage("cs");
+    const { rerender } = render(
+      <CurrencyDisplay amount={1000.5} currency="EUR" />
+    );
+    let display = screen.getByTestId("currency-display");
+    // Czech: space as thousands separator, comma as decimal
+    expect(display).toHaveTextContent("€1 000,50");
+
+    // Switch to English locale (period decimal, comma thousands)
+    await i18n.changeLanguage("en");
+    rerender(<CurrencyDisplay amount={1000.5} currency="EUR" />);
+    display = screen.getByTestId("currency-display");
+    // English: comma as thousands separator, period as decimal
+    expect(display).toHaveTextContent("€1,000.50");
+  });
+});
+
 describe("formatCurrency utility", () => {
   it("formats EUR correctly", () => {
     // Czech locale uses non-breaking space as thousands separator
@@ -91,6 +118,13 @@ describe("formatCurrency utility", () => {
 
   it("formats without decimals when specified", () => {
     expect(formatCurrency(1234.56, "EUR", false)).toBe("€1\u00A0235");
+  });
+
+  it("formats according to locale parameter", () => {
+    // English locale: comma thousands, period decimal
+    expect(formatCurrency(1000.5, "EUR", true, "en")).toBe("€1,000.50");
+    // Czech locale: space thousands, comma decimal
+    expect(formatCurrency(1000.5, "EUR", true, "cs")).toBe("€1\u00A0000,50");
   });
 });
 

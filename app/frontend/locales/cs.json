@@ -1,0 +1,230 @@
+{
+  "nav": {
+    "dashboard": "Prehled",
+    "logWork": "Zaznamenat praci",
+    "clients": "Klienti",
+    "projects": "Projekty",
+    "invoices": "Faktury",
+    "settings": "Nastaveni",
+    "signOut": "Odhlasit se"
+  },
+  "common": {
+    "save": "Ulozit",
+    "cancel": "Zrusit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "add": "Pridat",
+    "loading": "Nacitani...",
+    "saveChanges": "Ulozit zmeny",
+    "saving": "Ukladani...",
+    "noResults": "Zadne vysledky",
+    "actions": "Akce",
+    "back": "Zpet",
+    "create": "Vytvorit",
+    "update": "Aktualizovat",
+    "view": "Zobrazit",
+    "close": "Zavrit",
+    "confirm": "Potvrdit",
+    "yes": "Ano",
+    "no": "Ne",
+    "search": "Hledat",
+    "filter": "Filtr",
+    "reset": "Obnovit",
+    "total": "Celkem",
+    "hours": "Hodiny",
+    "rate": "Sazba",
+    "amount": "Castka",
+    "status": "Stav",
+    "date": "Datum",
+    "name": "Nazev",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "address": "Adresa",
+    "notes": "Poznamky",
+    "description": "Popis"
+  },
+  "pages": {
+    "login": {
+      "title": "Prihlaseni",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Heslo",
+      "submitButton": "Prihlasit se",
+      "signingIn": "Prihlasuji..."
+    },
+    "settings": {
+      "title": "Nastaveni",
+      "subtitle": "Konfigurace udaju o firme",
+      "preferences": {
+        "title": "Predvolby",
+        "language": "Jazyk",
+        "languageDescription": "Vyberte preferovany jazyk"
+      },
+      "businessDetails": {
+        "title": "Udaje o firme",
+        "companyName": "Nazev firmy",
+        "email": "E-mail",
+        "address": "Adresa",
+        "phone": "Telefon",
+        "vatId": "DIC",
+        "companyRegistration": "ICO"
+      },
+      "bankDetails": {
+        "title": "Bankovni udaje",
+        "bankName": "Nazev banky",
+        "bankAccount": "Cislo uctu",
+        "swift": "SWIFT/BIC",
+        "iban": "IBAN"
+      },
+      "invoiceSettings": {
+        "title": "Nastaveni faktur",
+        "invoiceMessage": "Zprava na fakture",
+        "invoiceMessagePlaceholder": "Vlastni zprava zobrazena na vsech fakturach"
+      },
+      "companyLogo": {
+        "title": "Logo firmy",
+        "description": "Nahrajte logo firmy pro zobrazeni na fakturach. Doporucena velikost: 200x200px.",
+        "uploadButton": "Nahrat logo"
+      }
+    },
+    "dashboard": {
+      "title": "Prehled",
+      "stats": {
+        "unbilledHours": "Nevyfakturovane hodiny",
+        "unbilledAmount": "Nevyfakturovana castka",
+        "pendingInvoices": "Cekajici faktury",
+        "thisMonth": "Tento mesic"
+      },
+      "recentActivity": "Posledni aktivita",
+      "quickActions": "Rychle akce",
+      "noRecentActivity": "Zadna nedavna aktivita"
+    },
+    "clients": {
+      "title": "Klienti",
+      "subtitle": "Sprava klientu",
+      "newClient": "Novy klient",
+      "editClient": "Upravit klienta",
+      "clientDetails": "Detail klienta",
+      "noClients": "Zatim zadni klienti",
+      "noClientsDescription": "Zacnete pridanim prvniho klienta.",
+      "addFirstClient": "Pridat klienta",
+      "form": {
+        "name": "Nazev klienta",
+        "email": "E-mail",
+        "phone": "Telefon",
+        "address": "Adresa",
+        "currency": "Mena",
+        "notes": "Poznamky"
+      },
+      "table": {
+        "name": "Nazev",
+        "email": "E-mail",
+        "projects": "Projekty",
+        "unbilledHours": "Nevyfakturovane hodiny"
+      }
+    },
+    "projects": {
+      "title": "Projekty",
+      "subtitle": "Sprava projektu",
+      "newProject": "Novy projekt",
+      "editProject": "Upravit projekt",
+      "projectDetails": "Detail projektu",
+      "noProjects": "Zatim zadne projekty",
+      "noProjectsDescription": "Zacnete pridanim prvniho projektu.",
+      "addFirstProject": "Pridat projekt",
+      "form": {
+        "name": "Nazev projektu",
+        "client": "Klient",
+        "hourlyRate": "Hodinova sazba",
+        "description": "Popis",
+        "active": "Aktivni"
+      },
+      "table": {
+        "name": "Nazev",
+        "client": "Klient",
+        "rate": "Sazba",
+        "hours": "Hodiny",
+        "status": "Stav"
+      },
+      "status": {
+        "active": "Aktivni",
+        "inactive": "Neaktivni"
+      }
+    },
+    "invoices": {
+      "title": "Faktury",
+      "subtitle": "Sprava faktur",
+      "newInvoice": "Nova faktura",
+      "editInvoice": "Upravit fakturu",
+      "invoiceDetails": "Detail faktury",
+      "noInvoices": "Zatim zadne faktury",
+      "noInvoicesDescription": "Vytvorte prvni fakturu z nevyfakturovanych zaznamu prace.",
+      "createFirstInvoice": "Vytvorit fakturu",
+      "form": {
+        "client": "Klient",
+        "periodStart": "Zacatek obdobi",
+        "periodEnd": "Konec obdobi",
+        "issueDate": "Datum vystaveni",
+        "dueDate": "Datum splatnosti",
+        "notes": "Poznamky"
+      },
+      "table": {
+        "number": "Cislo",
+        "client": "Klient",
+        "issueDate": "Datum vystaveni",
+        "dueDate": "Datum splatnosti",
+        "amount": "Castka",
+        "status": "Stav"
+      },
+      "status": {
+        "draft": "Koncept",
+        "sent": "Odeslana",
+        "paid": "Zaplacena",
+        "overdue": "Po splatnosti",
+        "cancelled": "Zrusena"
+      },
+      "actions": {
+        "markAsSent": "Oznacit jako odeslanou",
+        "markAsPaid": "Oznacit jako zaplacenou",
+        "downloadPdf": "Stahnout PDF",
+        "sendEmail": "Odeslat e-mailem"
+      }
+    },
+    "workEntries": {
+      "title": "Zaznamy prace",
+      "subtitle": "Zaznamenavani a sprava prace",
+      "newEntry": "Novy zaznam",
+      "editEntry": "Upravit zaznam",
+      "noEntries": "Zatim zadne zaznamy prace",
+      "noEntriesDescription": "Zacnete zaznamenavat praci pro sledovani fakturovatelnych hodin.",
+      "addFirstEntry": "Pridat zaznam",
+      "form": {
+        "project": "Projekt",
+        "date": "Datum",
+        "hours": "Hodiny",
+        "description": "Popis"
+      },
+      "table": {
+        "date": "Datum",
+        "project": "Projekt",
+        "description": "Popis",
+        "hours": "Hodiny",
+        "status": "Stav"
+      },
+      "status": {
+        "unbilled": "Nevyfakturovano",
+        "invoiced": "Vyfakturovano"
+      },
+      "filter": {
+        "allProjects": "Vsechny projekty",
+        "allClients": "Vsichni klienti",
+        "allStatuses": "Vsechny stavy",
+        "year": "Rok",
+        "month": "Mesic"
+      }
+    }
+  },
+  "languages": {
+    "en": "English",
+    "cs": "Cestina"
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "logWork": "Log Work",
+    "clients": "Clients",
+    "projects": "Projects",
+    "invoices": "Invoices",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "loading": "Loading...",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "noResults": "No results found",
+    "actions": "Actions",
+    "back": "Back",
+    "create": "Create",
+    "update": "Update",
+    "view": "View",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "total": "Total",
+    "hours": "Hours",
+    "rate": "Rate",
+    "amount": "Amount",
+    "status": "Status",
+    "date": "Date",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "notes": "Notes",
+    "description": "Description"
+  },
+  "pages": {
+    "login": {
+      "title": "Sign In",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submitButton": "Sign In",
+      "signingIn": "Signing in..."
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Configure your business details",
+      "preferences": {
+        "title": "Preferences",
+        "language": "Language",
+        "languageDescription": "Select your preferred language"
+      },
+      "businessDetails": {
+        "title": "Business Details",
+        "companyName": "Company Name",
+        "email": "Email",
+        "address": "Address",
+        "phone": "Phone",
+        "vatId": "VAT ID",
+        "companyRegistration": "Company Registration"
+      },
+      "bankDetails": {
+        "title": "Bank Details",
+        "bankName": "Bank Name",
+        "bankAccount": "Bank Account",
+        "swift": "SWIFT/BIC",
+        "iban": "IBAN"
+      },
+      "invoiceSettings": {
+        "title": "Invoice Settings",
+        "invoiceMessage": "Invoice Message",
+        "invoiceMessagePlaceholder": "Custom message to display on all invoices"
+      },
+      "companyLogo": {
+        "title": "Company Logo",
+        "description": "Upload your company logo to display on invoices. Recommended size: 200x200px.",
+        "uploadButton": "Upload Logo"
+      }
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "stats": {
+        "unbilledHours": "Unbilled Hours",
+        "unbilledAmount": "Unbilled Amount",
+        "pendingInvoices": "Pending Invoices",
+        "thisMonth": "This Month"
+      },
+      "recentActivity": "Recent Activity",
+      "quickActions": "Quick Actions",
+      "noRecentActivity": "No recent activity"
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Manage your clients",
+      "newClient": "New Client",
+      "editClient": "Edit Client",
+      "clientDetails": "Client Details",
+      "noClients": "No clients yet",
+      "noClientsDescription": "Get started by adding your first client.",
+      "addFirstClient": "Add Client",
+      "form": {
+        "name": "Client Name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "currency": "Currency",
+        "notes": "Notes"
+      },
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "projects": "Projects",
+        "unbilledHours": "Unbilled Hours"
+      }
+    },
+    "projects": {
+      "title": "Projects",
+      "subtitle": "Manage your projects",
+      "newProject": "New Project",
+      "editProject": "Edit Project",
+      "projectDetails": "Project Details",
+      "noProjects": "No projects yet",
+      "noProjectsDescription": "Get started by adding your first project.",
+      "addFirstProject": "Add Project",
+      "form": {
+        "name": "Project Name",
+        "client": "Client",
+        "hourlyRate": "Hourly Rate",
+        "description": "Description",
+        "active": "Active"
+      },
+      "table": {
+        "name": "Name",
+        "client": "Client",
+        "rate": "Rate",
+        "hours": "Hours",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    },
+    "invoices": {
+      "title": "Invoices",
+      "subtitle": "Manage your invoices",
+      "newInvoice": "New Invoice",
+      "editInvoice": "Edit Invoice",
+      "invoiceDetails": "Invoice Details",
+      "noInvoices": "No invoices yet",
+      "noInvoicesDescription": "Create your first invoice from unbilled time entries.",
+      "createFirstInvoice": "Create Invoice",
+      "form": {
+        "client": "Client",
+        "periodStart": "Period Start",
+        "periodEnd": "Period End",
+        "issueDate": "Issue Date",
+        "dueDate": "Due Date",
+        "notes": "Notes"
+      },
+      "table": {
+        "number": "Number",
+        "client": "Client",
+        "issueDate": "Issue Date",
+        "dueDate": "Due Date",
+        "amount": "Amount",
+        "status": "Status"
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "paid": "Paid",
+        "overdue": "Overdue",
+        "cancelled": "Cancelled"
+      },
+      "actions": {
+        "markAsSent": "Mark as Sent",
+        "markAsPaid": "Mark as Paid",
+        "downloadPdf": "Download PDF",
+        "sendEmail": "Send Email"
+      }
+    },
+    "workEntries": {
+      "title": "Work Entries",
+      "subtitle": "Log and manage your work",
+      "newEntry": "New Entry",
+      "editEntry": "Edit Entry",
+      "noEntries": "No work entries yet",
+      "noEntriesDescription": "Start logging your work to track billable hours.",
+      "addFirstEntry": "Add Entry",
+      "form": {
+        "project": "Project",
+        "date": "Date",
+        "hours": "Hours",
+        "description": "Description"
+      },
+      "table": {
+        "date": "Date",
+        "project": "Project",
+        "description": "Description",
+        "hours": "Hours",
+        "status": "Status"
+      },
+      "status": {
+        "unbilled": "Unbilled",
+        "invoiced": "Invoiced"
+      },
+      "filter": {
+        "allProjects": "All Projects",
+        "allClients": "All Clients",
+        "allStatuses": "All Statuses",
+        "year": "Year",
+        "month": "Month"
+      }
+    }
+  },
+  "languages": {
+    "en": "English",
+    "cs": "Cestina"
+  }
+}
