@@ -85,31 +85,31 @@ This task list implements mobile responsive design for all pages in the invoicin
 #### Task Group 3: Clients Mobile Responsiveness
 **Dependencies:** Task Group 1
 
-- [ ] 3.0 Complete Clients pages mobile updates
-  - [ ] 3.1 Write 4 focused tests for Clients mobile layout
+- [x] 3.0 Complete Clients pages mobile updates
+  - [x] 3.1 Write 4 focused tests for Clients mobile layout
     - Test Clients/Index mobile card view renders
     - Test Clients/Show stats grid stacks on mobile
     - Test Clients/Show details grid stacks on mobile
     - Test page header stacks on mobile
-  - [ ] 3.2 Update Clients/Index.tsx for mobile
+  - [x] 3.2 Update Clients/Index.tsx for mobile
     - File: `app/frontend/pages/Clients/Index.tsx`
     - Change page padding: `p-4 md:p-6 lg:p-8`
     - Use PageHeader component for header
     - Add mobile card list: `block md:hidden`
     - Hide desktop Table: `hidden md:block`
     - Card shows: name/initials (title), email (subtitle), rate/unbilled/projects (details)
-  - [ ] 3.3 Update Clients/Show.tsx for mobile
+  - [x] 3.3 Update Clients/Show.tsx for mobile
     - File: `app/frontend/pages/Clients/Show.tsx`
     - Change page padding: `p-4 md:p-6 lg:p-8`
     - Header buttons: `w-full md:w-auto` and stack on mobile
     - Stats grid: change `grid-cols-4` to `grid-cols-2 md:grid-cols-4 gap-3 md:gap-4`
     - Details grid: change `grid-cols-2` to `grid-cols-1 md:grid-cols-2 gap-4 md:gap-6`
     - Share link section: stack controls on mobile with `flex-col md:flex-row`
-  - [ ] 3.4 Update Clients/Form.tsx for mobile (used by New/Edit)
+  - [x] 3.4 Update Clients/Form.tsx for mobile (used by New/Edit)
     - File: `app/frontend/pages/Clients/Form.tsx`
     - Form grid: change `grid-cols-2 gap-4` to `grid-cols-1 md:grid-cols-2 gap-4`
     - Full-width inputs on mobile
-  - [ ] 3.5 Ensure Clients tests pass
+  - [x] 3.5 Ensure Clients tests pass
     - Run ONLY the 4 tests written in 3.1
 
 **Files to modify:**

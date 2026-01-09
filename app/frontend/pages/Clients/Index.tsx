@@ -13,6 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency, formatRate } from "@/components/CurrencyDisplay";
+import { MobileCard } from "@/components/MobileCard";
+import { PageHeader } from "@/components/PageHeader";
 
 interface Client {
   id: number;
@@ -65,17 +67,14 @@ export default function ClientsIndex() {
       <Head title={t("pages.clients.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-stone-900">
-              {t("pages.clients.title")}
-            </h1>
-            <p className="text-stone-500 mt-1">{t("pages.clients.subtitle")}</p>
-          </div>
+      <div className="p-4 md:p-6 lg:p-8">
+        <PageHeader
+          title={t("pages.clients.title")}
+          subtitle={t("pages.clients.subtitle")}
+        >
           <Button
             onClick={() => router.visit("/clients/new")}
-            className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -92,9 +91,56 @@ export default function ClientsIndex() {
             </svg>
             {t("pages.clients.addFirstClient")}
           </Button>
+        </PageHeader>
+
+        {/* Mobile card list */}
+        <div className="block md:hidden space-y-3">
+          {clients.length === 0 ? (
+            <div className="bg-white rounded-xl border border-stone-200 p-6 text-center text-stone-500">
+              No clients yet. Add your first client to get started.
+            </div>
+          ) : (
+            clients.map((client) => (
+              <MobileCard
+                key={client.id}
+                title={
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center text-stone-600 font-semibold flex-shrink-0">
+                      {getInitials(client.name)}
+                    </div>
+                    <span>{client.name}</span>
+                  </div>
+                }
+                subtitle={client.email}
+                details={[
+                  {
+                    label: "Rate",
+                    value: formatRate(client.hourly_rate, client.currency),
+                  },
+                  {
+                    label: "Unbilled",
+                    value:
+                      client.unbilled_hours > 0 ? (
+                        <span className="text-amber-600">
+                          {Math.round(client.unbilled_hours)}h
+                        </span>
+                      ) : (
+                        "0h"
+                      ),
+                  },
+                  {
+                    label: "Projects",
+                    value: client.projects_count,
+                  },
+                ]}
+                onClick={() => handleRowClick(client.id)}
+              />
+            ))
+          )}
         </div>
 
-        <div className="bg-white rounded-xl border border-stone-200">
+        {/* Desktop table */}
+        <div className="hidden md:block bg-white rounded-xl border border-stone-200">
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">

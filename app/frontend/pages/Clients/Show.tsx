@@ -159,7 +159,7 @@ export default function ClientShow() {
       <Head title={client.name} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         {/* Header */}
         <div className="mb-6">
           <button
@@ -181,9 +181,9 @@ export default function ClientShow() {
             </svg>
             {t("common.backTo", { name: t("pages.clients.title") })}
           </button>
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center text-stone-600 font-semibold text-lg">
+              <div className="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center text-stone-600 font-semibold text-lg flex-shrink-0">
                 {getInitials(client.name)}
               </div>
               <div>
@@ -196,11 +196,11 @@ export default function ClientShow() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2">
               <Button
                 variant="outline"
                 onClick={() => router.visit(`/clients/${client.id}/edit`)}
-                className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
+                className="w-full md:w-auto px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
               >
                 {t("common.edit")}
               </Button>
@@ -208,7 +208,7 @@ export default function ClientShow() {
                 onClick={() =>
                   router.visit(`/invoices/new?client_id=${client.id}`)
                 }
-                className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
+                className="w-full md:w-auto px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
               >
                 {t("pages.invoices.newInvoice")}
               </Button>
@@ -217,8 +217,8 @@ export default function ClientShow() {
         </div>
 
         {/* Share Link */}
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex items-center gap-2">
               <Switch
                 id="sharing-toggle"
@@ -232,12 +232,12 @@ export default function ClientShow() {
                 {t("pages.clients.sharing.title")}
               </Label>
             </div>
-            <div className="h-6 w-px bg-amber-300" />
+            <div className="hidden md:block h-6 w-px bg-amber-300" />
             <div
               className={`flex items-center gap-3 ${!sharingEnabled ? "opacity-50 pointer-events-none" : ""}`}
             >
               <svg
-                className="w-5 h-5 text-amber-600"
+                className="w-5 h-5 text-amber-600 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -249,17 +249,17 @@ export default function ClientShow() {
                   d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                 />
               </svg>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-amber-800">
                   {t("pages.clients.sharing.portalTitle")}
                 </p>
-                <p className="text-sm text-amber-600 font-mono truncate max-w-md">
+                <p className="text-sm text-amber-600 font-mono truncate max-w-full md:max-w-md">
                   {shareUrl}
                 </p>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2">
             <div
               className={
                 !sharingEnabled ? "opacity-50 pointer-events-none" : ""
@@ -267,7 +267,7 @@ export default function ClientShow() {
             >
               <Button
                 onClick={handleCopyLink}
-                className="px-3 py-1.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors"
+                className="w-full md:w-auto px-3 py-1.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors"
               >
                 {copySuccess ? t("common.copied") : t("common.copyLink")}
               </Button>
@@ -276,7 +276,7 @@ export default function ClientShow() {
               <AlertDialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="px-3 py-1.5 border border-amber-300 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-100 transition-colors"
+                  className="w-full md:w-auto px-3 py-1.5 border border-amber-300 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-100 transition-colors"
                 >
                   {t("pages.clients.sharing.regenerateLink")}
                 </Button>
@@ -333,7 +333,7 @@ export default function ClientShow() {
           {/* Overview Tab */}
           <TabsContent value="overview" className="mt-0">
             {/* Stats */}
-            <div className="grid grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
               <div className="bg-white rounded-xl border border-stone-200 p-4">
                 <p className="text-sm text-stone-500">
                   {t("pages.dashboard.stats.totalHours")}
@@ -369,7 +369,7 @@ export default function ClientShow() {
             </div>
 
             {/* Client Details */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <h3 className="font-semibold text-stone-900 mb-4">
                   {t("pages.clients.contactDetails")}
