@@ -14,6 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/components/CurrencyDisplay";
+import { PageHeader } from "@/components/PageHeader";
+import { MobileCard } from "@/components/MobileCard";
 
 interface Invoice {
   id: number;
@@ -130,16 +132,8 @@ export default function InvoicesIndex() {
       <Head title={t("pages.invoices.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-stone-900">
-              {t("pages.invoices.title")}
-            </h1>
-            <p className="text-stone-500 mt-1">
-              {t("pages.invoices.subtitle")}
-            </p>
-          </div>
+      <div className="p-4 md:p-6 lg:p-8">
+        <PageHeader title={t("pages.invoices.title")} subtitle={t("pages.invoices.subtitle")}>
           <Button
             onClick={() => router.visit("/invoices/new")}
             className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
@@ -159,7 +153,7 @@ export default function InvoicesIndex() {
             </svg>
             {t("pages.invoices.newInvoice")}
           </Button>
-        </div>
+        </PageHeader>
 
         {/* Filter Tabs */}
         <Tabs
@@ -167,7 +161,7 @@ export default function InvoicesIndex() {
           onValueChange={handleTabChange}
           className="mb-6"
         >
-          <TabsList className="bg-transparent p-0 gap-2">
+          <TabsList className="bg-transparent p-0 gap-2 overflow-x-auto">
             <TabsTrigger
               value="all"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
@@ -189,7 +183,34 @@ export default function InvoicesIndex() {
           </TabsList>
         </Tabs>
 
-        <div className="bg-white rounded-xl border border-stone-200">
+        {/* Mobile Card View */}
+        <div className="block md:hidden space-y-3">
+          {invoices.length === 0 ? (
+            <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
+              <p className="text-stone-500">
+                No invoices yet. Create your first invoice to get started.
+              </p>
+            </div>
+          ) : (
+            invoices.map((invoice) => (
+              <MobileCard
+                key={invoice.id}
+                title={
+                  <span className="font-mono">{invoice.number}</span>
+                }
+                subtitle={`${invoice.client_name} \u00B7 ${formatPeriod(invoice.period_start, invoice.period_end)}`}
+                details={[
+                  { label: "Status", value: <StatusBadge status={invoice.status} /> },
+                  { label: "Amount", value: formatCurrency(invoice.total_amount, invoice.currency) },
+                ]}
+                onClick={() => handleRowClick(invoice.id)}
+              />
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block bg-white rounded-xl border border-stone-200">
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">

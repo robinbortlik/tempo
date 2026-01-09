@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { formatRate } from "@/components/CurrencyDisplay";
+import { PageHeader } from "@/components/PageHeader";
 
 interface Client {
   id: number;
@@ -65,16 +66,11 @@ export default function ProjectsIndex() {
       <Head title={t("pages.projects.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-stone-900">
-              {t("pages.projects.title")}
-            </h1>
-            <p className="text-stone-500 mt-1">
-              {t("pages.projects.subtitle")}
-            </p>
-          </div>
+      <div className="p-4 md:p-6 lg:p-8">
+        <PageHeader
+          title={t("pages.projects.title")}
+          subtitle={t("pages.projects.subtitle")}
+        >
           <Button
             onClick={() => router.visit("/projects/new")}
             className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
@@ -94,7 +90,7 @@ export default function ProjectsIndex() {
             </svg>
             {t("pages.projects.addFirstProject")}
           </Button>
-        </div>
+        </PageHeader>
 
         {totalProjects === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
@@ -116,7 +112,7 @@ export default function ProjectsIndex() {
                 className="bg-white rounded-xl border border-stone-200"
               >
                 {/* Client Header */}
-                <div className="px-6 py-4 border-b border-stone-200 flex items-center justify-between">
+                <div className="px-4 md:px-6 py-4 border-b border-stone-200 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <h2 className="font-semibold text-stone-900">
                       {group.client.name}
@@ -128,7 +124,7 @@ export default function ProjectsIndex() {
                     </span>
                   </div>
                   {group.client.currency && (
-                    <span className="text-sm text-stone-500">
+                    <span className="text-sm text-stone-500 hidden md:block">
                       {group.client.currency}
                     </span>
                   )}
@@ -139,15 +135,15 @@ export default function ProjectsIndex() {
                   {group.projects.map((project) => (
                     <div
                       key={project.id}
-                      className="px-6 py-4 flex items-center justify-between hover:bg-stone-50 cursor-pointer transition-colors"
+                      className="px-4 md:px-6 py-4 min-h-11 flex items-center justify-between hover:bg-stone-50 cursor-pointer transition-colors"
                       onClick={() => handleProjectClick(project.id)}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div
-                          className={`w-2 h-2 rounded-full ${project.active ? "bg-emerald-500" : "bg-stone-300"}`}
+                          className={`w-2 h-2 flex-shrink-0 rounded-full ${project.active ? "bg-emerald-500" : "bg-stone-300"}`}
                         />
-                        <div>
-                          <p className="font-medium text-stone-900">
+                        <div className="min-w-0">
+                          <p className="font-medium text-stone-900 truncate">
                             {project.name}
                           </p>
                           <p className="text-sm text-stone-500">
@@ -160,26 +156,26 @@ export default function ProjectsIndex() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-3 md:gap-6 flex-shrink-0">
                         <div className="text-right">
                           {project.unbilled_hours > 0 ? (
-                            <span className="text-amber-600 font-medium tabular-nums">
+                            <span className="text-amber-600 font-medium tabular-nums text-sm md:text-base">
                               {t("pages.clients.unbilledLabel", {
                                 hours: Math.round(project.unbilled_hours),
                               })}
                             </span>
                           ) : (
-                            <span className="text-stone-400">
+                            <span className="text-stone-400 text-sm md:text-base">
                               {t("pages.clients.noUnbilledHours")}
                             </span>
                           )}
                         </div>
-                        <div className="text-sm text-stone-500">
+                        <div className="text-sm text-stone-500 hidden md:block">
                           {t("pages.projects.entryCount", {
                             count: project.work_entries_count,
                           })}
                         </div>
-                        <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
+                        <button className="p-2 min-h-11 min-w-11 flex items-center justify-center text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
                           <svg
                             className="w-4 h-4"
                             fill="none"

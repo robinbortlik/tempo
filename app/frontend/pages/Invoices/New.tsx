@@ -182,7 +182,7 @@ export default function NewInvoice() {
       <Head title={t("pages.invoices.newInvoice")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="mb-6">
           <button
             onClick={() => router.visit("/invoices")}
@@ -212,7 +212,7 @@ export default function NewInvoice() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Left: Form */}
             <div className="col-span-1 space-y-6">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
@@ -247,7 +247,7 @@ export default function NewInvoice() {
                     </select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                       <Label
                         htmlFor="period_start"

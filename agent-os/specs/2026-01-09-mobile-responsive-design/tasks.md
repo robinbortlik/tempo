@@ -130,19 +130,19 @@ This task list implements mobile responsive design for all pages in the invoicin
 #### Task Group 4: Projects and Invoices Mobile Responsiveness
 **Dependencies:** Task Group 1
 
-- [ ] 4.0 Complete Projects and Invoices mobile updates
-  - [ ] 4.1 Write 4 focused tests for Projects/Invoices mobile layout
+- [x] 4.0 Complete Projects and Invoices mobile updates
+  - [x] 4.1 Write 4 focused tests for Projects/Invoices mobile layout
     - Test Projects/Index project rows are touch-friendly on mobile
     - Test Invoices/Index mobile card view renders
     - Test Invoices/New layout stacks on mobile
     - Test Invoices/Show sections stack on mobile
-  - [ ] 4.2 Update Projects/Index.tsx for mobile
+  - [x] 4.2 Update Projects/Index.tsx for mobile
     - File: `app/frontend/pages/Projects/Index.tsx`
     - Change page padding: `p-4 md:p-6 lg:p-8`
     - Use PageHeader component
     - Project rows: simplify layout on mobile, hide entries count: `hidden md:block`
     - Ensure touch targets (min-h-11)
-  - [ ] 4.3 Update Invoices/Index.tsx for mobile
+  - [x] 4.3 Update Invoices/Index.tsx for mobile
     - File: `app/frontend/pages/Invoices/Index.tsx`
     - Change page padding: `p-4 md:p-6 lg:p-8`
     - Use PageHeader component
@@ -150,20 +150,20 @@ This task list implements mobile responsive design for all pages in the invoicin
     - Hide desktop Table: `hidden md:block`
     - Card shows: invoice number (title), client/period (subtitle), status/amount (details)
     - Tabs should scroll horizontally on mobile if needed
-  - [ ] 4.4 Update Invoices/New.tsx for mobile
+  - [x] 4.4 Update Invoices/New.tsx for mobile
     - File: `app/frontend/pages/Invoices/New.tsx`
     - Change page padding: `p-4 md:p-6 lg:p-8`
     - Change `grid grid-cols-3 gap-8` to `flex flex-col lg:grid lg:grid-cols-3 gap-6 lg:gap-8`
     - Form column: `col-span-1` stays, appears first on mobile
     - Preview column: `col-span-2` stays, appears below form on mobile
     - Date inputs: stack `grid-cols-2` to `grid-cols-1 md:grid-cols-2`
-  - [ ] 4.5 Update Invoices/Show.tsx for mobile
+  - [x] 4.5 Update Invoices/Show.tsx for mobile
     - File: `app/frontend/pages/Invoices/Show.tsx`
     - Change page padding: `p-4 md:p-6 lg:p-8`
     - Header buttons: stack with `flex-col md:flex-row gap-2`
     - Invoice details grid: responsive stacking
     - Line items: simplify display on mobile
-  - [ ] 4.6 Ensure Projects/Invoices tests pass
+  - [x] 4.6 Ensure Projects/Invoices tests pass
     - Run ONLY the 4 tests written in 4.1
 
 **Files to modify:**
