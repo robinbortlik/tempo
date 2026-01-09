@@ -102,3 +102,98 @@ npm run typecheck     # TypeScript check
 ```bash
 npm run build         # Production frontend build
 ```
+
+## Deployment
+
+This is a **single-user application** designed for personal use. It uses [Kamal](https://kamal-deploy.org/) to deploy Docker containers to your own VPS.
+
+### Prerequisites
+
+- A VPS with SSH access (Ubuntu 22.04+ recommended)
+- Docker installed on your local machine
+- A container registry (Docker Hub, GitHub Container Registry, or AWS ECR)
+- A domain name pointed to your VPS IP address
+
+### Server Setup
+
+SSH into your VPS and install Docker:
+
+```bash
+curl -fsSL https://get.docker.com | sh
+```
+
+Ensure your user can run Docker without sudo, or use root for deployment.
+
+### Local Configuration
+
+1. **Copy the deploy configuration template:**
+
+   ```bash
+   cp config/deploy.yml.example config/deploy.yml
+   ```
+
+2. **Create a `.env` file** with your deployment variables:
+
+   ```bash
+   DEPLOY_SERVER_IP=your.server.ip.address
+   PROXY_HOST=your-domain.com
+   ```
+
+3. **Edit `config/deploy.yml`** and configure:
+
+   - `service`: Your application name
+   - `image`: Container image name
+   - `registry`: Your container registry details
+   - Update the `password` command for your registry (e.g., `aws ecr get-login-password` for AWS ECR)
+
+4. **Configure secrets** in `.kamal/secrets`:
+
+   ```bash
+   # For AWS ECR
+   AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+   AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
+   # Rails master key (required)
+   RAILS_MASTER_KEY=$(cat config/master.key)
+   ```
+
+### Deploy
+
+```bash
+# First-time setup (provisions server and deploys)
+bin/kamal setup
+
+# Subsequent deployments
+bin/kamal deploy
+```
+
+### Post-Deployment: Change Default Credentials
+
+A default admin user is created during deployment with these credentials:
+- **Email:** `admin@example.com`
+- **Password:** `password`
+
+**You must change these immediately after deployment:**
+
+```bash
+# Connect to Rails console on the server
+bin/kamal console
+
+# In the Rails console, update the user:
+user = User.first
+user.update!(email_address: "your-email@example.com", password: "your-secure-password")
+exit
+```
+
+### Useful Kamal Commands
+
+```bash
+bin/kamal console      # Rails console on server
+bin/kamal shell        # Bash shell in container
+bin/kamal logs         # Tail application logs
+bin/kamal app restart  # Restart the application
+```
+
+### SSL/HTTPS
+
+Kamal automatically provisions SSL certificates via Let's Encrypt when `proxy.ssl: true` is set. Ensure your domain's DNS is properly configured before the first deployment.

@@ -44,3 +44,4 @@ agent-os/specs
 .playwright-mcp/
 .DS_Store
 .worktrees/
+config/deploy.yml
