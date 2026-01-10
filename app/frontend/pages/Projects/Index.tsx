@@ -122,8 +122,9 @@ export default function ProjectsIndex() {
                       {group.client.name}
                     </h2>
                     <span className="text-sm text-stone-500">
-                      {group.projects.length}{" "}
-                      {group.projects.length === 1 ? "project" : "projects"}
+                      {t("pages.projects.projectCount", {
+                        count: group.projects.length,
+                      })}
                     </span>
                   </div>
                   {group.client.currency && (
@@ -154,7 +155,8 @@ export default function ProjectsIndex() {
                               project.effective_hourly_rate,
                               group.client.currency
                             )}
-                            {project.hourly_rate && " (custom rate)"}
+                            {project.hourly_rate &&
+                              ` ${t("pages.projects.customRate")}`}
                           </p>
                         </div>
                       </div>
@@ -162,19 +164,20 @@ export default function ProjectsIndex() {
                         <div className="text-right">
                           {project.unbilled_hours > 0 ? (
                             <span className="text-amber-600 font-medium tabular-nums">
-                              {Math.round(project.unbilled_hours)}h unbilled
+                              {t("pages.clients.unbilledLabel", {
+                                hours: Math.round(project.unbilled_hours),
+                              })}
                             </span>
                           ) : (
                             <span className="text-stone-400">
-                              No unbilled hours
+                              {t("pages.clients.noUnbilledHours")}
                             </span>
                           )}
                         </div>
                         <div className="text-sm text-stone-500">
-                          {project.time_entries_count}{" "}
-                          {project.time_entries_count === 1
-                            ? "entry"
-                            : "entries"}
+                          {t("pages.projects.entryCount", {
+                            count: project.time_entries_count,
+                          })}
                         </div>
                         <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
                           <svg

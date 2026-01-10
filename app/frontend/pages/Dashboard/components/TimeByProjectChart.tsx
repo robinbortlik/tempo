@@ -7,6 +7,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface ProjectHours {
@@ -33,6 +34,7 @@ const COLORS = [
 ];
 
 export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
+  const { t } = useTranslation();
   const chartData = data.slice(0, 8).map((project) => ({
     ...project,
     // Truncate long project names
@@ -46,10 +48,12 @@ export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
     return (
       <Card className="bg-white border-stone-200">
         <CardHeader>
-          <CardTitle className="text-stone-900">Hours by Project</CardTitle>
+          <CardTitle className="text-stone-900">
+            {t("pages.dashboard.charts.hoursByProject")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="h-48 flex items-center justify-center text-stone-500">
-          No time entries recorded yet
+          {t("pages.dashboard.charts.noTimeEntries")}
         </CardContent>
       </Card>
     );
@@ -58,7 +62,9 @@ export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
   return (
     <Card className="bg-white border-stone-200">
       <CardHeader>
-        <CardTitle className="text-stone-900">Hours by Project</CardTitle>
+        <CardTitle className="text-stone-900">
+          {t("pages.dashboard.charts.hoursByProject")}
+        </CardTitle>
       </CardHeader>
       <CardContent className="h-48">
         <ResponsiveContainer width="100%" height="100%">
@@ -79,7 +85,7 @@ export function TimeByProjectChart({ data }: TimeByProjectChartProps) {
             <Tooltip
               formatter={(value) => [
                 `${Math.round(Number(value))} hrs`,
-                "Hours",
+                t("common.hours"),
               ]}
               labelFormatter={(label, payload) => {
                 if (payload && payload[0]) {

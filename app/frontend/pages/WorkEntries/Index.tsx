@@ -180,7 +180,7 @@ export default function WorkEntriesIndex() {
                 <div className="flex items-center gap-8">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-stone-500">
-                      Total Hours:
+                      {t("pages.workEntries.summary.totalHours")}
                     </span>
                     <span className="text-lg font-bold text-stone-900 tabular-nums">
                       {Math.round(Number(summary.total_hours || 0))}h
@@ -188,7 +188,7 @@ export default function WorkEntriesIndex() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-stone-500">
-                      Total Amount:
+                      {t("pages.workEntries.summary.totalAmount")}
                     </span>
                     <span className="text-lg font-bold text-stone-900 tabular-nums">
                       {formatCurrency(
@@ -201,16 +201,14 @@ export default function WorkEntriesIndex() {
                 </div>
                 <div className="flex items-center gap-6 text-sm text-stone-500">
                   <span>
-                    {summary.time_entries_count || 0} time{" "}
-                    {(summary.time_entries_count || 0) === 1
-                      ? "entry"
-                      : "entries"}
+                    {t("pages.workEntries.summary.timeEntries", {
+                      count: summary.time_entries_count || 0,
+                    })}
                   </span>
                   <span>
-                    {summary.fixed_entries_count || 0} fixed{" "}
-                    {(summary.fixed_entries_count || 0) === 1
-                      ? "entry"
-                      : "entries"}
+                    {t("pages.workEntries.summary.fixedEntries", {
+                      count: summary.fixed_entries_count || 0,
+                    })}
                   </span>
                 </div>
               </div>
@@ -248,20 +246,23 @@ export default function WorkEntriesIndex() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Work Entry?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("pages.workEntries.delete.title")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              work entry.
+              {t("pages.workEntries.delete.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>
+              {t("common.cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               disabled={isDeleting}
               className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? t("common.deleting") : t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

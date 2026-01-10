@@ -50,7 +50,7 @@ export default function Login() {
               </svg>
             </div>
             <h1 className="text-2xl font-semibold text-stone-900">Tempo</h1>
-            <p className="text-stone-500 mt-1">Time tracking & invoicing</p>
+            <p className="text-stone-500 mt-1">{t("pages.login.tagline")}</p>
           </div>
 
           {/* Login Card */}

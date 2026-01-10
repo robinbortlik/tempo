@@ -1,4 +1,5 @@
 import { router } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -37,6 +38,8 @@ function formatRates(rates: number[], currency: string): string {
 }
 
 export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
+  const { t } = useTranslation();
+
   const handleCreateInvoice = (e: React.MouseEvent, clientId: number) => {
     e.stopPropagation();
     router.visit(`/invoices/new?client_id=${clientId}`);
@@ -49,28 +52,32 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
   return (
     <Card className="bg-white border-stone-200">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-stone-900">Unbilled by Client</CardTitle>
+        <CardTitle className="text-stone-900">
+          {t("pages.dashboard.unbilledByClient.title")}
+        </CardTitle>
         <Button
           variant="link"
           className="text-stone-900 hover:text-stone-700 font-medium p-0 h-auto"
           onClick={() => router.visit("/invoices/new")}
         >
-          Create Invoice &rarr;
+          {t("pages.dashboard.unbilledByClient.createInvoice")} &rarr;
         </Button>
       </CardHeader>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow className="text-left text-sm text-stone-500 border-b border-stone-100">
-              <TableHead className="px-6 py-3 font-medium">Client</TableHead>
-              <TableHead className="px-6 py-3 font-medium text-right">
-                Hours
+              <TableHead className="px-6 py-3 font-medium">
+                {t("pages.clients.table.client")}
               </TableHead>
               <TableHead className="px-6 py-3 font-medium text-right">
-                Amount
+                {t("common.hours")}
               </TableHead>
               <TableHead className="px-6 py-3 font-medium text-right">
-                Rate
+                {t("common.amount")}
+              </TableHead>
+              <TableHead className="px-6 py-3 font-medium text-right">
+                {t("common.rate")}
               </TableHead>
               <TableHead className="px-6 py-3"></TableHead>
             </TableRow>
@@ -82,7 +89,7 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                   colSpan={5}
                   className="px-6 py-8 text-center text-stone-500"
                 >
-                  No unbilled time entries
+                  {t("pages.dashboard.unbilledByClient.noEntries")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -97,8 +104,9 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                       {client.name}
                     </div>
                     <div className="text-sm text-stone-500">
-                      {client.project_count}{" "}
-                      {client.project_count === 1 ? "project" : "projects"}
+                      {t("pages.projects.projectCount", {
+                        count: client.project_count,
+                      })}
                     </div>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-right tabular-nums text-stone-900">
@@ -120,7 +128,7 @@ export function UnbilledByClientTable({ data }: UnbilledByClientTableProps) {
                       className="text-stone-900 hover:text-stone-700 font-medium p-0 h-auto"
                       onClick={(e) => handleCreateInvoice(e, client.id)}
                     >
-                      Invoice
+                      {t("pages.dashboard.unbilledByClient.invoice")}
                     </Button>
                   </TableCell>
                 </TableRow>

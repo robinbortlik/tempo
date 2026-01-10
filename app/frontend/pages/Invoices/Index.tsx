@@ -172,19 +172,19 @@ export default function InvoicesIndex() {
               value="all"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
-              All
+              {t("common.all")}
             </TabsTrigger>
             <TabsTrigger
               value="draft"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
-              Draft ({draftCount})
+              {t("pages.invoices.status.draft")} ({draftCount})
             </TabsTrigger>
             <TabsTrigger
               value="final"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
-              Final ({finalCount})
+              {t("pages.invoices.status.final")} ({finalCount})
             </TabsTrigger>
           </TabsList>
         </Tabs>

@@ -6,6 +6,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface MonthlyEarnings {
@@ -18,16 +19,19 @@ interface EarningsChartProps {
 }
 
 export function EarningsChart({ data }: EarningsChartProps) {
+  const { t } = useTranslation();
   const hasData = data.some((d) => d.amount > 0);
 
   if (!hasData) {
     return (
       <Card className="bg-white border-stone-200">
         <CardHeader>
-          <CardTitle className="text-stone-900">Monthly Earnings</CardTitle>
+          <CardTitle className="text-stone-900">
+            {t("pages.dashboard.charts.monthlyEarnings")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="h-48 flex items-center justify-center text-stone-500">
-          No finalized invoices yet
+          {t("pages.dashboard.charts.noInvoices")}
         </CardContent>
       </Card>
     );
@@ -43,7 +47,9 @@ export function EarningsChart({ data }: EarningsChartProps) {
   return (
     <Card className="bg-white border-stone-200">
       <CardHeader>
-        <CardTitle className="text-stone-900">Monthly Earnings</CardTitle>
+        <CardTitle className="text-stone-900">
+          {t("pages.dashboard.charts.monthlyEarnings")}
+        </CardTitle>
       </CardHeader>
       <CardContent className="h-48">
         <ResponsiveContainer width="100%" height="100%">
@@ -77,7 +83,7 @@ export function EarningsChart({ data }: EarningsChartProps) {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 }).format(Number(value)),
-                "Earnings",
+                t("pages.dashboard.charts.earnings"),
               ]}
               contentStyle={{
                 backgroundColor: "#fafaf9",

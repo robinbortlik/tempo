@@ -33,7 +33,7 @@ describe("i18n configuration", () => {
     // Switch to Czech
     await i18n.changeLanguage("cs");
     expect(i18n.language).toBe("cs");
-    expect(i18n.t("nav.dashboard")).toBe("Prehled");
+    expect(i18n.t("nav.dashboard")).toBe("Přehled");
     expect(i18n.t("nav.clients")).toBe("Klienti");
 
     // Switch back to English

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Collapsible,
   CollapsibleContent,
@@ -47,6 +48,7 @@ export function ProjectGroup({
   currency,
   defaultOpen = true,
 }: ProjectGroupProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -81,12 +83,20 @@ export function ProjectGroup({
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-stone-400 border-b border-stone-100">
-                <th className="px-4 pt-4 pb-2 font-medium">Date</th>
-                <th className="px-4 pt-4 pb-2 font-medium">Description</th>
-                <th className="px-4 pt-4 pb-2 font-medium text-right">Hours</th>
-                <th className="px-4 pt-4 pb-2 font-medium text-right">Rate</th>
+                <th className="px-4 pt-4 pb-2 font-medium">
+                  {t("common.date")}
+                </th>
+                <th className="px-4 pt-4 pb-2 font-medium">
+                  {t("common.description")}
+                </th>
                 <th className="px-4 pt-4 pb-2 font-medium text-right">
-                  Amount
+                  {t("common.hours")}
+                </th>
+                <th className="px-4 pt-4 pb-2 font-medium text-right">
+                  {t("common.rate")}
+                </th>
+                <th className="px-4 pt-4 pb-2 font-medium text-right">
+                  {t("common.amount")}
                 </th>
               </tr>
             </thead>

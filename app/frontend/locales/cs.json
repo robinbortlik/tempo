@@ -71,8 +71,14 @@
     "finalizing": "Dokončuji..."
   },
   "pages": {
+    "home": {
+      "welcome": "Vítejte v Tempu!",
+      "getStarted": "Začít",
+      "learnMore": "Zjistit více"
+    },
     "login": {
       "title": "Přihlášení",
+      "tagline": "Sledování času a fakturace",
       "emailLabel": "E-mail",
       "passwordLabel": "Heslo",
       "submitButton": "Přihlásit se",
@@ -110,7 +116,8 @@
       "companyLogo": {
         "title": "Logo firmy",
         "description": "Nahrajte logo firmy pro zobrazení na fakturách. Doporučená velikost: 200x200px.",
-        "uploadButton": "Nahrát logo"
+        "uploadButton": "Nahrát logo",
+        "altText": "Logo firmy"
       }
     },
     "dashboard": {
@@ -128,7 +135,22 @@
       },
       "recentActivity": "Poslední aktivita",
       "quickActions": "Rychlé akce",
-      "noRecentActivity": "Žádná nedávná aktivita"
+      "noRecentActivity": "Žádná nedávná aktivita",
+      "unbilledByClient": {
+        "title": "Nevyfakturováno podle klienta",
+        "createInvoice": "Vytvořit fakturu",
+        "noEntries": "Žádné nevyfakturované záznamy",
+        "invoice": "Fakturovat"
+      },
+      "charts": {
+        "hoursByClient": "Hodiny podle klienta",
+        "hoursByProject": "Hodiny podle projektu",
+        "monthlyEarnings": "Měsíční příjmy",
+        "hoursTrend": "Trend hodin",
+        "noTimeEntries": "Zatím žádné záznamy času",
+        "noInvoices": "Zatím žádné dokončené faktury",
+        "earnings": "Příjmy"
+      }
     },
     "clients": {
       "title": "Klienti",
@@ -239,7 +261,13 @@
       "activate": "Aktivovat",
       "deleteTitle": "Smazat {{name}}?",
       "deleteDescription": "Tuto akci nelze vrátit zpět. Tímto trvale smažete projekt. Projekty s vyfakturovanými záznamy nelze smazat.",
-      "customRate": "(vlastní sazba)"
+      "customRate": "(vlastní sazba)",
+      "projectCount_one": "{{count}} projekt",
+      "projectCount_few": "{{count}} projekty",
+      "projectCount_other": "{{count}} projektů",
+      "entryCount_one": "{{count}} záznam",
+      "entryCount_few": "{{count}} záznamy",
+      "entryCount_other": "{{count}} záznamů"
     },
     "invoices": {
       "title": "Faktury",
@@ -381,7 +409,33 @@
         "time": "Čas",
         "fixed": "Pevná cena"
       },
-      "rate": "Sazba: {{symbol}}{{rate}}/h"
+      "rate": "Sazba: {{symbol}}{{rate}}/h",
+      "summary": {
+        "totalHours": "Celkem hodin:",
+        "totalAmount": "Celková částka:",
+        "timeEntries_one": "{{count}} časový záznam",
+        "timeEntries_few": "{{count}} časové záznamy",
+        "timeEntries_other": "{{count}} časových záznamů",
+        "fixedEntries_one": "{{count}} pevný záznam",
+        "fixedEntries_few": "{{count}} pevné záznamy",
+        "fixedEntries_other": "{{count}} pevných záznamů"
+      },
+      "delete": {
+        "title": "Smazat záznam práce?",
+        "description": "Tuto akci nelze vrátit zpět. Tímto trvale smažete záznam práce."
+      }
+    },
+    "reports": {
+      "timeReportFor": "Časový report pro",
+      "preparedBy": "Připravil",
+      "period": "Období",
+      "invoiced": "Vyfakturováno ({{period}})",
+      "noEntriesFound": "Pro toto období nebyly nalezeny žádné záznamy.",
+      "generatedBy": "Vygenerováno pomocí Tempo",
+      "unbilledWork": "Nevyfakturovaná práce",
+      "previouslyInvoiced": "Dříve vyfakturováno",
+      "invoiceNumber": "Faktura č. {{number}}",
+      "hoursCount": "{{hours}} hodin"
     }
   },
   "languages": {
@@ -404,6 +458,10 @@
   },
   "validation": {
     "invalidEmail": "Zadejte prosím platnou e-mailovou adresu"
+  },
+  "accessibility": {
+    "toggleMenu": "Přepnout menu",
+    "userMenu": "Uživatelské menu"
   },
   "toast": {
     "linkCopied": "Odkaz zkopírován do schránky",

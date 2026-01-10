@@ -107,7 +107,7 @@ export default function Header() {
             data-testid="mobile-menu-button"
           >
             <MenuIcon />
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">{t("accessibility.toggleMenu")}</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0 w-60">
@@ -133,7 +133,7 @@ export default function Header() {
             data-testid="user-menu-button"
           >
             <UserIcon />
-            <span className="sr-only">User menu</span>
+            <span className="sr-only">{t("accessibility.userMenu")}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">

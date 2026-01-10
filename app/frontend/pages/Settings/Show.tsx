@@ -82,7 +82,7 @@ export default function SettingsShow() {
     const value = e.target.value;
     setData("email", value);
     if (value && !validateEmail(value)) {
-      setEmailError("Please enter a valid email address");
+      setEmailError(t("validation.invalidEmail"));
     } else {
       setEmailError(null);
     }
@@ -117,7 +117,7 @@ export default function SettingsShow() {
 
     // Validate email before submit
     if (data.email && !validateEmail(data.email)) {
-      setEmailError("Please enter a valid email address");
+      setEmailError(t("validation.invalidEmail"));
       return;
     }
 
@@ -438,7 +438,7 @@ export default function SettingsShow() {
                 {logoPreview ? (
                   <img
                     src={logoPreview}
-                    alt="Company logo"
+                    alt={t("pages.settings.companyLogo.altText")}
                     className="w-full h-full object-cover"
                   />
                 ) : (

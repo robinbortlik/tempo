@@ -99,13 +99,13 @@ describe("Task Group 3: UI Component Translations", () => {
       render(<Sidebar />);
 
       // Check Czech navigation labels
-      expect(screen.getByText("Prehled")).toBeInTheDocument();
-      expect(screen.getByText("Zaznamenat praci")).toBeInTheDocument();
+      expect(screen.getByText("Přehled")).toBeInTheDocument();
+      expect(screen.getByText("Zaznamenat práci")).toBeInTheDocument();
       expect(screen.getByText("Klienti")).toBeInTheDocument();
       expect(screen.getByText("Projekty")).toBeInTheDocument();
       expect(screen.getByText("Faktury")).toBeInTheDocument();
-      expect(screen.getByText("Nastaveni")).toBeInTheDocument();
-      expect(screen.getByText("Odhlasit se")).toBeInTheDocument();
+      expect(screen.getByText("Nastavení")).toBeInTheDocument();
+      expect(screen.getByText("Odhlásit se")).toBeInTheDocument();
     });
   });
 
@@ -203,10 +203,10 @@ describe("Task Group 3: UI Component Translations", () => {
       await i18n.changeLanguage("cs");
       rerender(<DashboardIndex />);
 
-      expect(screen.getByText("Prehled")).toBeInTheDocument();
-      expect(screen.getByText("Tento tyden")).toBeInTheDocument();
-      expect(screen.getByText("Tento mesic")).toBeInTheDocument();
-      expect(screen.getByText("Nevyfakturovane hodiny")).toBeInTheDocument();
+      expect(screen.getByText("Přehled")).toBeInTheDocument();
+      expect(screen.getByText("Tento týden")).toBeInTheDocument();
+      expect(screen.getByText("Tento měsíc")).toBeInTheDocument();
+      expect(screen.getByText("Nevyfakturované hodiny")).toBeInTheDocument();
     });
   });
 });

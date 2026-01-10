@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 
 interface WorkEntry {
@@ -169,6 +170,8 @@ export function InvoicedSection({
   currency,
   shareToken,
 }: InvoicedSectionProps) {
+  const { t } = useTranslation();
+
   if (invoices.length === 0) {
     return null;
   }
@@ -177,7 +180,7 @@ export function InvoicedSection({
     <section className="mb-8">
       <h2 className="text-lg font-semibold text-stone-900 mb-4 flex items-center gap-2">
         <span className="w-2 h-2 bg-emerald-500 rounded-full" />
-        Previously Invoiced
+        {t("pages.reports.previouslyInvoiced")}
       </h2>
 
       <div className="space-y-4">
@@ -190,7 +193,9 @@ export function InvoicedSection({
               <div className="flex items-center gap-3">
                 <div>
                   <span className="font-medium text-stone-700">
-                    Invoice #{invoice.number}
+                    {t("pages.reports.invoiceNumber", {
+                      number: invoice.number,
+                    })}
                   </span>
                   <span className="text-stone-300 mx-2">&middot;</span>
                   <span className="text-sm text-stone-500">
@@ -228,14 +233,20 @@ export function InvoicedSection({
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left text-xs text-stone-400 border-b border-stone-100">
-                      <th className="pb-2 font-medium">Description</th>
-                      <th className="pb-2 font-medium text-right w-16">
-                        Hours
+                      <th className="pb-2 font-medium">
+                        {t("common.description")}
                       </th>
-                      <th className="pb-2 font-medium text-right w-28">Rate</th>
-                      <th className="pb-2 font-medium text-right w-14">VAT</th>
+                      <th className="pb-2 font-medium text-right w-16">
+                        {t("common.hours")}
+                      </th>
+                      <th className="pb-2 font-medium text-right w-28">
+                        {t("common.rate")}
+                      </th>
+                      <th className="pb-2 font-medium text-right w-14">
+                        {t("pages.invoices.lineItems.vat")}
+                      </th>
                       <th className="pb-2 font-medium text-right w-32">
-                        Amount
+                        {t("common.amount")}
                       </th>
                     </tr>
                   </thead>
@@ -253,21 +264,21 @@ export function InvoicedSection({
                 <div className="mt-4 pt-4 border-t border-stone-200 flex justify-end">
                   <div className="text-sm space-y-1.5 min-w-48">
                     <div className="flex justify-between gap-6 text-stone-500">
-                      <span>Subtotal</span>
+                      <span>{t("common.subtotal")}</span>
                       <span className="tabular-nums whitespace-nowrap">
                         {formatCurrency(invoice.subtotal, currency)}
                       </span>
                     </div>
                     {invoice.total_vat > 0 && (
                       <div className="flex justify-between gap-6 text-stone-500">
-                        <span>VAT</span>
+                        <span>{t("pages.invoices.lineItems.vat")}</span>
                         <span className="tabular-nums whitespace-nowrap">
                           {formatCurrency(invoice.total_vat, currency)}
                         </span>
                       </div>
                     )}
                     <div className="flex justify-between gap-6 font-semibold text-stone-900 pt-2 border-t border-stone-200">
-                      <span>Total</span>
+                      <span>{t("common.total")}</span>
                       <span className="tabular-nums whitespace-nowrap">
                         {formatCurrency(invoice.total_amount, currency)}
                       </span>
@@ -277,7 +288,9 @@ export function InvoicedSection({
               </div>
             ) : (
               <div className="px-4 py-4 text-center text-stone-400 text-sm">
-                {formatHours(invoice.total_hours)} hours
+                {t("pages.reports.hoursCount", {
+                  hours: formatHours(invoice.total_hours),
+                })}
               </div>
             )}
           </div>
