@@ -267,8 +267,10 @@
       "deleteTitle": "Delete {{name}}?",
       "deleteDescription": "This action cannot be undone. This will permanently delete the project. Projects with invoiced time entries cannot be deleted.",
       "customRate": "(custom rate)",
+      "projectCount": "{{count}} projects",
       "projectCount_one": "{{count}} project",
       "projectCount_other": "{{count}} projects",
+      "entryCount": "{{count}} entries",
       "entryCount_one": "{{count}} entry",
       "entryCount_other": "{{count}} entries"
     },

@@ -267,9 +267,11 @@
       "deleteTitle": "Smazat {{name}}?",
       "deleteDescription": "Tuto akci nelze vrátit zpět. Tímto trvale smažete projekt. Projekty s vyfakturovanými záznamy nelze smazat.",
       "customRate": "(vlastní sazba)",
+      "projectCount": "{{count}} projektů",
       "projectCount_one": "{{count}} projekt",
       "projectCount_few": "{{count}} projekty",
       "projectCount_other": "{{count}} projektů",
+      "entryCount": "{{count}} záznamů",
       "entryCount_one": "{{count}} záznam",
       "entryCount_few": "{{count}} záznamy",
       "entryCount_other": "{{count}} záznamů"
