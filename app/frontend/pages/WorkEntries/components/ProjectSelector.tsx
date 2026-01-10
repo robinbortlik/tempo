@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface Project {
   id: number;
   name: string;
@@ -32,6 +34,8 @@ export default function ProjectSelector({
   className = "",
   id,
 }: ProjectSelectorProps) {
+  const { t } = useTranslation();
+
   return (
     <select
       id={id}
@@ -40,7 +44,7 @@ export default function ProjectSelector({
       required={required}
       className={`px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900 ${className}`}
     >
-      <option value="">Select a project</option>
+      <option value="">{t("pages.workEntries.form.selectProject")}</option>
       {projects.map((group) => (
         <optgroup key={group.client.id} label={group.client.name}>
           {group.projects.map((project) => (

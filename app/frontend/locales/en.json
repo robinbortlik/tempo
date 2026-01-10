@@ -69,7 +69,9 @@
     "remove": "Remove",
     "finalize": "Finalize",
     "finalizing": "Finalizing...",
-    "hoursShort": "hrs"
+    "hoursShort": "hrs",
+    "today": "Today",
+    "yesterday": "Yesterday"
   },
   "pages": {
     "home": {

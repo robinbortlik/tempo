@@ -69,7 +69,9 @@
     "remove": "Odebrat",
     "finalize": "Dokončit",
     "finalizing": "Dokončuji...",
-    "hoursShort": "hod"
+    "hoursShort": "hod",
+    "today": "Dnes",
+    "yesterday": "Včera"
   },
   "pages": {
     "home": {
