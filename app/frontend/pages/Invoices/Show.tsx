@@ -1,5 +1,7 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/lib/i18n";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -54,6 +56,7 @@ interface Invoice {
   client_vat_id: string | null;
   client_company_registration: string | null;
   client_default_vat_rate: number | null;
+  client_locale: string;
 }
 
 interface Settings {
@@ -88,20 +91,55 @@ interface PageProps {
   [key: string]: unknown;
 }
 
-function formatDate(dateString: string): string {
+function formatDate(dateString: string, locale: string = "en"): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  const localeMap: Record<string, string> = { en: "en-US", cs: "cs-CZ" };
+  const dateLocale = localeMap[locale] || "en-US";
+
+  if (locale === "cs") {
+    return date.toLocaleDateString(dateLocale, {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    });
+  }
+
+  return date.toLocaleDateString(dateLocale, {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
 }
 
-function formatPeriod(start: string, end: string): string {
+function formatPeriod(
+  start: string,
+  end: string,
+  locale: string = "en"
+): string {
   const startDate = new Date(start);
   const endDate = new Date(end);
-  const startMonth = startDate.toLocaleDateString("en-US", { month: "short" });
-  const endMonth = endDate.toLocaleDateString("en-US", { month: "short" });
+  const localeMap: Record<string, string> = { en: "en-US", cs: "cs-CZ" };
+  const dateLocale = localeMap[locale] || "en-US";
+
+  if (locale === "cs") {
+    // Czech format: "31. 12. – 30. 1. 2026"
+    const startFormatted = startDate.toLocaleDateString(dateLocale, {
+      day: "numeric",
+      month: "numeric",
+    });
+    const endFormatted = endDate.toLocaleDateString(dateLocale, {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    });
+    return `${startFormatted} – ${endFormatted}`;
+  }
+
+  // English format: "Dec 31–Jan 30, 2026"
+  const startMonth = startDate.toLocaleDateString(dateLocale, {
+    month: "short",
+  });
+  const endMonth = endDate.toLocaleDateString(dateLocale, { month: "short" });
   const startDay = startDate.getDate();
   const endDay = endDate.getDate();
   const year = endDate.getFullYear();
@@ -112,17 +150,23 @@ function formatPeriod(start: string, end: string): string {
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
 }
 
-function StatusBadge({ status }: { status: "draft" | "final" }) {
+function StatusBadge({
+  status,
+  label,
+}: {
+  status: "draft" | "final";
+  label: string;
+}) {
   if (status === "draft") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-        Draft
+        {label}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-      Final
+      {label}
     </span>
   );
 }
@@ -130,6 +174,14 @@ function StatusBadge({ status }: { status: "draft" | "final" }) {
 export default function InvoiceShow() {
   const { invoice, line_items, settings, qr_code, flash } =
     usePage<PageProps>().props;
+  const { t } = useTranslation();
+  // Get translation function for client's locale (for invoice preview)
+  const clientLocale = invoice.client_locale || "en";
+  const tp = i18n.getFixedT(
+    clientLocale,
+    "translation",
+    "pages.invoices.preview"
+  );
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
@@ -272,7 +324,7 @@ export default function InvoiceShow() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Invoices
+            {t("common.backTo", { name: t("pages.invoices.title") })}
           </button>
           <div className="flex items-start justify-between">
             <div>
@@ -280,11 +332,18 @@ export default function InvoiceShow() {
                 <h1 className="text-2xl font-semibold text-stone-900 font-mono">
                   {invoice.number}
                 </h1>
-                <StatusBadge status={invoice.status} />
+                <StatusBadge
+                  status={invoice.status}
+                  label={t(`pages.invoices.status.${invoice.status}`)}
+                />
               </div>
               <p className="text-stone-500 mt-1">
                 {invoice.client_name} {"\u00B7"}{" "}
-                {formatPeriod(invoice.period_start, invoice.period_end)}
+                {formatPeriod(
+                  invoice.period_start,
+                  invoice.period_end,
+                  i18n.language
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -307,7 +366,7 @@ export default function InvoiceShow() {
                       d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     />
                   </svg>
-                  Download PDF
+                  {t("pages.invoices.actions.downloadPdf")}
                 </a>
               </Button>
               {isDraft && (
@@ -317,33 +376,37 @@ export default function InvoiceShow() {
                     onClick={() => router.visit(`/invoices/${invoice.id}/edit`)}
                     className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
                   >
-                    Edit
+                    {t("common.edit")}
                   </Button>
 
                   {/* Finalize Dialog */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button className="px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors">
-                        Mark as Final
+                        {t("pages.invoices.actions.markAsFinal")}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Finalize Invoice?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                          {t("pages.invoices.finalize.title")}
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will mark the invoice as final and lock all
-                          associated work entries as invoiced. This action
-                          cannot be undone.
+                          {t("pages.invoices.finalize.description")}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>
+                          {t("common.cancel")}
+                        </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={handleFinalize}
                           disabled={isFinalizing}
                           className="bg-emerald-600 hover:bg-emerald-700"
                         >
-                          {isFinalizing ? "Finalizing..." : "Finalize"}
+                          {isFinalizing
+                            ? t("common.finalizing")
+                            : t("common.finalize")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -356,28 +419,32 @@ export default function InvoiceShow() {
                         variant="outline"
                         className="px-4 py-2 border border-red-200 text-red-600 font-medium rounded-lg hover:bg-red-50 transition-colors"
                       >
-                        Delete
+                        {t("common.delete")}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>
-                          Delete Invoice {invoice.number}?
+                          {t("pages.invoices.delete.title", {
+                            number: invoice.number,
+                          })}
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete the invoice and
-                          unassociate all work entries. The work entries will
-                          become unbilled again.
+                          {t("pages.invoices.delete.description")}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>
+                          {t("common.cancel")}
+                        </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={handleDelete}
                           disabled={isDeleting}
                           className="bg-red-600 hover:bg-red-700"
                         >
-                          {isDeleting ? "Deleting..." : "Delete"}
+                          {isDeleting
+                            ? t("common.deleting")
+                            : t("common.delete")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -394,11 +461,11 @@ export default function InvoiceShow() {
           <div className="text-right mb-8">
             <div className="w-48 h-0.5 bg-stone-900 ml-auto mb-3"></div>
             <p className="text-2xl font-semibold">
-              <span className="text-stone-900">Invoice </span>
+              <span className="text-stone-900">{tp("invoice")} </span>
               <span className="text-stone-500">{invoice.number}</span>
             </p>
             <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">
-              Tax Document
+              {tp("taxDocument")}
             </p>
           </div>
 
@@ -409,11 +476,11 @@ export default function InvoiceShow() {
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-5 h-0.5 bg-stone-900"></div>
                 <span className="text-xs text-stone-500 uppercase tracking-wide">
-                  Supplier
+                  {tp("supplier")}
                 </span>
               </div>
               <p className="font-semibold text-stone-900 mb-1">
-                {settings.company_name || "Your Company"}
+                {settings.company_name || tp("yourCompany")}
               </p>
               {settings.address && (
                 <p className="text-sm text-stone-600 whitespace-pre-line mb-4">
@@ -424,7 +491,7 @@ export default function InvoiceShow() {
                 <tbody>
                   {settings.company_registration && (
                     <tr className="h-6">
-                      <td className="text-stone-500">Reg. no.</td>
+                      <td className="text-stone-500">{tp("regNo")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {settings.company_registration}
                       </td>
@@ -432,7 +499,7 @@ export default function InvoiceShow() {
                   )}
                   {settings.vat_id && (
                     <tr className="h-6">
-                      <td className="text-stone-500">VAT ID</td>
+                      <td className="text-stone-500">{tp("vatId")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {settings.vat_id}
                       </td>
@@ -440,7 +507,7 @@ export default function InvoiceShow() {
                   )}
                   {settings.bank_account && (
                     <tr className="h-6">
-                      <td className="text-stone-500">Bank account</td>
+                      <td className="text-stone-500">{tp("bankAccount")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {settings.bank_account}
                       </td>
@@ -448,7 +515,7 @@ export default function InvoiceShow() {
                   )}
                   {settings.iban && (
                     <tr className="h-6">
-                      <td className="text-stone-500">IBAN</td>
+                      <td className="text-stone-500">{tp("iban")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {settings.iban}
                       </td>
@@ -456,22 +523,22 @@ export default function InvoiceShow() {
                   )}
                   {settings.bank_swift && (
                     <tr className="h-6">
-                      <td className="text-stone-500">SWIFT/BIC</td>
+                      <td className="text-stone-500">{tp("swift")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {settings.bank_swift}
                       </td>
                     </tr>
                   )}
                   <tr className="h-6">
-                    <td className="text-stone-500">Reference</td>
+                    <td className="text-stone-500">{tp("reference")}</td>
                     <td className="text-right text-stone-900 font-medium">
                       {invoice.number}
                     </td>
                   </tr>
                   <tr className="h-6">
-                    <td className="text-stone-500">Payment method</td>
+                    <td className="text-stone-500">{tp("paymentMethod")}</td>
                     <td className="text-right text-stone-900 font-medium">
-                      Bank transfer
+                      {tp("bankTransfer")}
                     </td>
                   </tr>
                 </tbody>
@@ -483,7 +550,7 @@ export default function InvoiceShow() {
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-5 h-0.5 bg-stone-900"></div>
                 <span className="text-xs text-stone-500 uppercase tracking-wide">
-                  Customer
+                  {tp("customer")}
                 </span>
               </div>
               <p className="font-semibold text-stone-900 mb-1">
@@ -498,7 +565,7 @@ export default function InvoiceShow() {
                 <tbody>
                   {invoice.client_company_registration && (
                     <tr className="h-6">
-                      <td className="text-stone-500">Reg. no.</td>
+                      <td className="text-stone-500">{tp("regNo")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {invoice.client_company_registration}
                       </td>
@@ -506,28 +573,30 @@ export default function InvoiceShow() {
                   )}
                   {invoice.client_vat_id && (
                     <tr className="h-6">
-                      <td className="text-stone-500">VAT ID</td>
+                      <td className="text-stone-500">{tp("vatId")}</td>
                       <td className="text-right text-stone-900 font-medium">
                         {invoice.client_vat_id}
                       </td>
                     </tr>
                   )}
                   <tr className="h-6">
-                    <td className="text-stone-500">Issued on</td>
+                    <td className="text-stone-500">{tp("issuedOn")}</td>
                     <td className="text-right text-stone-900 font-medium">
-                      {formatDate(invoice.issue_date)}
+                      {formatDate(invoice.issue_date, clientLocale)}
                     </td>
                   </tr>
                   <tr className="h-6">
-                    <td className="text-stone-500">Due on</td>
+                    <td className="text-stone-500">{tp("dueOn")}</td>
                     <td className="text-right text-stone-900 font-medium">
-                      {formatDate(invoice.due_date)}
+                      {formatDate(invoice.due_date, clientLocale)}
                     </td>
                   </tr>
                   <tr className="h-6">
-                    <td className="text-stone-500">Date of taxable supply</td>
+                    <td className="text-stone-500">
+                      {tp("dateOfTaxableSupply")}
+                    </td>
                     <td className="text-right text-stone-900 font-medium">
-                      {formatDate(invoice.issue_date)}
+                      {formatDate(invoice.issue_date, clientLocale)}
                     </td>
                   </tr>
                 </tbody>
@@ -543,12 +612,14 @@ export default function InvoiceShow() {
                   <th className="pb-3 font-medium text-left w-12"></th>
                   <th className="pb-3 font-medium text-left w-12"></th>
                   <th className="pb-3 font-medium text-left"></th>
-                  <th className="pb-3 font-medium text-right w-16">VAT</th>
+                  <th className="pb-3 font-medium text-right w-16">
+                    {tp("vat")}
+                  </th>
                   <th className="pb-3 font-medium text-right w-24">
-                    Unit Price
+                    {tp("unitPrice")}
                   </th>
                   <th className="pb-3 font-medium text-right w-28">
-                    Total w/o VAT
+                    {tp("totalWithoutVat")}
                   </th>
                   {isDraft && <th className="pb-3 font-medium w-36"></th>}
                 </tr>
@@ -583,6 +654,7 @@ export default function InvoiceShow() {
                       isDraft={isDraft}
                       isFirst={isFirst}
                       isLast={isLast}
+                      hoursUnit={tp("hoursUnit")}
                       onEdit={handleEditLineItem}
                       onRemove={handleRemoveLineItem}
                       onMoveUp={(id) => handleMoveLineItem(id, "up")}
@@ -636,7 +708,7 @@ export default function InvoiceShow() {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  Add Line Item
+                  {t("pages.invoices.lineItems.addLineItem")}
                 </Button>
               </div>
             )}
@@ -646,7 +718,7 @@ export default function InvoiceShow() {
           <div className="flex justify-end">
             <dl className="w-72 text-sm">
               <div className="flex justify-between py-2 border-b border-stone-200">
-                <dt className="text-stone-500">Total w/o VAT</dt>
+                <dt className="text-stone-500">{tp("totalWithoutVat")}</dt>
                 <dd className="tabular-nums text-stone-900">
                   {formatCurrency(invoice.subtotal, invoice.currency)}
                 </dd>
@@ -657,7 +729,9 @@ export default function InvoiceShow() {
                 .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
                 .map(([rate, amount]) => (
                   <div key={rate} className="flex justify-between py-2">
-                    <dt className="text-stone-500">VAT {parseFloat(rate)} %</dt>
+                    <dt className="text-stone-500">
+                      {tp("vat")} {parseFloat(rate)} %
+                    </dt>
                     <dd className="tabular-nums text-stone-900">
                       {formatCurrency(amount, invoice.currency)}
                     </dd>
@@ -668,7 +742,7 @@ export default function InvoiceShow() {
               (Object.keys(invoice.vat_totals_by_rate || {}).length === 1 &&
                 Object.keys(invoice.vat_totals_by_rate)[0] === "0") ? (
                 <div className="flex justify-between py-2">
-                  <dt className="text-stone-500">VAT 0 %</dt>
+                  <dt className="text-stone-500">{tp("vat")} 0 %</dt>
                   <dd className="tabular-nums text-stone-900">
                     {formatCurrency(0, invoice.currency)}
                   </dd>
@@ -685,7 +759,9 @@ export default function InvoiceShow() {
           {/* Notes */}
           {invoice.notes && (
             <div className="mt-8 pt-8 border-t border-stone-200">
-              <p className="text-sm font-medium text-stone-700 mb-2">Notes</p>
+              <p className="text-sm font-medium text-stone-700 mb-2">
+                {tp("notes")}
+              </p>
               <p className="text-sm text-stone-500 whitespace-pre-line">
                 {invoice.notes}
               </p>
@@ -698,10 +774,12 @@ export default function InvoiceShow() {
               <div>
                 <img
                   src={qr_code.data_url}
-                  alt="Payment QR Code"
+                  alt={tp("qrAlt")}
                   className="w-[70px] h-[70px]"
                 />
-                <p className="text-[9px] text-stone-400 mt-1">Scan to pay</p>
+                <p className="text-[9px] text-stone-400 mt-1">
+                  {tp("scanToPay")}
+                </p>
               </div>
             </div>
           )}
@@ -724,21 +802,22 @@ export default function InvoiceShow() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove Line Item?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("pages.invoices.lineItems.removeTitle")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove the line item from the invoice. Associated work
-              entries will be unlinked and become unbilled again.
+              {t("pages.invoices.lineItems.removeDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setLineItemToRemove(null)}>
-              Cancel
+              {t("common.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmRemoveLineItem}
               className="bg-red-600 hover:bg-red-700"
             >
-              Remove
+              {t("common.remove")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

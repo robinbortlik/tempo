@@ -101,19 +101,19 @@ export default function DashboardIndex() {
           <StatCard
             title={t("pages.dashboard.stats.thisWeek")}
             value={Math.round(stats.hours_this_week).toString()}
-            suffix="hrs"
+            suffix={t("common.hoursShort")}
           />
 
           <StatCard
             title={t("pages.dashboard.stats.thisMonth")}
             value={Math.round(stats.hours_this_month).toString()}
-            suffix="hrs"
+            suffix={t("common.hoursShort")}
           />
 
           <StatCard
             title={t("pages.dashboard.stats.unbilledHours")}
             value={Math.round(stats.unbilled_hours).toString()}
-            suffix="hrs"
+            suffix={t("common.hoursShort")}
             indicator={
               stats.unbilled_hours > 0 ? (
                 <span className="w-2 h-2 bg-amber-400 rounded-full" />

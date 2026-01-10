@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { formatCurrency, formatHours } from "@/components/CurrencyDisplay";
 
 export interface LineItem {
@@ -26,16 +27,20 @@ export default function InvoicePreview({
   totalAmount,
   currency,
 }: InvoicePreviewProps) {
+  const { t } = useTranslation();
+
   if (lineItems.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-stone-200 p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-semibold text-stone-900">Preview</h3>
+          <h3 className="font-semibold text-stone-900">
+            {t("pages.invoices.newPreview.title")}
+          </h3>
         </div>
         <div className="text-center py-8 text-stone-500">
-          <p>No unbilled work entries found for the selected period.</p>
+          <p>{t("pages.invoices.newPreview.noEntries")}</p>
           <p className="text-sm mt-2">
-            Select a client and date range to preview entries.
+            {t("pages.invoices.newPreview.selectClient")}
           </p>
         </div>
       </div>
@@ -58,11 +63,14 @@ export default function InvoicePreview({
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-semibold text-stone-900">Preview</h3>
+        <h3 className="font-semibold text-stone-900">
+          {t("pages.invoices.newPreview.title")}
+        </h3>
         <div className="text-sm text-stone-500">
           {totalHours > 0 && (
             <>
-              {formatHours(totalHours)} hours {"\u00B7"}{" "}
+              {formatHours(totalHours)} {t("pages.invoices.newPreview.hours")}{" "}
+              {"\u00B7"}{" "}
             </>
           )}
           {formatCurrency(totalAmount, currency)}
@@ -112,7 +120,8 @@ export default function InvoicePreview({
                         }
                       >
                         <td className="px-4 py-3 text-stone-700">
-                          {item.description || "No description"}
+                          {item.description ||
+                            t("pages.invoices.newPreview.noDescription")}
                         </td>
                         {item.line_type === "time_aggregate" ? (
                           <>
@@ -157,20 +166,26 @@ export default function InvoicePreview({
           <dl className="w-64 space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-stone-500">
-                Subtotal{totalHours > 0 && ` (${formatHours(totalHours)} hrs)`}
+                {t("pages.invoices.newPreview.subtotal")}
+                {totalHours > 0 &&
+                  ` (${formatHours(totalHours)} ${t("pages.invoices.newPreview.hoursShort")})`}
               </dt>
               <dd className="tabular-nums text-stone-900">
                 {formatCurrency(totalAmount, currency)}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-stone-500">VAT (0%)</dt>
+              <dt className="text-stone-500">
+                {t("pages.invoices.newPreview.vat")} (0%)
+              </dt>
               <dd className="tabular-nums text-stone-900">
                 {formatCurrency(0, currency)}
               </dd>
             </div>
             <div className="flex justify-between pt-2 border-t border-stone-200">
-              <dt className="font-semibold text-stone-900">Total</dt>
+              <dt className="font-semibold text-stone-900">
+                {t("pages.invoices.newPreview.total")}
+              </dt>
               <dd className="tabular-nums font-semibold text-stone-900">
                 {formatCurrency(totalAmount, currency)}
               </dd>

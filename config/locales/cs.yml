@@ -1,4 +1,33 @@
 cs:
+  invoices:
+    pdf:
+      invoice: "Faktura"
+      tax_document: "Daňový doklad"
+      supplier: "Dodavatel"
+      customer: "Odběratel"
+      your_company: "Vaše firma"
+      reg_no: "IČO"
+      vat_id: "DIČ"
+      bank_account: "Bankovní účet"
+      iban: "IBAN"
+      swift_bic: "SWIFT/BIC"
+      reference: "Variabilní symbol"
+      payment_method: "Způsob úhrady"
+      bank_transfer: "Bankovní převod"
+      issued_on: "Datum vystavení"
+      due_on: "Datum splatnosti"
+      not_set: "Neuvedeno"
+      date_of_supply: "Datum uskutečnění plnění"
+      vat: "DPH"
+      unit_price: "Jednotková cena"
+      total_wo_vat: "Celkem bez DPH"
+      hours_unit: "hod"
+      notes: "Poznámky"
+      qr_alt: "QR kód pro platbu"
+      scan_to_pay: "Naskenujte pro platbu"
+  date:
+    formats:
+      invoice: "%d. %m. %Y"
   flash:
     settings:
       saved: "Nastavení bylo úspěšně uloženo."

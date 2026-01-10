@@ -1,12 +1,16 @@
 class InvoicePdfService
-  def initialize(invoice:, controller:)
+  def initialize(invoice:, controller:, locale: nil)
     @invoice = invoice
     @controller = controller
     @settings = Setting.instance
+    @locale = locale || invoice.client&.locale || I18n.default_locale.to_s
   end
 
   def generate
-    Grover.new(rendered_html, format: "A4").to_pdf
+    # Set locale for PDF rendering
+    I18n.with_locale(@locale) do
+      Grover.new(rendered_html, format: "A4").to_pdf
+    end
   end
 
   def filename

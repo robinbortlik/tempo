@@ -53,6 +53,10 @@ class InvoiceSerializer
     invoice.client.default_vat_rate&.to_f
   end
 
+  attribute :client_locale do |invoice|
+    invoice.client.locale
+  end
+
   class List
     include Alba::Resource
 

@@ -68,7 +68,8 @@
     "copyLink": "Kopírovat odkaz",
     "remove": "Odebrat",
     "finalize": "Dokončit",
-    "finalizing": "Dokončuji..."
+    "finalizing": "Dokončuji...",
+    "hoursShort": "hod"
   },
   "pages": {
     "home": {
@@ -179,7 +180,9 @@
         "paymentTerms": "Platební podmínky",
         "paymentTermsPlaceholder": "např. Splatnost 30 dní",
         "bankDetails": "Bankovní údaje",
-        "bankDetailsPlaceholder": "Název banky, číslo účtu, směrový kód..."
+        "bankDetailsPlaceholder": "Název banky, číslo účtu, směrový kód...",
+        "locale": "Jazyk dokumentů",
+        "localeDescription": "Jazyk používaný pro faktury a sdílené reporty pro tohoto klienta"
       },
       "table": {
         "name": "Název",
@@ -332,21 +335,40 @@
         "removeDescription": "Tím odeberete položku z faktury. Přidružené záznamy práce budou odpojeny a stanou se opět nevyfakturovanými."
       },
       "preview": {
+        "invoice": "Faktura",
         "taxDocument": "Daňový doklad",
         "supplier": "Dodavatel",
         "customer": "Odběratel",
+        "yourCompany": "Vaše firma",
         "regNo": "IČO",
         "vatId": "DIČ",
         "bankAccount": "Bankovní účet",
         "iban": "IBAN",
         "swift": "SWIFT/BIC",
-        "reference": "Reference",
-        "paymentMethod": "Způsob platby",
+        "reference": "Variabilní symbol",
+        "paymentMethod": "Způsob úhrady",
         "bankTransfer": "Bankovní převod",
         "issuedOn": "Datum vystavení",
         "dueOn": "Datum splatnosti",
-        "dateOfTaxableSupply": "Datum zdanitelného plnění",
+        "dateOfTaxableSupply": "Datum uskutečnění plnění",
+        "vat": "DPH",
+        "unitPrice": "Jednotková cena",
+        "totalWithoutVat": "Celkem bez DPH",
+        "hoursUnit": "hod",
+        "notes": "Poznámky",
+        "qrAlt": "QR kód pro platbu",
         "scanToPay": "Naskenujte pro platbu"
+      },
+      "newPreview": {
+        "title": "Náhled",
+        "hours": "hodin",
+        "hoursShort": "hod",
+        "noEntries": "Pro vybrané období nebyly nalezeny žádné nevyfakturované záznamy.",
+        "selectClient": "Vyberte klienta a období pro zobrazení náhledu.",
+        "noDescription": "Bez popisu",
+        "subtotal": "Mezisoučet",
+        "vat": "DPH",
+        "total": "Celkem"
       },
       "finalize": {
         "title": "Dokončit fakturu?",

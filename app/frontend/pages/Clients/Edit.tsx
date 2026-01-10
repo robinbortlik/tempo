@@ -18,6 +18,7 @@ interface Client {
   hourly_rate: number | null;
   currency: string | null;
   default_vat_rate: number | null;
+  locale: string;
 }
 
 interface PageProps {

@@ -129,7 +129,7 @@ RSpec.describe "Clients", type: :system do
       expect(page).to have_content("Acme Corporation")
       expect(page).to have_content("contact@acme.com")
       expect(page).to have_button("Edit")
-      expect(page).to have_button("Create Invoice")
+      expect(page).to have_button("New Invoice")
     end
 
     it "displays the share link section" do

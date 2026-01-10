@@ -1,4 +1,33 @@
 en:
+  invoices:
+    pdf:
+      invoice: "Invoice"
+      tax_document: "Tax Document"
+      supplier: "Supplier"
+      customer: "Customer"
+      your_company: "Your Company"
+      reg_no: "Reg. no."
+      vat_id: "VAT ID"
+      bank_account: "Bank account"
+      iban: "IBAN"
+      swift_bic: "SWIFT/BIC"
+      reference: "Reference"
+      payment_method: "Payment method"
+      bank_transfer: "Bank transfer"
+      issued_on: "Issued on"
+      due_on: "Due on"
+      not_set: "Not set"
+      date_of_supply: "Date of taxable supply"
+      vat: "VAT"
+      unit_price: "Unit Price"
+      total_wo_vat: "Total w/o VAT"
+      hours_unit: "hrs"
+      notes: "Notes"
+      qr_alt: "Payment QR Code"
+      scan_to_pay: "Scan to pay"
+  date:
+    formats:
+      invoice: "%b %d, %Y"
   flash:
     settings:
       saved: "Settings saved successfully."

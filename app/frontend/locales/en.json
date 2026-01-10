@@ -68,7 +68,8 @@
     "copyLink": "Copy Link",
     "remove": "Remove",
     "finalize": "Finalize",
-    "finalizing": "Finalizing..."
+    "finalizing": "Finalizing...",
+    "hoursShort": "hrs"
   },
   "pages": {
     "home": {
@@ -179,7 +180,9 @@
         "paymentTerms": "Payment Terms",
         "paymentTermsPlaceholder": "e.g., Net 30 days",
         "bankDetails": "Bank Details",
-        "bankDetailsPlaceholder": "Bank name, account number, routing..."
+        "bankDetailsPlaceholder": "Bank name, account number, routing...",
+        "locale": "Document Language",
+        "localeDescription": "Language used for invoices and shared reports for this client"
       },
       "table": {
         "name": "Name",
@@ -330,9 +333,11 @@
         "removeDescription": "This will remove the line item from the invoice. Associated work entries will be unlinked and become unbilled again."
       },
       "preview": {
+        "invoice": "Invoice",
         "taxDocument": "Tax Document",
         "supplier": "Supplier",
         "customer": "Customer",
+        "yourCompany": "Your Company",
         "regNo": "Reg. no.",
         "vatId": "VAT ID",
         "bankAccount": "Bank account",
@@ -344,7 +349,24 @@
         "issuedOn": "Issued on",
         "dueOn": "Due on",
         "dateOfTaxableSupply": "Date of taxable supply",
+        "vat": "VAT",
+        "unitPrice": "Unit Price",
+        "totalWithoutVat": "Total w/o VAT",
+        "hoursUnit": "hrs",
+        "notes": "Notes",
+        "qrAlt": "Payment QR Code",
         "scanToPay": "Scan to pay"
+      },
+      "newPreview": {
+        "title": "Preview",
+        "hours": "hours",
+        "hoursShort": "hrs",
+        "noEntries": "No unbilled work entries found for the selected period.",
+        "selectClient": "Select a client and date range to preview entries.",
+        "noDescription": "No description",
+        "subtotal": "Subtotal",
+        "vat": "VAT",
+        "total": "Total"
       },
       "finalize": {
         "title": "Finalize Invoice?",

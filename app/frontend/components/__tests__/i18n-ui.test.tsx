@@ -146,7 +146,7 @@ describe("Task Group 3: UI Component Translations", () => {
       expect(languageSelector).toBeInTheDocument();
 
       // Current language should be English
-      expect((languageSelector as HTMLSelectElement).value).toBe("en");
+      expect(languageSelector).toHaveValue("en");
 
       // Change language to Czech
       fireEvent.change(languageSelector, { target: { value: "cs" } });

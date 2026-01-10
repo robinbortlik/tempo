@@ -96,7 +96,8 @@ class ClientsController < ApplicationController
       :payment_terms,
       :hourly_rate,
       :currency,
-      :default_vat_rate
+      :default_vat_rate,
+      :locale
     )
   end
 

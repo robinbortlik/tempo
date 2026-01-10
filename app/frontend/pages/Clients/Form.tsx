@@ -1,6 +1,7 @@
 import { useForm, router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { supportedLocales } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ interface Client {
   hourly_rate: number | null;
   currency: string | null;
   default_vat_rate: number | null;
+  locale: string;
 }
 
 interface ClientFormProps {
@@ -46,6 +48,7 @@ export default function ClientForm({
     hourly_rate: client.hourly_rate?.toString() || "",
     currency: client.currency || "",
     default_vat_rate: client.default_vat_rate?.toString() || "",
+    locale: client.locale || "en",
   });
 
   const validateEmail = (email: string): boolean => {
@@ -87,6 +90,7 @@ export default function ClientForm({
         default_vat_rate: data.default_vat_rate
           ? parseFloat(data.default_vat_rate)
           : null,
+        locale: data.locale,
       },
     };
 
@@ -215,6 +219,30 @@ export default function ClientForm({
                 className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono"
               />
             </div>
+          </div>
+
+          <div>
+            <Label
+              htmlFor="locale"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              {t("pages.clients.form.locale")}
+            </Label>
+            <select
+              id="locale"
+              value={data.locale}
+              onChange={(e) => setData("locale", e.target.value)}
+              className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            >
+              {supportedLocales.map((loc) => (
+                <option key={loc} value={loc}>
+                  {t(`languages.${loc}`)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-sm text-stone-500">
+              {t("pages.clients.form.localeDescription")}
+            </p>
           </div>
         </div>
       </div>
