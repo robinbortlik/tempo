@@ -17,9 +17,11 @@
     "loading": "Loading...",
     "saveChanges": "Save Changes",
     "saving": "Saving...",
+    "deleting": "Deleting...",
     "noResults": "No results found",
     "actions": "Actions",
     "back": "Back",
+    "backTo": "Back to {{name}}",
     "create": "Create",
     "update": "Update",
     "view": "View",
@@ -30,7 +32,9 @@
     "search": "Search",
     "filter": "Filter",
     "reset": "Reset",
+    "clear": "Clear",
     "total": "Total",
+    "subtotal": "Subtotal",
     "hours": "Hours",
     "rate": "Rate",
     "amount": "Amount",
@@ -41,7 +45,30 @@
     "phone": "Phone",
     "address": "Address",
     "notes": "Notes",
-    "description": "Description"
+    "notesOptional": "Notes (optional)",
+    "description": "Description",
+    "noDescription": "No description",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "required": "required",
+    "optional": "optional",
+    "selectCurrency": "Select currency",
+    "currencies": {
+      "EUR": "EUR - Euro",
+      "USD": "USD - US Dollar",
+      "GBP": "GBP - British Pound",
+      "CZK": "CZK - Czech Koruna"
+    },
+    "updating": "Updating...",
+    "adding": "Adding...",
+    "creating": "Creating...",
+    "regenerating": "Regenerating...",
+    "copied": "Copied!",
+    "copyLink": "Copy Link",
+    "remove": "Remove",
+    "finalize": "Finalize",
+    "finalizing": "Finalizing..."
   },
   "pages": {
     "login": {
@@ -95,7 +122,9 @@
         "unbilledTotal": "Unbilled Total",
         "pendingInvoices": "Pending Invoices",
         "thisWeek": "This Week",
-        "thisMonth": "This Month"
+        "thisMonth": "This Month",
+        "totalHours": "Total Hours",
+        "totalInvoiced": "Total Invoiced"
       },
       "recentActivity": "Recent Activity",
       "quickActions": "Quick Actions",
@@ -107,23 +136,62 @@
       "newClient": "New Client",
       "editClient": "Edit Client",
       "clientDetails": "Client Details",
+      "billingDetails": "Billing Details",
+      "contactDetails": "Contact Details",
       "noClients": "No clients yet",
       "noClientsDescription": "Get started by adding your first client.",
       "addFirstClient": "Add Client",
+      "addNewClient": "Add a new client to your account",
+      "updateInfo": "Update client information",
+      "createClient": "Create Client",
       "form": {
         "name": "Client Name",
         "email": "Email",
         "phone": "Phone",
         "address": "Address",
         "currency": "Currency",
-        "notes": "Notes"
+        "notes": "Notes",
+        "contactPerson": "Contact Person",
+        "hourlyRate": "Hourly Rate",
+        "defaultVatRate": "Default VAT Rate",
+        "paymentTerms": "Payment Terms",
+        "paymentTermsPlaceholder": "e.g., Net 30 days",
+        "bankDetails": "Bank Details",
+        "bankDetailsPlaceholder": "Bank name, account number, routing..."
       },
       "table": {
         "name": "Name",
+        "client": "Client",
         "email": "Email",
         "projects": "Projects",
-        "unbilledHours": "Unbilled Hours"
-      }
+        "unbilledHours": "Unbilled Hours",
+        "unbilled": "Unbilled"
+      },
+      "sharing": {
+        "title": "Report Sharing",
+        "portalTitle": "Client Report Portal",
+        "regenerateLink": "Regenerate Link",
+        "regenerateTitle": "Regenerate share link?",
+        "regenerateDescription": "This will create a new share link. The old link will stop working immediately and anyone with the old link will no longer be able to access reports.",
+        "enabled": "Report sharing enabled",
+        "disabled": "Report sharing disabled"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "projects": "Projects",
+        "settings": "Settings"
+      },
+      "noProjects": "No projects yet.",
+      "addProject": "Add Project",
+      "dangerZone": "Danger Zone",
+      "deleteWarning": "Deleting a client is permanent and cannot be undone. Clients with projects or invoices cannot be deleted.",
+      "deleteClient": "Delete Client",
+      "deleteTitle": "Delete {{name}}?",
+      "deleteDescription": "This action cannot be undone. This will permanently delete the client and all associated data.",
+      "unbilledLabel": "{{hours}}h unbilled",
+      "noUnbilledHours": "No unbilled hours",
+      "customRate": "(custom rate)",
+      "invalidEmail": "Please enter a valid email address"
     },
     "projects": {
       "title": "Projects",
@@ -131,15 +199,23 @@
       "newProject": "New Project",
       "editProject": "Edit Project",
       "projectDetails": "Project Details",
+      "billingDetails": "Billing Details",
       "noProjects": "No projects yet",
       "noProjectsDescription": "Get started by adding your first project.",
       "addFirstProject": "Add Project",
+      "addNewProject": "Add a new project to track time",
+      "updateInfo": "Update project information",
+      "createProject": "Create Project",
       "form": {
         "name": "Project Name",
+        "namePlaceholder": "e.g., Website Redesign",
         "client": "Client",
+        "selectClient": "Select a client",
         "hourlyRate": "Hourly Rate",
+        "customHourlyRate": "Custom Hourly Rate",
         "description": "Description",
-        "active": "Active"
+        "active": "Active",
+        "activeProject": "Active project"
       },
       "table": {
         "name": "Name",
@@ -151,7 +227,19 @@
       "status": {
         "active": "Active",
         "inactive": "Inactive"
-      }
+      },
+      "workEntries": "Work Entries",
+      "noWorkEntries": "No work entries yet.",
+      "rateHelp": {
+        "custom": "Custom rate will be used instead of client rate ({{rate}})",
+        "default": "Leave empty to use the client's default rate ({{rate}})",
+        "selectFirst": "Select a client first to see their default rate"
+      },
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "deleteTitle": "Delete {{name}}?",
+      "deleteDescription": "This action cannot be undone. This will permanently delete the project. Projects with invoiced time entries cannot be deleted.",
+      "customRate": "(custom rate)"
     },
     "invoices": {
       "title": "Invoices",
@@ -162,17 +250,26 @@
       "noInvoices": "No invoices yet",
       "noInvoicesDescription": "Create your first invoice from unbilled time entries.",
       "createFirstInvoice": "Create Invoice",
+      "createFromUnbilled": "Create a new invoice from unbilled work entries",
+      "createDraft": "Create Draft",
       "form": {
         "client": "Client",
+        "selectClient": "Select a client...",
+        "hasUnbilledEntries": "(has unbilled entries)",
         "periodStart": "Period Start",
         "periodEnd": "Period End",
+        "from": "From",
+        "to": "To",
         "issueDate": "Issue Date",
         "dueDate": "Due Date",
-        "notes": "Notes"
+        "notes": "Notes",
+        "notesPlaceholder": "Additional notes for the invoice..."
       },
       "table": {
         "number": "Number",
+        "invoice": "Invoice",
         "client": "Client",
+        "period": "Period",
         "issueDate": "Issue Date",
         "dueDate": "Due Date",
         "amount": "Amount",
@@ -189,29 +286,82 @@
       "actions": {
         "markAsSent": "Mark as Sent",
         "markAsPaid": "Mark as Paid",
+        "markAsFinal": "Mark as Final",
         "downloadPdf": "Download PDF",
         "sendEmail": "Send Email"
+      },
+      "lineItems": {
+        "title": "Invoice Line Items",
+        "addLineItem": "Add Line Item",
+        "description": "Description",
+        "hours": "Hours",
+        "rate": "Rate",
+        "unitPrice": "Unit Price",
+        "vat": "VAT",
+        "amount": "Amount",
+        "totalWithoutVat": "Total w/o VAT",
+        "removeTitle": "Remove Line Item?",
+        "removeDescription": "This will remove the line item from the invoice. Associated work entries will be unlinked and become unbilled again."
+      },
+      "preview": {
+        "taxDocument": "Tax Document",
+        "supplier": "Supplier",
+        "customer": "Customer",
+        "regNo": "Reg. no.",
+        "vatId": "VAT ID",
+        "bankAccount": "Bank account",
+        "iban": "IBAN",
+        "swift": "SWIFT/BIC",
+        "reference": "Reference",
+        "paymentMethod": "Payment method",
+        "bankTransfer": "Bank transfer",
+        "issuedOn": "Issued on",
+        "dueOn": "Due on",
+        "dateOfTaxableSupply": "Date of taxable supply",
+        "scanToPay": "Scan to pay"
+      },
+      "finalize": {
+        "title": "Finalize Invoice?",
+        "description": "This will mark the invoice as final and lock all associated work entries as invoiced. This action cannot be undone."
+      },
+      "delete": {
+        "title": "Delete Invoice {{number}}?",
+        "description": "This will permanently delete the invoice and unassociate all work entries. The work entries will become unbilled again."
+      },
+      "errors": {
+        "selectClient": "Please select a client",
+        "noEntries": "No unbilled entries found for the selected period"
       }
     },
     "workEntries": {
       "title": "Work Entries",
+      "logWork": "Log Work",
       "subtitle": "Log and manage your work",
+      "trackTime": "Track your time and fixed-price work",
       "newEntry": "New Entry",
       "editEntry": "Edit Entry",
       "noEntries": "No work entries yet",
       "noEntriesDescription": "Start logging your work to track billable hours.",
+      "noEntriesFound": "No work entries found. Add your first entry above.",
       "addFirstEntry": "Add Entry",
+      "addEntry": "Add Entry",
+      "quickEntry": "Quick Entry",
       "form": {
         "project": "Project",
+        "selectProject": "Select a project",
         "date": "Date",
         "hours": "Hours",
-        "description": "Description"
+        "amount": "Amount",
+        "description": "Description",
+        "descriptionPlaceholder": "What did you work on?",
+        "hourlyRate": "Hourly Rate"
       },
       "table": {
         "date": "Date",
         "project": "Project",
         "description": "Description",
         "hours": "Hours",
+        "amount": "Amount",
         "status": "Status"
       },
       "status": {
@@ -219,16 +369,56 @@
         "invoiced": "Invoiced"
       },
       "filter": {
+        "client": "Client",
+        "project": "Project",
+        "entryType": "Entry Type",
         "allProjects": "All Projects",
         "allClients": "All Clients",
         "allStatuses": "All Statuses",
+        "allTypes": "All Types",
         "year": "Year",
-        "month": "Month"
-      }
+        "month": "Month",
+        "time": "Time",
+        "fixed": "Fixed"
+      },
+      "rate": "Rate: {{symbol}}{{rate}}/h"
     }
   },
   "languages": {
     "en": "English",
-    "cs": "Cestina"
+    "cs": "Čeština"
+  },
+  "months": {
+    "jan": "Jan",
+    "feb": "Feb",
+    "mar": "Mar",
+    "apr": "Apr",
+    "may": "May",
+    "jun": "Jun",
+    "jul": "Jul",
+    "aug": "Aug",
+    "sep": "Sep",
+    "oct": "Oct",
+    "nov": "Nov",
+    "dec": "Dec"
+  },
+  "validation": {
+    "invalidEmail": "Please enter a valid email address"
+  },
+  "toast": {
+    "linkCopied": "Link copied to clipboard",
+    "failedToCopy": "Failed to copy link",
+    "sharingEnabled": "Report sharing enabled",
+    "sharingDisabled": "Report sharing disabled",
+    "failedToUpdateSharing": "Failed to update sharing status",
+    "shareLinkRegenerated": "Share link regenerated",
+    "failedToRegenerateLink": "Failed to regenerate share link",
+    "lineItemUpdated": "Line item updated",
+    "failedToUpdateLineItem": "Failed to update line item",
+    "lineItemRemoved": "Line item removed",
+    "failedToRemoveLineItem": "Failed to remove line item",
+    "failedToReorderLineItem": "Failed to reorder line item",
+    "lineItemAdded": "Line item added",
+    "failedToAddLineItem": "Failed to add line item"
   }
 }

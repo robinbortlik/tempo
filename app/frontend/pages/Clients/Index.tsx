@@ -68,10 +68,10 @@ export default function ClientsIndex() {
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">{t("pages.clients.title")}</h1>
-            <p className="text-stone-500 mt-1">
-              {t("pages.clients.subtitle")}
-            </p>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.clients.title")}
+            </h1>
+            <p className="text-stone-500 mt-1">{t("pages.clients.subtitle")}</p>
           </div>
           <Button
             onClick={() => router.visit("/clients/new")}
@@ -98,7 +98,9 @@ export default function ClientsIndex() {
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
-                <TableHead className="px-6 py-4 font-medium">{t("pages.clients.table.name")}</TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.clients.table.name")}
+                </TableHead>
                 <TableHead className="px-6 py-4 font-medium">
                   {t("pages.clients.form.currency")}
                 </TableHead>

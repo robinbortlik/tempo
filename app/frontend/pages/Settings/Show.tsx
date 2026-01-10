@@ -159,7 +159,9 @@ export default function SettingsShow() {
 
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-stone-900">{t("pages.settings.title")}</h1>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            {t("pages.settings.title")}
+          </h1>
           <p className="text-stone-500 mt-1">{t("pages.settings.subtitle")}</p>
         </div>
 
@@ -180,7 +182,9 @@ export default function SettingsShow() {
                 <select
                   id="language"
                   value={currentLocale}
-                  onChange={(e) => handleLocaleChange(e.target.value as SupportedLocale)}
+                  onChange={(e) =>
+                    handleLocaleChange(e.target.value as SupportedLocale)
+                  }
                   className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
                   data-testid="language-selector"
                 >
@@ -314,7 +318,9 @@ export default function SettingsShow() {
 
           {/* Bank Details Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-6">{t("pages.settings.bankDetails.title")}</h3>
+            <h3 className="font-semibold text-stone-900 mb-6">
+              {t("pages.settings.bankDetails.title")}
+            </h3>
             <div className="space-y-4">
               <div>
                 <Label
@@ -410,7 +416,9 @@ export default function SettingsShow() {
                   maxLength={500}
                   value={data.invoice_message}
                   onChange={(e) => setData("invoice_message", e.target.value)}
-                  placeholder={t("pages.settings.invoiceSettings.invoiceMessagePlaceholder")}
+                  placeholder={t(
+                    "pages.settings.invoiceSettings.invoiceMessagePlaceholder"
+                  )}
                   className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
                 />
                 <p className="mt-1 text-sm text-stone-500">
@@ -422,7 +430,9 @@ export default function SettingsShow() {
 
           {/* Company Logo Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-6">{t("pages.settings.companyLogo.title")}</h3>
+            <h3 className="font-semibold text-stone-900 mb-6">
+              {t("pages.settings.companyLogo.title")}
+            </h3>
             <div className="flex items-start gap-6">
               <div className="w-24 h-24 bg-stone-100 rounded-xl flex items-center justify-center overflow-hidden">
                 {logoPreview ? (

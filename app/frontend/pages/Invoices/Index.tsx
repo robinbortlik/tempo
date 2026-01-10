@@ -67,7 +67,13 @@ function formatPeriod(start: string, end: string): string {
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
 }
 
-function StatusBadge({ status, label }: { status: "draft" | "final"; label: string }) {
+function StatusBadge({
+  status,
+  label,
+}: {
+  status: "draft" | "final";
+  label: string;
+}) {
   if (status === "draft") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
@@ -127,8 +133,12 @@ export default function InvoicesIndex() {
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">{t("pages.invoices.title")}</h1>
-            <p className="text-stone-500 mt-1">{t("pages.invoices.subtitle")}</p>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.invoices.title")}
+            </h1>
+            <p className="text-stone-500 mt-1">
+              {t("pages.invoices.subtitle")}
+            </p>
           </div>
           <Button
             onClick={() => router.visit("/invoices/new")}
@@ -183,10 +193,18 @@ export default function InvoicesIndex() {
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
-                <TableHead className="px-6 py-4 font-medium">{t("pages.invoices.table.number")}</TableHead>
-                <TableHead className="px-6 py-4 font-medium">{t("pages.invoices.table.client")}</TableHead>
-                <TableHead className="px-6 py-4 font-medium">{t("pages.invoices.form.periodStart")}</TableHead>
-                <TableHead className="px-6 py-4 font-medium">{t("common.status")}</TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.invoices.table.number")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.invoices.table.client")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.invoices.form.periodStart")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("common.status")}
+                </TableHead>
                 <TableHead className="px-6 py-4 font-medium text-right">
                   {t("common.amount")}
                 </TableHead>

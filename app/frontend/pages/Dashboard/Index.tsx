@@ -90,7 +90,9 @@ export default function DashboardIndex() {
 
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-stone-900">{t("pages.dashboard.title")}</h1>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            {t("pages.dashboard.title")}
+          </h1>
           <p className="text-stone-500 mt-1">{t("pages.dashboard.subtitle")}</p>
         </div>
 
@@ -119,7 +121,11 @@ export default function DashboardIndex() {
             }
           />
 
-          <StatCard title={t("pages.dashboard.stats.unbilledTotal")} value="" highlight>
+          <StatCard
+            title={t("pages.dashboard.stats.unbilledTotal")}
+            value=""
+            highlight
+          >
             {unbilledAmountEntries.length === 0 ? (
               <p className="text-3xl font-semibold tabular-nums text-amber-900">
                 -

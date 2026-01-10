@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import ProjectForm from "./Form";
@@ -33,6 +34,7 @@ interface PageProps {
 }
 
 export default function EditProject() {
+  const { t } = useTranslation();
   const { project, clients, flash } = usePage<PageProps>().props;
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function EditProject() {
 
   return (
     <>
-      <Head title={`Edit ${project.name}`} />
+      <Head title={`${t("common.edit")} ${project.name}`} />
       <Toaster position="top-right" />
 
       <div className="p-8">
@@ -68,12 +70,14 @@ export default function EditProject() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to {project.name}
+            {t("common.backTo", { name: project.name })}
           </button>
           <h1 className="text-2xl font-semibold text-stone-900">
-            Edit Project
+            {t("pages.projects.editProject")}
           </h1>
-          <p className="text-stone-500 mt-1">Update project information</p>
+          <p className="text-stone-500 mt-1">
+            {t("pages.projects.updateInfo")}
+          </p>
         </div>
 
         <ProjectForm project={project} clients={clients} isEdit />

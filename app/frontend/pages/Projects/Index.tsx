@@ -68,7 +68,9 @@ export default function ProjectsIndex() {
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">{t("pages.projects.title")}</h1>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.projects.title")}
+            </h1>
             <p className="text-stone-500 mt-1">
               {t("pages.projects.subtitle")}
             </p>

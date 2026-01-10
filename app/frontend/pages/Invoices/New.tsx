@@ -1,5 +1,6 @@
 import { Head, usePage, router, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -58,6 +59,7 @@ function getDefaultDates() {
 }
 
 export default function NewInvoice() {
+  const { t } = useTranslation();
   const { clients, preview, flash } = usePage<PageProps>().props;
   const defaults = getDefaultDates();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -140,13 +142,13 @@ export default function NewInvoice() {
     e.preventDefault();
 
     if (!data.client_id) {
-      toast.error("Please select a client");
+      toast.error(t("pages.invoices.errors.selectClient"));
       return;
     }
 
     const lineItems = preview?.line_items || [];
     if (lineItems.length === 0) {
-      toast.error("No unbilled entries found for the selected period");
+      toast.error(t("pages.invoices.errors.noEntries"));
       return;
     }
 
@@ -177,7 +179,7 @@ export default function NewInvoice() {
 
   return (
     <>
-      <Head title="New Invoice" />
+      <Head title={t("pages.invoices.newInvoice")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
@@ -199,11 +201,13 @@ export default function NewInvoice() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Invoices
+            {t("common.backTo", { name: t("pages.invoices.title") })}
           </button>
-          <h1 className="text-2xl font-semibold text-stone-900">New Invoice</h1>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            {t("pages.invoices.newInvoice")}
+          </h1>
           <p className="text-stone-500 mt-1">
-            Create a new invoice from unbilled work entries
+            {t("pages.invoices.createFromUnbilled")}
           </p>
         </div>
 
@@ -213,7 +217,7 @@ export default function NewInvoice() {
             <div className="col-span-1 space-y-6">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <h3 className="font-semibold text-stone-900 mb-4">
-                  Invoice Details
+                  {t("pages.invoices.invoiceDetails")}
                 </h3>
                 <div className="space-y-4">
                   <div>
@@ -221,7 +225,7 @@ export default function NewInvoice() {
                       htmlFor="client_id"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Client
+                      {t("pages.invoices.form.client")}
                     </Label>
                     <select
                       id="client_id"
@@ -229,12 +233,14 @@ export default function NewInvoice() {
                       onChange={handleClientChange}
                       className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
                     >
-                      <option value="">Select a client...</option>
+                      <option value="">
+                        {t("pages.invoices.form.selectClient")}
+                      </option>
                       {clients.map((client) => (
                         <option key={client.id} value={client.id}>
                           {client.name}
                           {client.has_unbilled_entries
-                            ? " (has unbilled entries)"
+                            ? ` ${t("pages.invoices.form.hasUnbilledEntries")}`
                             : ""}
                         </option>
                       ))}
@@ -247,7 +253,7 @@ export default function NewInvoice() {
                         htmlFor="period_start"
                         className="block text-sm font-medium text-stone-600 mb-1.5"
                       >
-                        From
+                        {t("pages.invoices.form.from")}
                       </Label>
                       <input
                         type="date"
@@ -262,7 +268,7 @@ export default function NewInvoice() {
                         htmlFor="period_end"
                         className="block text-sm font-medium text-stone-600 mb-1.5"
                       >
-                        To
+                        {t("pages.invoices.form.to")}
                       </Label>
                       <input
                         type="date"
@@ -279,7 +285,7 @@ export default function NewInvoice() {
                       htmlFor="issue_date"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Issue Date
+                      {t("pages.invoices.form.issueDate")}
                     </Label>
                     <input
                       type="date"
@@ -295,7 +301,7 @@ export default function NewInvoice() {
                       htmlFor="due_date"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Due Date
+                      {t("pages.invoices.form.dueDate")}
                     </Label>
                     <input
                       type="date"
@@ -311,12 +317,12 @@ export default function NewInvoice() {
                       htmlFor="notes"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Notes (optional)
+                      {t("common.notesOptional")}
                     </Label>
                     <Textarea
                       id="notes"
                       rows={3}
-                      placeholder="Additional notes for the invoice..."
+                      placeholder={t("pages.invoices.form.notesPlaceholder")}
                       value={data.notes}
                       onChange={(e) => setData("notes", e.target.value)}
                       className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400"
@@ -331,7 +337,9 @@ export default function NewInvoice() {
                   disabled={isSubmitting || !data.client_id || !hasLineItems}
                   className="flex-1 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "Creating..." : "Create Draft"}
+                  {isSubmitting
+                    ? t("common.creating")
+                    : t("pages.invoices.createDraft")}
                 </Button>
               </div>
             </div>

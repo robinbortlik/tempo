@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import ProjectForm from "./Form";
@@ -31,6 +32,7 @@ interface PageProps {
 }
 
 export default function NewProject() {
+  const { t } = useTranslation();
   const { project, clients, preselected_client_id, flash } =
     usePage<PageProps>().props;
 
@@ -45,7 +47,7 @@ export default function NewProject() {
 
   return (
     <>
-      <Head title="New Project" />
+      <Head title={t("pages.projects.newProject")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
@@ -67,10 +69,14 @@ export default function NewProject() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Projects
+            {t("common.backTo", { name: t("pages.projects.title") })}
           </button>
-          <h1 className="text-2xl font-semibold text-stone-900">New Project</h1>
-          <p className="text-stone-500 mt-1">Add a new project to track time</p>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            {t("pages.projects.newProject")}
+          </h1>
+          <p className="text-stone-500 mt-1">
+            {t("pages.projects.addNewProject")}
+          </p>
         </div>
 
         <ProjectForm

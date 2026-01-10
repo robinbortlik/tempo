@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -72,6 +73,7 @@ function getInitials(name: string): string {
 }
 
 export default function ClientShow() {
+  const { t } = useTranslation();
   const { client, projects, stats, flash } = usePage<PageProps>().props;
   const [isDeleting, setIsDeleting] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
@@ -94,10 +96,10 @@ export default function ClientShow() {
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopySuccess(true);
-      toast.success("Link copied to clipboard");
+      toast.success(t("toast.linkCopied"));
       setTimeout(() => setCopySuccess(false), 2000);
     } catch {
-      toast.error("Failed to copy link");
+      toast.error(t("toast.failedToCopy"));
     }
   };
 
@@ -119,13 +121,13 @@ export default function ClientShow() {
         onSuccess: () => {
           toast.success(
             !previousValue
-              ? "Report sharing enabled"
-              : "Report sharing disabled"
+              ? t("toast.sharingEnabled")
+              : t("toast.sharingDisabled")
           );
         },
         onError: () => {
           setSharingEnabled(previousValue);
-          toast.error("Failed to update sharing status");
+          toast.error(t("toast.failedToUpdateSharing"));
         },
       }
     );
@@ -141,11 +143,11 @@ export default function ClientShow() {
         onSuccess: (page) => {
           const newClient = (page.props as unknown as PageProps).client;
           setShareToken(newClient.share_token);
-          toast.success("Share link regenerated");
+          toast.success(t("toast.shareLinkRegenerated"));
           setIsRegenerating(false);
         },
         onError: () => {
-          toast.error("Failed to regenerate share link");
+          toast.error(t("toast.failedToRegenerateLink"));
           setIsRegenerating(false);
         },
       }
@@ -177,7 +179,7 @@ export default function ClientShow() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Clients
+            {t("common.backTo", { name: t("pages.clients.title") })}
           </button>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
@@ -200,7 +202,7 @@ export default function ClientShow() {
                 onClick={() => router.visit(`/clients/${client.id}/edit`)}
                 className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
               >
-                Edit
+                {t("common.edit")}
               </Button>
               <Button
                 onClick={() =>
@@ -208,7 +210,7 @@ export default function ClientShow() {
                 }
                 className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
               >
-                Create Invoice
+                {t("pages.invoices.newInvoice")}
               </Button>
             </div>
           </div>
@@ -227,7 +229,7 @@ export default function ClientShow() {
                 htmlFor="sharing-toggle"
                 className="text-sm font-medium text-amber-800 cursor-pointer"
               >
-                Report Sharing
+                {t("pages.clients.sharing.title")}
               </Label>
             </div>
             <div className="h-6 w-px bg-amber-300" />
@@ -249,7 +251,7 @@ export default function ClientShow() {
               </svg>
               <div>
                 <p className="text-sm font-medium text-amber-800">
-                  Client Report Portal
+                  {t("pages.clients.sharing.portalTitle")}
                 </p>
                 <p className="text-sm text-amber-600 font-mono truncate max-w-md">
                   {shareUrl}
@@ -267,7 +269,7 @@ export default function ClientShow() {
                 onClick={handleCopyLink}
                 className="px-3 py-1.5 bg-amber-600 text-white text-sm font-medium rounded-lg hover:bg-amber-700 transition-colors"
               >
-                {copySuccess ? "Copied!" : "Copy Link"}
+                {copySuccess ? t("common.copied") : t("common.copyLink")}
               </Button>
             </div>
             <AlertDialog>
@@ -276,26 +278,28 @@ export default function ClientShow() {
                   variant="outline"
                   className="px-3 py-1.5 border border-amber-300 text-amber-700 text-sm font-medium rounded-lg hover:bg-amber-100 transition-colors"
                 >
-                  Regenerate Link
+                  {t("pages.clients.sharing.regenerateLink")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Regenerate share link?</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    {t("pages.clients.sharing.regenerateTitle")}
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will create a new share link. The old link will stop
-                    working immediately and anyone with the old link will no
-                    longer be able to access reports.
+                    {t("pages.clients.sharing.regenerateDescription")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleRegenerateToken}
                     disabled={isRegenerating}
                     className="bg-amber-600 hover:bg-amber-700"
                   >
-                    {isRegenerating ? "Regenerating..." : "Regenerate"}
+                    {isRegenerating
+                      ? t("common.regenerating")
+                      : t("pages.clients.sharing.regenerateLink")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -310,19 +314,19 @@ export default function ClientShow() {
               value="overview"
               className="px-1 py-3 text-sm font-medium text-stone-500 hover:text-stone-700 border-b-2 border-transparent data-[state=active]:text-stone-900 data-[state=active]:border-stone-900 rounded-none bg-transparent"
             >
-              Overview
+              {t("pages.clients.tabs.overview")}
             </TabsTrigger>
             <TabsTrigger
               value="projects"
               className="px-1 py-3 text-sm font-medium text-stone-500 hover:text-stone-700 border-b-2 border-transparent data-[state=active]:text-stone-900 data-[state=active]:border-stone-900 rounded-none bg-transparent ml-6"
             >
-              Projects ({projects.length})
+              {t("pages.clients.tabs.projects")} ({projects.length})
             </TabsTrigger>
             <TabsTrigger
               value="settings"
               className="px-1 py-3 text-sm font-medium text-stone-500 hover:text-stone-700 border-b-2 border-transparent data-[state=active]:text-stone-900 data-[state=active]:border-stone-900 rounded-none bg-transparent ml-6"
             >
-              Settings
+              {t("pages.clients.tabs.settings")}
             </TabsTrigger>
           </TabsList>
 
@@ -331,25 +335,33 @@ export default function ClientShow() {
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4 mb-8">
               <div className="bg-white rounded-xl border border-stone-200 p-4">
-                <p className="text-sm text-stone-500">Total Hours</p>
+                <p className="text-sm text-stone-500">
+                  {t("pages.dashboard.stats.totalHours")}
+                </p>
                 <p className="text-2xl font-semibold text-stone-900 tabular-nums mt-1">
                   {Math.round(stats.total_hours)}
                 </p>
               </div>
               <div className="bg-white rounded-xl border border-stone-200 p-4">
-                <p className="text-sm text-stone-500">Total Invoiced</p>
+                <p className="text-sm text-stone-500">
+                  {t("pages.dashboard.stats.totalInvoiced")}
+                </p>
                 <p className="text-2xl font-semibold text-stone-900 tabular-nums mt-1">
                   {formatCurrency(stats.total_invoiced, client.currency)}
                 </p>
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                <p className="text-sm text-amber-700">Unbilled Hours</p>
+                <p className="text-sm text-amber-700">
+                  {t("pages.dashboard.stats.unbilledHours")}
+                </p>
                 <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">
                   {Math.round(stats.unbilled_hours)}
                 </p>
               </div>
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                <p className="text-sm text-amber-700">Unbilled Amount</p>
+                <p className="text-sm text-amber-700">
+                  {t("pages.dashboard.stats.unbilledAmount")}
+                </p>
                 <p className="text-2xl font-semibold text-amber-900 tabular-nums mt-1">
                   {formatCurrency(stats.unbilled_amount, client.currency)}
                 </p>
@@ -360,12 +372,14 @@ export default function ClientShow() {
             <div className="grid grid-cols-2 gap-6">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <h3 className="font-semibold text-stone-900 mb-4">
-                  Contact Details
+                  {t("pages.clients.contactDetails")}
                 </h3>
                 <dl className="space-y-3 text-sm">
                   {client.contact_person && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Contact Person</dt>
+                      <dt className="text-stone-500">
+                        {t("pages.clients.form.contactPerson")}
+                      </dt>
                       <dd className="text-stone-900">
                         {client.contact_person}
                       </dd>
@@ -373,13 +387,13 @@ export default function ClientShow() {
                   )}
                   {client.email && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Email</dt>
+                      <dt className="text-stone-500">{t("common.email")}</dt>
                       <dd className="text-stone-900">{client.email}</dd>
                     </div>
                   )}
                   {client.address && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Address</dt>
+                      <dt className="text-stone-500">{t("common.address")}</dt>
                       <dd className="text-stone-900 text-right whitespace-pre-line">
                         {client.address}
                       </dd>
@@ -389,12 +403,14 @@ export default function ClientShow() {
               </div>
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <h3 className="font-semibold text-stone-900 mb-4">
-                  Billing Details
+                  {t("pages.clients.billingDetails")}
                 </h3>
                 <dl className="space-y-3 text-sm">
                   {client.vat_id && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">VAT ID</dt>
+                      <dt className="text-stone-500">
+                        {t("pages.settings.businessDetails.vatId")}
+                      </dt>
                       <dd className="text-stone-900 font-mono">
                         {client.vat_id}
                       </dd>
@@ -402,7 +418,11 @@ export default function ClientShow() {
                   )}
                   {client.company_registration && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Company Registration</dt>
+                      <dt className="text-stone-500">
+                        {t(
+                          "pages.settings.businessDetails.companyRegistration"
+                        )}
+                      </dt>
                       <dd className="text-stone-900 font-mono">
                         {client.company_registration}
                       </dd>
@@ -410,7 +430,9 @@ export default function ClientShow() {
                   )}
                   {client.bank_details && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Bank Details</dt>
+                      <dt className="text-stone-500">
+                        {t("pages.clients.form.bankDetails")}
+                      </dt>
                       <dd className="text-stone-900 text-right whitespace-pre-line">
                         {client.bank_details}
                       </dd>
@@ -418,19 +440,25 @@ export default function ClientShow() {
                   )}
                   {client.payment_terms && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Payment Terms</dt>
+                      <dt className="text-stone-500">
+                        {t("pages.clients.form.paymentTerms")}
+                      </dt>
                       <dd className="text-stone-900">{client.payment_terms}</dd>
                     </div>
                   )}
                   {client.currency && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Currency</dt>
+                      <dt className="text-stone-500">
+                        {t("pages.clients.form.currency")}
+                      </dt>
                       <dd className="text-stone-900">{client.currency}</dd>
                     </div>
                   )}
                   {client.hourly_rate && (
                     <div className="flex justify-between">
-                      <dt className="text-stone-500">Hourly Rate</dt>
+                      <dt className="text-stone-500">
+                        {t("pages.clients.form.hourlyRate")}
+                      </dt>
                       <dd className="text-stone-900 font-medium">
                         {formatRate(client.hourly_rate, client.currency)}
                       </dd>
@@ -445,14 +473,16 @@ export default function ClientShow() {
           <TabsContent value="projects" className="mt-0">
             {projects.length === 0 ? (
               <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
-                <p className="text-stone-500 mb-4">No projects yet.</p>
+                <p className="text-stone-500 mb-4">
+                  {t("pages.clients.noProjects")}
+                </p>
                 <Button
                   onClick={() =>
                     router.visit(`/projects/new?client_id=${client.id}`)
                   }
                   className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
                 >
-                  Add Project
+                  {t("pages.clients.addProject")}
                 </Button>
               </div>
             ) : (
@@ -477,18 +507,21 @@ export default function ClientShow() {
                               project.effective_hourly_rate,
                               client.currency
                             )}
-                            {project.hourly_rate && " (custom rate)"}
+                            {project.hourly_rate &&
+                              ` ${t("pages.clients.customRate")}`}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
                         {project.unbilled_hours > 0 ? (
                           <span className="text-amber-600 font-medium tabular-nums">
-                            {Math.round(project.unbilled_hours)}h unbilled
+                            {t("pages.clients.unbilledLabel", {
+                              hours: Math.round(project.unbilled_hours),
+                            })}
                           </span>
                         ) : (
                           <span className="text-stone-400">
-                            No unbilled hours
+                            {t("pages.clients.noUnbilledHours")}
                           </span>
                         )}
                       </div>
@@ -502,10 +535,11 @@ export default function ClientShow() {
           {/* Settings Tab */}
           <TabsContent value="settings" className="mt-0">
             <div className="bg-white rounded-xl border border-stone-200 p-6">
-              <h3 className="font-semibold text-stone-900 mb-4">Danger Zone</h3>
+              <h3 className="font-semibold text-stone-900 mb-4">
+                {t("pages.clients.dangerZone")}
+              </h3>
               <p className="text-sm text-stone-500 mb-4">
-                Deleting a client is permanent and cannot be undone. Clients
-                with projects or invoices cannot be deleted.
+                {t("pages.clients.deleteWarning")}
               </p>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -513,25 +547,26 @@ export default function ClientShow() {
                     variant="outline"
                     className="px-4 py-2 border border-red-200 text-red-600 font-medium rounded-lg hover:bg-red-50 transition-colors"
                   >
-                    Delete Client
+                    {t("pages.clients.deleteClient")}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Delete {client.name}?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                      {t("pages.clients.deleteTitle", { name: client.name })}
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      the client and all associated data.
+                      {t("pages.clients.deleteDescription")}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDelete}
                       disabled={isDeleting}
                       className="bg-red-600 hover:bg-red-700"
                     >
-                      {isDeleting ? "Deleting..." : "Delete"}
+                      {isDeleting ? t("common.deleting") : t("common.delete")}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

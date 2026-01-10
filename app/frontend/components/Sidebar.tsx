@@ -181,7 +181,11 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
 
   const mainNavItems = [
     { href: "/", icon: <DashboardIcon />, label: t("nav.dashboard") },
-    { href: "/work_entries", icon: <TimeEntriesIcon />, label: t("nav.logWork") },
+    {
+      href: "/work_entries",
+      icon: <TimeEntriesIcon />,
+      label: t("nav.logWork"),
+    },
     { href: "/clients", icon: <ClientsIcon />, label: t("nav.clients") },
     { href: "/projects", icon: <ProjectsIcon />, label: t("nav.projects") },
     { href: "/invoices", icon: <InvoicesIcon />, label: t("nav.invoices") },

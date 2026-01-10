@@ -153,7 +153,9 @@ export default function WorkEntriesIndex() {
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">{t("pages.workEntries.title")}</h1>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.workEntries.title")}
+            </h1>
             <p className="text-stone-500 mt-1">
               {t("pages.workEntries.subtitle")}
             </p>
@@ -164,7 +166,12 @@ export default function WorkEntriesIndex() {
 
         {/* Data Section: Filters + Summary + Entries */}
         <div className="border border-stone-200 rounded-xl overflow-hidden">
-          <FilterBar clients={clients} projects={projects} filters={filters} period={period} />
+          <FilterBar
+            clients={clients}
+            projects={projects}
+            filters={filters}
+            period={period}
+          />
 
           {/* Summary Stats Bar */}
           {totalEntries > 0 && (

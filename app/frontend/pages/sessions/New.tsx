@@ -122,7 +122,9 @@ export default function Login() {
                   disabled={processing}
                   className="w-full py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
                 >
-                  {processing ? t("pages.login.signingIn") : t("pages.login.submitButton")}
+                  {processing
+                    ? t("pages.login.signingIn")
+                    : t("pages.login.submitButton")}
                 </Button>
               </form>
             </CardContent>

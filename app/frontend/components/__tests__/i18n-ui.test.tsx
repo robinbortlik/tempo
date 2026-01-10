@@ -20,8 +20,17 @@ vi.mock("@inertiajs/react", () => {
       },
     })),
     router: mockRouter,
-    Link: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
-      <a href={props.href as string} data-testid={props["data-testid"] as string}>
+    Link: ({
+      children,
+      ...props
+    }: {
+      children: React.ReactNode;
+      [key: string]: unknown;
+    }) => (
+      <a
+        href={props.href as string}
+        data-testid={props["data-testid"] as string}
+      >
         {children}
       </a>
     ),
@@ -128,9 +137,7 @@ describe("Task Group 3: UI Component Translations", () => {
       } as unknown as ReturnType<typeof usePage>);
 
       // Import Settings page dynamically
-      const { default: SettingsShow } = await import(
-        "@/pages/Settings/Show"
-      );
+      const { default: SettingsShow } = await import("@/pages/Settings/Show");
 
       render(<SettingsShow />);
 
@@ -180,9 +187,8 @@ describe("Task Group 3: UI Component Translations", () => {
         },
       } as unknown as ReturnType<typeof usePage>);
 
-      const { default: DashboardIndex } = await import(
-        "@/pages/Dashboard/Index"
-      );
+      const { default: DashboardIndex } =
+        await import("@/pages/Dashboard/Index");
 
       // Test English
       await i18n.changeLanguage("en");
