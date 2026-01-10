@@ -19,7 +19,7 @@ interface Project {
   effective_hourly_rate: number;
   active: boolean;
   unbilled_hours: number;
-  time_entries_count: number;
+  work_entries_count: number;
 }
 
 interface ClientGroup {
@@ -176,7 +176,7 @@ export default function ProjectsIndex() {
                         </div>
                         <div className="text-sm text-stone-500">
                           {t("pages.projects.entryCount", {
-                            count: project.time_entries_count,
+                            count: project.work_entries_count,
                           })}
                         </div>
                         <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
