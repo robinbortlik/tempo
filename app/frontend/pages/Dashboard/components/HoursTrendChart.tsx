@@ -6,6 +6,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface MonthlyHours {
@@ -18,16 +19,19 @@ interface HoursTrendChartProps {
 }
 
 export function HoursTrendChart({ data }: HoursTrendChartProps) {
+  const { t } = useTranslation();
   const hasData = data.some((d) => d.hours > 0);
 
   if (!hasData) {
     return (
       <Card className="bg-white border-stone-200">
         <CardHeader>
-          <CardTitle className="text-stone-900">Hours Trend</CardTitle>
+          <CardTitle className="text-stone-900">
+            {t("pages.dashboard.charts.hoursTrend")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="h-48 flex items-center justify-center text-stone-500">
-          No time entries recorded yet
+          {t("pages.dashboard.charts.noTimeEntries")}
         </CardContent>
       </Card>
     );
@@ -36,7 +40,9 @@ export function HoursTrendChart({ data }: HoursTrendChartProps) {
   return (
     <Card className="bg-white border-stone-200">
       <CardHeader>
-        <CardTitle className="text-stone-900">Hours Trend</CardTitle>
+        <CardTitle className="text-stone-900">
+          {t("pages.dashboard.charts.hoursTrend")}
+        </CardTitle>
       </CardHeader>
       <CardContent className="h-48">
         <ResponsiveContainer width="100%" height="100%">
@@ -60,7 +66,7 @@ export function HoursTrendChart({ data }: HoursTrendChartProps) {
             <Tooltip
               formatter={(value) => [
                 `${Math.round(Number(value))} hrs`,
-                "Hours",
+                t("common.hours"),
               ]}
               contentStyle={{
                 backgroundColor: "#fafaf9",

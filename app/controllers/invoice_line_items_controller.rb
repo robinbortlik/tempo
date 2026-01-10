@@ -9,7 +9,7 @@ class InvoiceLineItemsController < ApplicationController
 
     if @line_item.save
       @invoice.calculate_totals!
-      redirect_to invoice_path(@invoice), notice: "Line item added successfully."
+      redirect_to invoice_path(@invoice), notice: t("flash.invoice_line_items.added")
     else
       redirect_to invoice_path(@invoice), alert: @line_item.errors.full_messages.to_sentence
     end
@@ -18,7 +18,7 @@ class InvoiceLineItemsController < ApplicationController
   def update
     if @line_item.update(line_item_params)
       @invoice.calculate_totals!
-      redirect_to invoice_path(@invoice), notice: "Line item updated successfully."
+      redirect_to invoice_path(@invoice), notice: t("flash.invoice_line_items.updated")
     else
       redirect_to invoice_path(@invoice), alert: @line_item.errors.full_messages.to_sentence
     end
@@ -33,7 +33,7 @@ class InvoiceLineItemsController < ApplicationController
     @line_item.destroy
     @invoice.calculate_totals!
 
-    redirect_to invoice_path(@invoice), notice: "Line item removed successfully."
+    redirect_to invoice_path(@invoice), notice: t("flash.invoice_line_items.removed")
   end
 
   def reorder
@@ -49,7 +49,7 @@ class InvoiceLineItemsController < ApplicationController
 
   def ensure_draft_invoice
     unless @invoice.draft?
-      redirect_to invoice_path(@invoice), alert: "Cannot modify a finalized invoice."
+      redirect_to invoice_path(@invoice), alert: t("flash.invoices.cannot_modify_finalized")
     end
   end
 

@@ -1,5 +1,6 @@
 import { Head, usePage, router, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -79,6 +80,7 @@ function formatPeriod(start: string, end: string): string {
 }
 
 export default function EditInvoice() {
+  const { t } = useTranslation();
   const { invoice, line_items, flash } = usePage<PageProps>().props;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
@@ -135,10 +137,10 @@ export default function EditInvoice() {
         preserveScroll: true,
         onSuccess: () => {
           setEditingLineItemId(null);
-          toast.success("Line item updated");
+          toast.success(t("toast.lineItemUpdated"));
         },
         onError: () => {
-          toast.error("Failed to update line item");
+          toast.error(t("toast.failedToUpdateLineItem"));
         },
       }
     );
@@ -155,10 +157,10 @@ export default function EditInvoice() {
       preserveScroll: true,
       onSuccess: () => {
         setLineItemToRemove(null);
-        toast.success("Line item removed");
+        toast.success(t("toast.lineItemRemoved"));
       },
       onError: () => {
-        toast.error("Failed to remove line item");
+        toast.error(t("toast.failedToRemoveLineItem"));
       },
     });
   };
@@ -170,7 +172,7 @@ export default function EditInvoice() {
       {
         preserveScroll: true,
         onError: () => {
-          toast.error("Failed to reorder line item");
+          toast.error(t("toast.failedToReorderLineItem"));
         },
       }
     );
@@ -192,10 +194,10 @@ export default function EditInvoice() {
         preserveScroll: true,
         onSuccess: () => {
           setIsAddingLineItem(false);
-          toast.success("Line item added");
+          toast.success(t("toast.lineItemAdded"));
         },
         onError: () => {
-          toast.error("Failed to add line item");
+          toast.error(t("toast.failedToAddLineItem"));
         },
       }
     );
@@ -208,7 +210,7 @@ export default function EditInvoice() {
 
   return (
     <>
-      <Head title={`Edit Invoice ${invoice.number}`} />
+      <Head title={`${t("common.edit")} ${invoice.number}`} />
       <Toaster position="top-right" />
 
       <div className="p-8">
@@ -230,10 +232,10 @@ export default function EditInvoice() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Invoice {invoice.number}
+            {t("common.backTo", { name: invoice.number })}
           </button>
           <h1 className="text-2xl font-semibold text-stone-900">
-            Edit Invoice {invoice.number}
+            {t("pages.invoices.editInvoice")} {invoice.number}
           </h1>
           <p className="text-stone-500 mt-1">
             {invoice.client_name} {"\u00B7"}{" "}
@@ -247,12 +249,12 @@ export default function EditInvoice() {
             <div className="col-span-1 space-y-6">
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <h3 className="font-semibold text-stone-900 mb-4">
-                  Invoice Details
+                  {t("pages.invoices.invoiceDetails")}
                 </h3>
                 <div className="space-y-4">
                   <div>
                     <Label className="block text-sm font-medium text-stone-600 mb-1.5">
-                      Client
+                      {t("pages.invoices.form.client")}
                     </Label>
                     <p className="px-3 py-2.5 bg-stone-100 border border-stone-200 rounded-lg text-stone-700">
                       {invoice.client_name}
@@ -262,7 +264,7 @@ export default function EditInvoice() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label className="block text-sm font-medium text-stone-600 mb-1.5">
-                        Period Start
+                        {t("pages.invoices.form.periodStart")}
                       </Label>
                       <p className="px-3 py-2.5 bg-stone-100 border border-stone-200 rounded-lg text-stone-700">
                         {invoice.period_start}
@@ -270,7 +272,7 @@ export default function EditInvoice() {
                     </div>
                     <div>
                       <Label className="block text-sm font-medium text-stone-600 mb-1.5">
-                        Period End
+                        {t("pages.invoices.form.periodEnd")}
                       </Label>
                       <p className="px-3 py-2.5 bg-stone-100 border border-stone-200 rounded-lg text-stone-700">
                         {invoice.period_end}
@@ -283,7 +285,7 @@ export default function EditInvoice() {
                       htmlFor="issue_date"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Issue Date
+                      {t("pages.invoices.form.issueDate")}
                     </Label>
                     <input
                       type="date"
@@ -299,7 +301,7 @@ export default function EditInvoice() {
                       htmlFor="due_date"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Due Date
+                      {t("pages.invoices.form.dueDate")}
                     </Label>
                     <input
                       type="date"
@@ -315,12 +317,12 @@ export default function EditInvoice() {
                       htmlFor="notes"
                       className="block text-sm font-medium text-stone-600 mb-1.5"
                     >
-                      Notes (optional)
+                      {t("common.notesOptional")}
                     </Label>
                     <Textarea
                       id="notes"
                       rows={3}
-                      placeholder="Additional notes for the invoice..."
+                      placeholder={t("pages.invoices.form.notesPlaceholder")}
                       value={data.notes}
                       onChange={(e) => setData("notes", e.target.value)}
                       className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400"
@@ -336,14 +338,14 @@ export default function EditInvoice() {
                   onClick={() => router.visit(`/invoices/${invoice.id}`)}
                   className="flex-1 py-2.5 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isSubmitting}
                   className="flex-1 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "Saving..." : "Save Changes"}
+                  {isSubmitting ? t("common.saving") : t("common.saveChanges")}
                 </Button>
               </div>
             </div>
@@ -353,13 +355,13 @@ export default function EditInvoice() {
               <div className="bg-white rounded-xl border border-stone-200 p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-stone-900">
-                    Invoice Line Items
+                    {t("pages.invoices.lineItems.title")}
                   </h3>
                   <div className="text-sm text-stone-500">
                     {calculatedTotalHours > 0 && (
                       <>
-                        {formatHours(calculatedTotalHours)} hours{" "}
-                        {"\u00B7"}{" "}
+                        {formatHours(calculatedTotalHours)}{" "}
+                        {t("common.hours").toLowerCase()} {"\u00B7"}{" "}
                       </>
                     )}
                     {formatCurrency(invoice.grand_total, invoice.currency)}
@@ -371,18 +373,20 @@ export default function EditInvoice() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left text-stone-500 bg-stone-50 border-b border-stone-200">
-                        <th className="px-4 py-3 font-medium">Description</th>
+                        <th className="px-4 py-3 font-medium">
+                          {t("pages.invoices.lineItems.description")}
+                        </th>
                         <th className="px-4 py-3 font-medium text-right w-16">
-                          Hours
+                          {t("pages.invoices.lineItems.hours")}
                         </th>
                         <th className="px-4 py-3 font-medium text-right w-24">
-                          Rate
+                          {t("pages.invoices.lineItems.rate")}
                         </th>
                         <th className="px-4 py-3 font-medium text-right w-16">
-                          VAT
+                          {t("pages.invoices.lineItems.vat")}
                         </th>
                         <th className="px-4 py-3 font-medium text-right w-28">
-                          Amount
+                          {t("pages.invoices.lineItems.amount")}
                         </th>
                         <th className="px-4 py-3 font-medium w-36"></th>
                       </tr>
@@ -475,7 +479,7 @@ export default function EditInvoice() {
                           d="M12 4v16m8-8H4"
                         />
                       </svg>
-                      Add Line Item
+                      {t("pages.invoices.lineItems.addLineItem")}
                     </Button>
                   </div>
                 )}
@@ -486,7 +490,7 @@ export default function EditInvoice() {
                     <dl className="w-64 space-y-2 text-sm">
                       <div className="flex justify-between">
                         <dt className="text-stone-500">
-                          Subtotal
+                          {t("common.subtotal")}
                           {calculatedTotalHours > 0 &&
                             ` (${formatHours(calculatedTotalHours)} hrs)`}
                         </dt>
@@ -503,7 +507,8 @@ export default function EditInvoice() {
                         .map(([rate, amount]) => (
                           <div key={rate} className="flex justify-between">
                             <dt className="text-stone-500">
-                              VAT {parseFloat(rate)}%
+                              {t("pages.invoices.lineItems.vat")}{" "}
+                              {parseFloat(rate)}%
                             </dt>
                             <dd className="tabular-nums text-stone-900">
                               {formatCurrency(amount, invoice.currency)}
@@ -517,14 +522,18 @@ export default function EditInvoice() {
                         1 &&
                         Object.keys(invoice.vat_totals_by_rate)[0] === "0") ? (
                         <div className="flex justify-between">
-                          <dt className="text-stone-500">VAT (0%)</dt>
+                          <dt className="text-stone-500">
+                            {t("pages.invoices.lineItems.vat")} (0%)
+                          </dt>
                           <dd className="tabular-nums text-stone-900">
                             {formatCurrency(0, invoice.currency)}
                           </dd>
                         </div>
                       ) : null}
                       <div className="flex justify-between pt-2 border-t border-stone-200">
-                        <dt className="font-semibold text-stone-900">Total</dt>
+                        <dt className="font-semibold text-stone-900">
+                          {t("common.total")}
+                        </dt>
                         <dd className="tabular-nums font-semibold text-stone-900">
                           {formatCurrency(
                             invoice.grand_total,
@@ -548,21 +557,22 @@ export default function EditInvoice() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove Line Item?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t("pages.invoices.lineItems.removeTitle")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove the line item from the invoice. Associated work
-              entries will be unlinked and become unbilled again.
+              {t("pages.invoices.lineItems.removeDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setLineItemToRemove(null)}>
-              Cancel
+              {t("common.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmRemoveLineItem}
               className="bg-red-600 hover:bg-red-700"
             >
-              Remove
+              {t("common.remove")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

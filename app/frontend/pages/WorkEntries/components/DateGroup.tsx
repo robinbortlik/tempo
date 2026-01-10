@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import i18n from "@/lib/i18n";
 import { formatCurrency } from "@/components/CurrencyDisplay";
 import WorkEntryRow from "./WorkEntryRow";
 
@@ -49,9 +51,11 @@ interface DateGroupProps {
   onDeleteEntry: (id: number) => void;
 }
 
-function formatDateDisplay(dateStr: string): string {
+function formatDateDisplay(dateStr: string, locale: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
+  const localeMap: Record<string, string> = { en: "en-US", cs: "cs-CZ" };
+  const dateLocale = localeMap[locale] || "en-US";
+  return date.toLocaleDateString(dateLocale, {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -67,8 +71,15 @@ export default function DateGroup({
   projects,
   onDeleteEntry,
 }: DateGroupProps) {
+  const { t } = useTranslation();
   const isToday = group.formatted_date === "Today";
   const isYesterday = group.formatted_date === "Yesterday";
+
+  const getDisplayDate = () => {
+    if (isToday) return t("common.today");
+    if (isYesterday) return t("common.yesterday");
+    return group.formatted_date;
+  };
 
   return (
     <div className="group/dategroup">
@@ -81,10 +92,10 @@ export default function DateGroup({
               ${isToday ? "bg-stone-900 text-white" : isYesterday ? "bg-stone-300 text-stone-700" : "bg-stone-200 text-stone-600"}
             `}
           >
-            {group.formatted_date}
+            {getDisplayDate()}
           </span>
           <span className="text-xs text-stone-400">
-            {formatDateDisplay(group.date)}
+            {formatDateDisplay(group.date, i18n.language)}
           </span>
         </div>
 
@@ -93,7 +104,8 @@ export default function DateGroup({
         {/* Day summary */}
         <div className="flex items-center gap-2 text-xs tabular-nums">
           <span className="font-semibold text-stone-700">
-            {formatTotalHours(group.total_hours)}h
+            {formatTotalHours(group.total_hours)}
+            {t("common.hoursShort")}
           </span>
           {group.total_amount > 0 && (
             <>

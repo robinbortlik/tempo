@@ -1,5 +1,6 @@
 import { useForm, router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,6 +34,7 @@ export default function ProjectForm({
   preselectedClientId,
   isEdit = false,
 }: ProjectFormProps) {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const initialClientId = project.client_id || preselectedClientId || null;
@@ -77,14 +79,16 @@ export default function ProjectForm({
     <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
       {/* Project Details Section */}
       <div className="bg-white rounded-xl border border-stone-200 p-6">
-        <h3 className="font-semibold text-stone-900 mb-6">Project Details</h3>
+        <h3 className="font-semibold text-stone-900 mb-6">
+          {t("pages.projects.projectDetails")}
+        </h3>
         <div className="space-y-4">
           <div>
             <Label
               htmlFor="name"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Project Name *
+              {t("pages.projects.form.name")} *
             </Label>
             <Input
               id="name"
@@ -93,7 +97,7 @@ export default function ProjectForm({
               onChange={(e) => setData("name", e.target.value)}
               required
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
-              placeholder="e.g., Website Redesign"
+              placeholder={t("pages.projects.form.namePlaceholder")}
             />
           </div>
 
@@ -102,7 +106,7 @@ export default function ProjectForm({
               htmlFor="client_id"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Client *
+              {t("pages.projects.form.client")} *
             </Label>
             <select
               id="client_id"
@@ -111,7 +115,7 @@ export default function ProjectForm({
               required
               className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
             >
-              <option value="">Select a client</option>
+              <option value="">{t("pages.projects.form.selectClient")}</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
@@ -134,7 +138,7 @@ export default function ProjectForm({
               htmlFor="active"
               className="text-sm font-medium text-stone-600"
             >
-              Active project
+              {t("pages.projects.form.activeProject")}
             </Label>
           </div>
         </div>
@@ -142,14 +146,16 @@ export default function ProjectForm({
 
       {/* Billing Details Section */}
       <div className="bg-white rounded-xl border border-stone-200 p-6">
-        <h3 className="font-semibold text-stone-900 mb-6">Billing Details</h3>
+        <h3 className="font-semibold text-stone-900 mb-6">
+          {t("pages.projects.billingDetails")}
+        </h3>
         <div className="space-y-4">
           <div>
             <Label
               htmlFor="hourly_rate"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Custom Hourly Rate
+              {t("pages.projects.form.customHourlyRate")}
             </Label>
             <Input
               id="hourly_rate"
@@ -161,36 +167,28 @@ export default function ProjectForm({
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 tabular-nums"
               placeholder={
                 selectedClient?.hourly_rate
-                  ? `Client rate: ${formatRate(selectedClient.hourly_rate, selectedClient.currency, false)}`
-                  : "Enter rate"
+                  ? `${t("pages.projects.form.client")}: ${formatRate(selectedClient.hourly_rate, selectedClient.currency, false)}`
+                  : ""
               }
             />
             <p className="mt-1.5 text-sm text-stone-500">
-              {selectedClient ? (
-                data.hourly_rate ? (
-                  <>
-                    Custom rate will be used instead of client rate (
-                    {formatRate(
-                      selectedClient.hourly_rate,
-                      selectedClient.currency,
-                      false
-                    )}
-                    )
-                  </>
-                ) : (
-                  <>
-                    Leave empty to use the client&apos;s default rate (
-                    {formatRate(
-                      selectedClient.hourly_rate,
-                      selectedClient.currency,
-                      false
-                    )}
-                    )
-                  </>
-                )
-              ) : (
-                "Select a client first to see their default rate"
-              )}
+              {selectedClient
+                ? data.hourly_rate
+                  ? t("pages.projects.rateHelp.custom", {
+                      rate: formatRate(
+                        selectedClient.hourly_rate,
+                        selectedClient.currency,
+                        false
+                      ),
+                    })
+                  : t("pages.projects.rateHelp.default", {
+                      rate: formatRate(
+                        selectedClient.hourly_rate,
+                        selectedClient.currency,
+                        false
+                      ),
+                    })
+                : t("pages.projects.rateHelp.selectFirst")}
             </p>
           </div>
         </div>
@@ -208,7 +206,7 @@ export default function ProjectForm({
           }
           className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
         >
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button
           type="submit"
@@ -216,10 +214,10 @@ export default function ProjectForm({
           className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
         >
           {isSubmitting
-            ? "Saving..."
+            ? t("common.saving")
             : isEdit
-              ? "Save Changes"
-              : "Create Project"}
+              ? t("common.saveChanges")
+              : t("pages.projects.createProject")}
         </Button>
       </div>
     </form>

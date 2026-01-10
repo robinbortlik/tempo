@@ -1,5 +1,7 @@
 import { useForm, router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { supportedLocales } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +20,7 @@ interface Client {
   hourly_rate: number | null;
   currency: string | null;
   default_vat_rate: number | null;
+  locale: string;
 }
 
 interface ClientFormProps {
@@ -29,6 +32,7 @@ export default function ClientForm({
   client,
   isEdit = false,
 }: ClientFormProps) {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
 
@@ -44,6 +48,7 @@ export default function ClientForm({
     hourly_rate: client.hourly_rate?.toString() || "",
     currency: client.currency || "",
     default_vat_rate: client.default_vat_rate?.toString() || "",
+    locale: client.locale || "en",
   });
 
   const validateEmail = (email: string): boolean => {
@@ -56,7 +61,7 @@ export default function ClientForm({
     const value = e.target.value;
     setData("email", value);
     if (value && !validateEmail(value)) {
-      setEmailError("Please enter a valid email address");
+      setEmailError(t("pages.clients.invalidEmail"));
     } else {
       setEmailError(null);
     }
@@ -66,7 +71,7 @@ export default function ClientForm({
     e.preventDefault();
 
     if (data.email && !validateEmail(data.email)) {
-      setEmailError("Please enter a valid email address");
+      setEmailError(t("pages.clients.invalidEmail"));
       return;
     }
 
@@ -85,6 +90,7 @@ export default function ClientForm({
         default_vat_rate: data.default_vat_rate
           ? parseFloat(data.default_vat_rate)
           : null,
+        locale: data.locale,
       },
     };
 
@@ -105,7 +111,9 @@ export default function ClientForm({
     <form onSubmit={handleSubmit} className="max-w-2xl space-y-8">
       {/* Client Details Section */}
       <div className="bg-white rounded-xl border border-stone-200 p-6">
-        <h3 className="font-semibold text-stone-900 mb-6">Client Details</h3>
+        <h3 className="font-semibold text-stone-900 mb-6">
+          {t("pages.clients.clientDetails")}
+        </h3>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -113,7 +121,7 @@ export default function ClientForm({
                 htmlFor="name"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                Client Name *
+                {t("pages.clients.form.name")} *
               </Label>
               <Input
                 id="name"
@@ -129,7 +137,7 @@ export default function ClientForm({
                 htmlFor="email"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                Email
+                {t("pages.clients.form.email")}
               </Label>
               <Input
                 id="email"
@@ -151,7 +159,7 @@ export default function ClientForm({
               htmlFor="contact_person"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Contact Person
+              {t("pages.clients.form.contactPerson")}
             </Label>
             <Input
               id="contact_person"
@@ -167,7 +175,7 @@ export default function ClientForm({
               htmlFor="address"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Address
+              {t("pages.clients.form.address")}
             </Label>
             <Textarea
               id="address"
@@ -184,7 +192,7 @@ export default function ClientForm({
                 htmlFor="vat_id"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                VAT ID
+                {t("pages.settings.businessDetails.vatId")}
               </Label>
               <Input
                 id="vat_id"
@@ -199,7 +207,7 @@ export default function ClientForm({
                 htmlFor="company_registration"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                Company Registration
+                {t("pages.settings.businessDetails.companyRegistration")}
               </Label>
               <Input
                 id="company_registration"
@@ -212,12 +220,38 @@ export default function ClientForm({
               />
             </div>
           </div>
+
+          <div>
+            <Label
+              htmlFor="locale"
+              className="block text-sm font-medium text-stone-600 mb-1.5"
+            >
+              {t("pages.clients.form.locale")}
+            </Label>
+            <select
+              id="locale"
+              value={data.locale}
+              onChange={(e) => setData("locale", e.target.value)}
+              className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+            >
+              {supportedLocales.map((loc) => (
+                <option key={loc} value={loc}>
+                  {t(`languages.${loc}`)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-sm text-stone-500">
+              {t("pages.clients.form.localeDescription")}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Billing Details Section */}
       <div className="bg-white rounded-xl border border-stone-200 p-6">
-        <h3 className="font-semibold text-stone-900 mb-6">Billing Details</h3>
+        <h3 className="font-semibold text-stone-900 mb-6">
+          {t("pages.clients.billingDetails")}
+        </h3>
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-4">
             <div>
@@ -225,7 +259,7 @@ export default function ClientForm({
                 htmlFor="currency"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                Currency
+                {t("pages.clients.form.currency")}
               </Label>
               <select
                 id="currency"
@@ -233,11 +267,11 @@ export default function ClientForm({
                 onChange={(e) => setData("currency", e.target.value)}
                 className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
               >
-                <option value="">Select currency</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="USD">USD - US Dollar</option>
-                <option value="GBP">GBP - British Pound</option>
-                <option value="CZK">CZK - Czech Koruna</option>
+                <option value="">{t("common.selectCurrency")}</option>
+                <option value="EUR">{t("common.currencies.EUR")}</option>
+                <option value="USD">{t("common.currencies.USD")}</option>
+                <option value="GBP">{t("common.currencies.GBP")}</option>
+                <option value="CZK">{t("common.currencies.CZK")}</option>
               </select>
             </div>
             <div>
@@ -245,7 +279,7 @@ export default function ClientForm({
                 htmlFor="hourly_rate"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                Hourly Rate
+                {t("pages.clients.form.hourlyRate")}
               </Label>
               <Input
                 id="hourly_rate"
@@ -262,7 +296,7 @@ export default function ClientForm({
                 htmlFor="default_vat_rate"
                 className="block text-sm font-medium text-stone-600 mb-1.5"
               >
-                Default VAT Rate
+                {t("pages.clients.form.defaultVatRate")}
               </Label>
               <div className="relative">
                 <Input
@@ -287,14 +321,14 @@ export default function ClientForm({
               htmlFor="payment_terms"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Payment Terms
+              {t("pages.clients.form.paymentTerms")}
             </Label>
             <Input
               id="payment_terms"
               type="text"
               value={data.payment_terms}
               onChange={(e) => setData("payment_terms", e.target.value)}
-              placeholder="e.g., Net 30 days"
+              placeholder={t("pages.clients.form.paymentTermsPlaceholder")}
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400"
             />
           </div>
@@ -304,14 +338,14 @@ export default function ClientForm({
               htmlFor="bank_details"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Bank Details
+              {t("pages.clients.form.bankDetails")}
             </Label>
             <Textarea
               id="bank_details"
               rows={3}
               value={data.bank_details}
               onChange={(e) => setData("bank_details", e.target.value)}
-              placeholder="Bank name, account number, routing..."
+              placeholder={t("pages.clients.form.bankDetailsPlaceholder")}
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400"
             />
           </div>
@@ -330,7 +364,7 @@ export default function ClientForm({
           }
           className="px-4 py-2 border border-stone-200 text-stone-700 font-medium rounded-lg hover:bg-stone-50 transition-colors"
         >
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button
           type="submit"
@@ -338,10 +372,10 @@ export default function ClientForm({
           className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
         >
           {isSubmitting
-            ? "Saving..."
+            ? t("common.saving")
             : isEdit
-              ? "Save Changes"
-              : "Create Client"}
+              ? t("common.saveChanges")
+              : t("pages.clients.createClient")}
         </Button>
       </div>
     </form>

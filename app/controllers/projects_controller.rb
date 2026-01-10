@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     if @project.save
-      redirect_to project_path(@project), notice: "Project created successfully."
+      redirect_to project_path(@project), notice: t("flash.projects.created")
     else
       redirect_to new_project_path(client_id: params[:project][:client_id]), alert: @project.errors.full_messages.to_sentence
     end
@@ -50,7 +50,7 @@ class ProjectsController < ApplicationController
 
   def update
     if @project.update(project_params)
-      redirect_to project_path(@project), notice: "Project updated successfully."
+      redirect_to project_path(@project), notice: t("flash.projects.updated")
     else
       redirect_to edit_project_path(@project), alert: @project.errors.full_messages.to_sentence
     end
@@ -61,7 +61,7 @@ class ProjectsController < ApplicationController
 
     if result[:valid]
       @project.destroy
-      redirect_to projects_path, notice: "Project deleted successfully."
+      redirect_to projects_path, notice: t("flash.projects.deleted")
     else
       redirect_to project_path(@project), alert: result[:error]
     end
@@ -69,7 +69,7 @@ class ProjectsController < ApplicationController
 
   def toggle_active
     @project.update(active: !@project.active)
-    redirect_to project_path(@project), notice: "Project #{@project.active? ? 'activated' : 'deactivated'} successfully."
+    redirect_to project_path(@project), notice: t(@project.active? ? "flash.projects.activated" : "flash.projects.deactivated")
   end
 
   private

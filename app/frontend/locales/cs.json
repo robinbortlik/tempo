@@ -1,0 +1,508 @@
+{
+  "nav": {
+    "dashboard": "Přehled",
+    "logWork": "Zaznamenat práci",
+    "clients": "Klienti",
+    "projects": "Projekty",
+    "invoices": "Faktury",
+    "settings": "Nastavení",
+    "signOut": "Odhlásit se"
+  },
+  "common": {
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "add": "Přidat",
+    "loading": "Načítání...",
+    "saveChanges": "Uložit změny",
+    "saving": "Ukládání...",
+    "deleting": "Mazání...",
+    "noResults": "Žádné výsledky",
+    "actions": "Akce",
+    "back": "Zpět",
+    "backTo": "Zpět na {{name}}",
+    "create": "Vytvořit",
+    "update": "Aktualizovat",
+    "view": "Zobrazit",
+    "close": "Zavřít",
+    "confirm": "Potvrdit",
+    "yes": "Ano",
+    "no": "Ne",
+    "search": "Hledat",
+    "filter": "Filtr",
+    "reset": "Obnovit",
+    "clear": "Vymazat",
+    "total": "Celkem",
+    "subtotal": "Mezisoučet",
+    "hours": "Hodiny",
+    "rate": "Sazba",
+    "amount": "Částka",
+    "status": "Stav",
+    "date": "Datum",
+    "name": "Název",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "address": "Adresa",
+    "notes": "Poznámky",
+    "notesOptional": "Poznámky (volitelné)",
+    "description": "Popis",
+    "noDescription": "Bez popisu",
+    "all": "Vše",
+    "active": "Aktivní",
+    "inactive": "Neaktivní",
+    "required": "povinné",
+    "optional": "volitelné",
+    "selectCurrency": "Vyberte měnu",
+    "currencies": {
+      "EUR": "EUR - Euro",
+      "USD": "USD - Americký dolar",
+      "GBP": "GBP - Britská libra",
+      "CZK": "CZK - Česká koruna"
+    },
+    "updating": "Aktualizuji...",
+    "adding": "Přidávám...",
+    "creating": "Vytvářím...",
+    "regenerating": "Obnovuji...",
+    "copied": "Zkopírováno!",
+    "copyLink": "Kopírovat odkaz",
+    "remove": "Odebrat",
+    "finalize": "Dokončit",
+    "finalizing": "Dokončuji...",
+    "hoursShort": "hod",
+    "today": "Dnes",
+    "yesterday": "Včera"
+  },
+  "pages": {
+    "home": {
+      "welcome": "Vítejte v Tempu!",
+      "getStarted": "Začít",
+      "learnMore": "Zjistit více"
+    },
+    "login": {
+      "title": "Přihlášení",
+      "tagline": "Sledování času a fakturace",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Heslo",
+      "submitButton": "Přihlásit se",
+      "signingIn": "Přihlašuji..."
+    },
+    "settings": {
+      "title": "Nastavení",
+      "subtitle": "Konfigurace údajů o firmě",
+      "preferences": {
+        "title": "Předvolby",
+        "language": "Jazyk",
+        "languageDescription": "Vyberte preferovaný jazyk"
+      },
+      "businessDetails": {
+        "title": "Údaje o firmě",
+        "companyName": "Název firmy",
+        "email": "E-mail",
+        "address": "Adresa",
+        "phone": "Telefon",
+        "vatId": "DIČ",
+        "companyRegistration": "IČO"
+      },
+      "bankDetails": {
+        "title": "Bankovní údaje",
+        "bankName": "Název banky",
+        "bankAccount": "Číslo účtu",
+        "swift": "SWIFT/BIC",
+        "iban": "IBAN"
+      },
+      "invoiceSettings": {
+        "title": "Nastavení faktur",
+        "invoiceMessage": "Zpráva na faktuře",
+        "invoiceMessagePlaceholder": "Vlastní zpráva zobrazená na všech fakturách"
+      },
+      "companyLogo": {
+        "title": "Logo firmy",
+        "description": "Nahrajte logo firmy pro zobrazení na fakturách. Doporučená velikost: 200x200px.",
+        "uploadButton": "Nahrát logo",
+        "altText": "Logo firmy"
+      }
+    },
+    "dashboard": {
+      "title": "Přehled",
+      "subtitle": "Přehled vašeho sledování času",
+      "stats": {
+        "unbilledHours": "Nevyfakturované hodiny",
+        "unbilledAmount": "Nevyfakturovaná částka",
+        "unbilledTotal": "Celkem nevyfakturováno",
+        "pendingInvoices": "Čekající faktury",
+        "thisWeek": "Tento týden",
+        "thisMonth": "Tento měsíc",
+        "totalHours": "Celkem hodin",
+        "totalInvoiced": "Celkem vyfakturováno"
+      },
+      "recentActivity": "Poslední aktivita",
+      "quickActions": "Rychlé akce",
+      "noRecentActivity": "Žádná nedávná aktivita",
+      "unbilledByClient": {
+        "title": "Nevyfakturováno podle klienta",
+        "createInvoice": "Vytvořit fakturu",
+        "noEntries": "Žádné nevyfakturované záznamy",
+        "invoice": "Fakturovat"
+      },
+      "charts": {
+        "hoursByClient": "Hodiny podle klienta",
+        "hoursByProject": "Hodiny podle projektu",
+        "monthlyEarnings": "Měsíční příjmy",
+        "hoursTrend": "Trend hodin",
+        "noTimeEntries": "Zatím žádné záznamy času",
+        "noInvoices": "Zatím žádné dokončené faktury",
+        "earnings": "Příjmy"
+      }
+    },
+    "clients": {
+      "title": "Klienti",
+      "subtitle": "Správa klientů",
+      "newClient": "Nový klient",
+      "editClient": "Upravit klienta",
+      "clientDetails": "Detail klienta",
+      "billingDetails": "Fakturační údaje",
+      "contactDetails": "Kontaktní údaje",
+      "noClients": "Zatím žádní klienti",
+      "noClientsDescription": "Začněte přidáním prvního klienta.",
+      "addFirstClient": "Přidat klienta",
+      "addNewClient": "Přidat nového klienta do vašeho účtu",
+      "updateInfo": "Aktualizovat informace o klientovi",
+      "createClient": "Vytvořit klienta",
+      "form": {
+        "name": "Název klienta",
+        "email": "E-mail",
+        "phone": "Telefon",
+        "address": "Adresa",
+        "currency": "Měna",
+        "notes": "Poznámky",
+        "contactPerson": "Kontaktní osoba",
+        "hourlyRate": "Hodinová sazba",
+        "defaultVatRate": "Výchozí sazba DPH",
+        "paymentTerms": "Platební podmínky",
+        "paymentTermsPlaceholder": "např. Splatnost 30 dní",
+        "bankDetails": "Bankovní údaje",
+        "bankDetailsPlaceholder": "Název banky, číslo účtu, směrový kód...",
+        "locale": "Jazyk dokumentů",
+        "localeDescription": "Jazyk používaný pro faktury a sdílené reporty pro tohoto klienta"
+      },
+      "table": {
+        "name": "Název",
+        "client": "Klient",
+        "email": "E-mail",
+        "projects": "Projekty",
+        "unbilledHours": "Nevyfakturované hodiny",
+        "unbilled": "Nevyfakturováno"
+      },
+      "sharing": {
+        "title": "Sdílení reportů",
+        "portalTitle": "Klientský portál reportů",
+        "regenerateLink": "Obnovit odkaz",
+        "regenerateTitle": "Obnovit sdílený odkaz?",
+        "regenerateDescription": "Tím se vytvoří nový sdílený odkaz. Starý odkaz přestane okamžitě fungovat a kdokoli se starým odkazem již nebude mít přístup k reportům.",
+        "enabled": "Sdílení reportů povoleno",
+        "disabled": "Sdílení reportů zakázáno"
+      },
+      "tabs": {
+        "overview": "Přehled",
+        "projects": "Projekty",
+        "settings": "Nastavení"
+      },
+      "noProjects": "Zatím žádné projekty.",
+      "addProject": "Přidat projekt",
+      "dangerZone": "Nebezpečná zóna",
+      "deleteWarning": "Smazání klienta je nevratné. Klienty s projekty nebo fakturami nelze smazat.",
+      "deleteClient": "Smazat klienta",
+      "deleteTitle": "Smazat {{name}}?",
+      "deleteDescription": "Tuto akci nelze vrátit zpět. Tímto trvale smažete klienta a všechna související data.",
+      "unbilledLabel": "{{hours}}h nevyfakturováno",
+      "noUnbilledHours": "Žádné nevyfakturované hodiny",
+      "customRate": "(vlastní sazba)",
+      "invalidEmail": "Zadejte prosím platnou e-mailovou adresu"
+    },
+    "projects": {
+      "title": "Projekty",
+      "subtitle": "Správa projektů",
+      "newProject": "Nový projekt",
+      "editProject": "Upravit projekt",
+      "projectDetails": "Detail projektu",
+      "billingDetails": "Fakturační údaje",
+      "noProjects": "Zatím žádné projekty",
+      "noProjectsDescription": "Začněte přidáním prvního projektu.",
+      "addFirstProject": "Přidat projekt",
+      "addNewProject": "Přidat nový projekt pro sledování času",
+      "updateInfo": "Aktualizovat informace o projektu",
+      "createProject": "Vytvořit projekt",
+      "form": {
+        "name": "Název projektu",
+        "namePlaceholder": "např. Redesign webu",
+        "client": "Klient",
+        "selectClient": "Vyberte klienta",
+        "hourlyRate": "Hodinová sazba",
+        "customHourlyRate": "Vlastní hodinová sazba",
+        "description": "Popis",
+        "active": "Aktivní",
+        "activeProject": "Aktivní projekt"
+      },
+      "table": {
+        "name": "Název",
+        "client": "Klient",
+        "rate": "Sazba",
+        "hours": "Hodiny",
+        "status": "Stav"
+      },
+      "status": {
+        "active": "Aktivní",
+        "inactive": "Neaktivní"
+      },
+      "workEntries": "Záznamy práce",
+      "noWorkEntries": "Zatím žádné záznamy práce.",
+      "rateHelp": {
+        "custom": "Bude použita vlastní sazba místo sazby klienta ({{rate}})",
+        "default": "Ponechte prázdné pro použití výchozí sazby klienta ({{rate}})",
+        "selectFirst": "Nejprve vyberte klienta pro zobrazení jeho výchozí sazby"
+      },
+      "deactivate": "Deaktivovat",
+      "activate": "Aktivovat",
+      "deleteTitle": "Smazat {{name}}?",
+      "deleteDescription": "Tuto akci nelze vrátit zpět. Tímto trvale smažete projekt. Projekty s vyfakturovanými záznamy nelze smazat.",
+      "customRate": "(vlastní sazba)",
+      "projectCount": "{{count}} projektů",
+      "projectCount_one": "{{count}} projekt",
+      "projectCount_few": "{{count}} projekty",
+      "projectCount_other": "{{count}} projektů",
+      "entryCount": "{{count}} záznamů",
+      "entryCount_one": "{{count}} záznam",
+      "entryCount_few": "{{count}} záznamy",
+      "entryCount_other": "{{count}} záznamů"
+    },
+    "invoices": {
+      "title": "Faktury",
+      "subtitle": "Správa faktur",
+      "newInvoice": "Nová faktura",
+      "editInvoice": "Upravit fakturu",
+      "invoiceDetails": "Detail faktury",
+      "noInvoices": "Zatím žádné faktury",
+      "noInvoicesDescription": "Vytvořte první fakturu z nevyfakturovaných záznamů práce.",
+      "createFirstInvoice": "Vytvořit fakturu",
+      "createFromUnbilled": "Vytvořit novou fakturu z nevyfakturovaných záznamů práce",
+      "createDraft": "Vytvořit koncept",
+      "form": {
+        "client": "Klient",
+        "selectClient": "Vyberte klienta...",
+        "hasUnbilledEntries": "(má nevyfakturované záznamy)",
+        "periodStart": "Začátek období",
+        "periodEnd": "Konec období",
+        "from": "Od",
+        "to": "Do",
+        "issueDate": "Datum vystavení",
+        "dueDate": "Datum splatnosti",
+        "notes": "Poznámky",
+        "notesPlaceholder": "Další poznámky k faktuře..."
+      },
+      "table": {
+        "number": "Číslo",
+        "invoice": "Faktura",
+        "client": "Klient",
+        "period": "Období",
+        "issueDate": "Datum vystavení",
+        "dueDate": "Datum splatnosti",
+        "amount": "Částka",
+        "status": "Stav"
+      },
+      "status": {
+        "draft": "Koncept",
+        "final": "Finální",
+        "sent": "Odeslaná",
+        "paid": "Zaplacená",
+        "overdue": "Po splatnosti",
+        "cancelled": "Zrušená"
+      },
+      "actions": {
+        "markAsSent": "Označit jako odeslanou",
+        "markAsPaid": "Označit jako zaplacenou",
+        "markAsFinal": "Označit jako finální",
+        "downloadPdf": "Stáhnout PDF",
+        "sendEmail": "Odeslat e-mailem"
+      },
+      "lineItems": {
+        "title": "Položky faktury",
+        "addLineItem": "Přidat položku",
+        "description": "Popis",
+        "hours": "Hodiny",
+        "rate": "Sazba",
+        "unitPrice": "Jednotková cena",
+        "vat": "DPH",
+        "amount": "Částka",
+        "totalWithoutVat": "Celkem bez DPH",
+        "removeTitle": "Odebrat položku?",
+        "removeDescription": "Tím odeberete položku z faktury. Přidružené záznamy práce budou odpojeny a stanou se opět nevyfakturovanými."
+      },
+      "preview": {
+        "invoice": "Faktura",
+        "taxDocument": "Daňový doklad",
+        "supplier": "Dodavatel",
+        "customer": "Odběratel",
+        "yourCompany": "Vaše firma",
+        "regNo": "IČO",
+        "vatId": "DIČ",
+        "bankAccount": "Bankovní účet",
+        "iban": "IBAN",
+        "swift": "SWIFT/BIC",
+        "reference": "Variabilní symbol",
+        "paymentMethod": "Způsob úhrady",
+        "bankTransfer": "Bankovní převod",
+        "issuedOn": "Datum vystavení",
+        "dueOn": "Datum splatnosti",
+        "dateOfTaxableSupply": "Datum uskutečnění plnění",
+        "vat": "DPH",
+        "unitPrice": "Jednotková cena",
+        "totalWithoutVat": "Celkem bez DPH",
+        "hoursUnit": "hod",
+        "notes": "Poznámky",
+        "qrAlt": "QR kód pro platbu",
+        "scanToPay": "Naskenujte pro platbu"
+      },
+      "newPreview": {
+        "title": "Náhled",
+        "hours": "hodin",
+        "hoursShort": "hod",
+        "noEntries": "Pro vybrané období nebyly nalezeny žádné nevyfakturované záznamy.",
+        "selectClient": "Vyberte klienta a období pro zobrazení náhledu.",
+        "noDescription": "Bez popisu",
+        "subtotal": "Mezisoučet",
+        "vat": "DPH",
+        "total": "Celkem"
+      },
+      "finalize": {
+        "title": "Dokončit fakturu?",
+        "description": "Tím označíte fakturu jako finální a uzamknete všechny přidružené záznamy práce jako vyfakturované. Tuto akci nelze vrátit zpět."
+      },
+      "delete": {
+        "title": "Smazat fakturu {{number}}?",
+        "description": "Tím trvale smažete fakturu a odpojíte všechny záznamy práce. Záznamy práce se stanou opět nevyfakturovanými."
+      },
+      "errors": {
+        "selectClient": "Prosím vyberte klienta",
+        "noEntries": "Pro vybrané období nebyly nalezeny žádné nevyfakturované záznamy"
+      }
+    },
+    "workEntries": {
+      "title": "Záznamy práce",
+      "logWork": "Zaznamenat práci",
+      "subtitle": "Zaznamenávání a správa práce",
+      "trackTime": "Sledujte svůj čas a práci s pevnou cenou",
+      "newEntry": "Nový záznam",
+      "editEntry": "Upravit záznam",
+      "noEntries": "Zatím žádné záznamy práce",
+      "noEntriesDescription": "Začněte zaznamenávat práci pro sledování fakturovatelných hodin.",
+      "noEntriesFound": "Nebyly nalezeny žádné záznamy práce. Přidejte první záznam výše.",
+      "addFirstEntry": "Přidat záznam",
+      "addEntry": "Přidat záznam",
+      "quickEntry": "Rychlý záznam",
+      "form": {
+        "project": "Projekt",
+        "selectProject": "Vyberte projekt",
+        "date": "Datum",
+        "hours": "Hodiny",
+        "amount": "Částka",
+        "description": "Popis",
+        "descriptionPlaceholder": "Na čem jste pracovali?",
+        "hourlyRate": "Hodinová sazba"
+      },
+      "table": {
+        "date": "Datum",
+        "project": "Projekt",
+        "description": "Popis",
+        "hours": "Hodiny",
+        "amount": "Částka",
+        "status": "Stav"
+      },
+      "status": {
+        "unbilled": "Nevyfakturováno",
+        "invoiced": "Vyfakturováno"
+      },
+      "filter": {
+        "client": "Klient",
+        "project": "Projekt",
+        "entryType": "Typ záznamu",
+        "allProjects": "Všechny projekty",
+        "allClients": "Všichni klienti",
+        "allStatuses": "Všechny stavy",
+        "allTypes": "Všechny typy",
+        "year": "Rok",
+        "month": "Měsíc",
+        "time": "Čas",
+        "fixed": "Pevná cena"
+      },
+      "rate": "Sazba: {{symbol}}{{rate}}/h",
+      "summary": {
+        "totalHours": "Celkem hodin:",
+        "totalAmount": "Celková částka:",
+        "timeEntries_one": "{{count}} časový záznam",
+        "timeEntries_few": "{{count}} časové záznamy",
+        "timeEntries_other": "{{count}} časových záznamů",
+        "fixedEntries_one": "{{count}} pevný záznam",
+        "fixedEntries_few": "{{count}} pevné záznamy",
+        "fixedEntries_other": "{{count}} pevných záznamů"
+      },
+      "delete": {
+        "title": "Smazat záznam práce?",
+        "description": "Tuto akci nelze vrátit zpět. Tímto trvale smažete záznam práce."
+      }
+    },
+    "reports": {
+      "timeReportFor": "Časový report pro",
+      "preparedBy": "Připravil",
+      "period": "Období",
+      "invoiced": "Vyfakturováno ({{period}})",
+      "noEntriesFound": "Pro toto období nebyly nalezeny žádné záznamy.",
+      "generatedBy": "Vygenerováno pomocí Tempo",
+      "unbilledWork": "Nevyfakturovaná práce",
+      "previouslyInvoiced": "Dříve vyfakturováno",
+      "invoiceNumber": "Faktura č. {{number}}",
+      "hoursCount": "{{hours}} hodin"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "cs": "Čeština"
+  },
+  "months": {
+    "jan": "Led",
+    "feb": "Úno",
+    "mar": "Bře",
+    "apr": "Dub",
+    "may": "Kvě",
+    "jun": "Čvn",
+    "jul": "Čvc",
+    "aug": "Srp",
+    "sep": "Zář",
+    "oct": "Říj",
+    "nov": "Lis",
+    "dec": "Pro"
+  },
+  "validation": {
+    "invalidEmail": "Zadejte prosím platnou e-mailovou adresu"
+  },
+  "accessibility": {
+    "toggleMenu": "Přepnout menu",
+    "userMenu": "Uživatelské menu"
+  },
+  "toast": {
+    "linkCopied": "Odkaz zkopírován do schránky",
+    "failedToCopy": "Nepodařilo se zkopírovat odkaz",
+    "sharingEnabled": "Sdílení reportů povoleno",
+    "sharingDisabled": "Sdílení reportů zakázáno",
+    "failedToUpdateSharing": "Nepodařilo se aktualizovat stav sdílení",
+    "shareLinkRegenerated": "Sdílený odkaz byl obnoven",
+    "failedToRegenerateLink": "Nepodařilo se obnovit sdílený odkaz",
+    "lineItemUpdated": "Položka aktualizována",
+    "failedToUpdateLineItem": "Nepodařilo se aktualizovat položku",
+    "lineItemRemoved": "Položka odebrána",
+    "failedToRemoveLineItem": "Nepodařilo se odebrat položku",
+    "failedToReorderLineItem": "Nepodařilo se změnit pořadí položky",
+    "lineItemAdded": "Položka přidána",
+    "failedToAddLineItem": "Nepodařilo se přidat položku"
+  }
+}

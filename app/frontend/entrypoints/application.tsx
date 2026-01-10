@@ -2,6 +2,7 @@ import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import Layout from "../components/Layout";
 import "../styles/application.css";
+import i18n from "@/lib/i18n";
 
 // Register service worker for PWA support
 if ("serviceWorker" in navigator) {
@@ -41,6 +42,10 @@ createInertiaApp({
     return page;
   },
   setup({ el, App, props }) {
+    // Initialize i18n with locale from Inertia props
+    const locale = (props.initialPage.props.locale as string) || "en";
+    i18n.changeLanguage(locale);
+
     createRoot(el).render(<App {...props} />);
   },
 });

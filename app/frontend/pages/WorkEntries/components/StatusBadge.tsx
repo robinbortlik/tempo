@@ -1,13 +1,17 @@
+import { useTranslation } from "react-i18next";
+
 interface StatusBadgeProps {
   status: "unbilled" | "invoiced";
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
+  const { t } = useTranslation();
+
   if (status === "unbilled") {
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/60">
         <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-        Unbilled
+        {t("pages.workEntries.status.unbilled")}
       </span>
     );
   }
@@ -27,7 +31,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
           d="M4.5 12.75l6 6 9-13.5"
         />
       </svg>
-      Invoiced
+      {t("pages.workEntries.status.invoiced")}
     </span>
   );
 }

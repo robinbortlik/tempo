@@ -1,5 +1,7 @@
 import { router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputWithAddon } from "@/components/ui/input-with-addon";
@@ -59,25 +61,25 @@ interface WorkEntryRowProps {
   showDate?: boolean;
 }
 
-function formatShortDate(dateStr: string): string {
+function formatShortDate(
+  dateStr: string,
+  locale: string
+): { isToday: boolean; isYesterday: boolean; formatted: string } {
   const date = new Date(dateStr);
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
+  const localeMap: Record<string, string> = { en: "en-US", cs: "cs-CZ" };
+  const dateLocale = localeMap[locale] || "en-US";
 
-  // Check if it's today
-  if (date.toDateString() === today.toDateString()) {
-    return "Today";
-  }
-  // Check if it's yesterday
-  if (date.toDateString() === yesterday.toDateString()) {
-    return "Yesterday";
-  }
-  // Otherwise show "Jan 9" format
-  return date.toLocaleDateString("en-US", {
+  const isToday = date.toDateString() === today.toDateString();
+  const isYesterday = date.toDateString() === yesterday.toDateString();
+  const formatted = date.toLocaleDateString(dateLocale, {
     month: "short",
     day: "numeric",
   });
+
+  return { isToday, isYesterday, formatted };
 }
 
 export default function WorkEntryRow({
@@ -88,6 +90,7 @@ export default function WorkEntryRow({
   isLast = false,
   showDate = false,
 }: WorkEntryRowProps) {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showRateOverride, setShowRateOverride] = useState(false);
@@ -357,7 +360,15 @@ export default function WorkEntryRow({
         {showDate && (
           <div className="w-16 shrink-0">
             <span className="text-sm font-medium text-stone-500 tabular-nums">
-              {formatShortDate(entry.date)}
+              {(() => {
+                const { isToday, isYesterday, formatted } = formatShortDate(
+                  entry.date,
+                  i18n.language
+                );
+                if (isToday) return t("common.today");
+                if (isYesterday) return t("common.yesterday");
+                return formatted;
+              })()}
             </span>
           </div>
         )}
@@ -405,7 +416,8 @@ export default function WorkEntryRow({
             {isTimeEntry ? (
               <>
                 <span className="font-semibold">
-                  {formatHours(entry.hours)}h
+                  {formatHours(entry.hours)}
+                  {t("common.hoursShort")}
                 </span>
                 <span className="text-stone-400">×</span>
                 <span>
@@ -414,7 +426,7 @@ export default function WorkEntryRow({
                     entry.client_currency,
                     false
                   )}
-                  /h
+                  /{t("common.hoursShort")}
                 </span>
                 <span className="text-stone-400">=</span>
                 <span className="font-semibold min-w-[80px] text-right">
@@ -452,12 +464,12 @@ export default function WorkEntryRow({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              Invoiced
+              {t("pages.workEntries.status.invoiced")}
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-700">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              Unbilled
+              {t("pages.workEntries.status.unbilled")}
             </span>
           )}
 

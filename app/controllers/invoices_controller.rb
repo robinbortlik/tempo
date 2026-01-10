@@ -40,7 +40,7 @@ class InvoicesController < ApplicationController
 
   def edit
     unless @invoice.draft?
-      redirect_to invoice_path(@invoice), alert: "Cannot edit a finalized invoice."
+      redirect_to invoice_path(@invoice), alert: t("flash.invoices.cannot_edit_finalized")
       return
     end
 
@@ -64,7 +64,7 @@ class InvoicesController < ApplicationController
     result = builder.create_draft
 
     if result[:success]
-      redirect_to invoice_path(result[:invoice]), notice: "Invoice created successfully."
+      redirect_to invoice_path(result[:invoice]), notice: t("flash.invoices.created")
     else
       redirect_to new_invoice_path(invoice_params.to_h), alert: result[:errors].first
     end
@@ -72,12 +72,12 @@ class InvoicesController < ApplicationController
 
   def update
     unless @invoice.draft?
-      redirect_to invoice_path(@invoice), alert: "Cannot update a finalized invoice."
+      redirect_to invoice_path(@invoice), alert: t("flash.invoices.cannot_update_finalized")
       return
     end
 
     if @invoice.update(update_invoice_params)
-      redirect_to invoice_path(@invoice), notice: "Invoice updated successfully."
+      redirect_to invoice_path(@invoice), notice: t("flash.invoices.updated")
     else
       redirect_to edit_invoice_path(@invoice), alert: @invoice.errors.full_messages.to_sentence
     end
@@ -85,19 +85,19 @@ class InvoicesController < ApplicationController
 
   def destroy
     unless @invoice.draft?
-      redirect_to invoice_path(@invoice), alert: "Cannot delete a finalized invoice."
+      redirect_to invoice_path(@invoice), alert: t("flash.invoices.cannot_delete_finalized")
       return
     end
 
     @invoice.work_entries.update_all(invoice_id: nil, status: :unbilled)
     @invoice.destroy
 
-    redirect_to invoices_path, notice: "Invoice deleted successfully."
+    redirect_to invoices_path, notice: t("flash.invoices.deleted")
   end
 
   def finalize
     unless @invoice.draft?
-      redirect_to invoice_path(@invoice), alert: "Invoice is already finalized."
+      redirect_to invoice_path(@invoice), alert: t("flash.invoices.already_finalized")
       return
     end
 
@@ -106,7 +106,7 @@ class InvoicesController < ApplicationController
       @invoice.work_entries.update_all(status: :invoiced)
     end
 
-    redirect_to invoice_path(@invoice), notice: "Invoice finalized successfully."
+    redirect_to invoice_path(@invoice), notice: t("flash.invoices.finalized")
   end
 
   def pdf

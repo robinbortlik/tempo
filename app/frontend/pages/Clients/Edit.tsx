@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import ClientForm from "./Form";
@@ -17,6 +18,7 @@ interface Client {
   hourly_rate: number | null;
   currency: string | null;
   default_vat_rate: number | null;
+  locale: string;
 }
 
 interface PageProps {
@@ -29,6 +31,7 @@ interface PageProps {
 }
 
 export default function EditClient() {
+  const { t } = useTranslation();
   const { client, flash } = usePage<PageProps>().props;
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function EditClient() {
 
   return (
     <>
-      <Head title={`Edit ${client.name}`} />
+      <Head title={`${t("common.edit")} ${client.name}`} />
       <Toaster position="top-right" />
 
       <div className="p-8">
@@ -64,10 +67,12 @@ export default function EditClient() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to {client.name}
+            {t("common.backTo", { name: client.name })}
           </button>
-          <h1 className="text-2xl font-semibold text-stone-900">Edit Client</h1>
-          <p className="text-stone-500 mt-1">Update client information</p>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            {t("pages.clients.editClient")}
+          </h1>
+          <p className="text-stone-500 mt-1">{t("pages.clients.updateInfo")}</p>
         </div>
 
         <ClientForm client={client} isEdit />

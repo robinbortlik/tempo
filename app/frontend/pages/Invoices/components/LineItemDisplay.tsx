@@ -20,6 +20,7 @@ interface LineItemDisplayProps {
   isDraft: boolean;
   isFirst: boolean;
   isLast: boolean;
+  hoursUnit?: string;
   onEdit: (id: number) => void;
   onRemove: (id: number) => void;
   onMoveUp: (id: number) => void;
@@ -32,6 +33,7 @@ export default function LineItemDisplay({
   isDraft,
   isFirst,
   isLast,
+  hoursUnit = "hrs",
   onEdit,
   onRemove,
   onMoveUp,
@@ -50,7 +52,7 @@ export default function LineItemDisplay({
       {/* Unit */}
       <td className="px-2 py-3 text-stone-500 w-12">
         {lineItem.line_type === "time_aggregate" && lineItem.quantity
-          ? "hrs"
+          ? hoursUnit
           : ""}
       </td>
       {/* Description */}

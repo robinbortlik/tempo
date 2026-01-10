@@ -23,7 +23,7 @@ class WorkEntriesController < ApplicationController
     @work_entry = WorkEntry.new(work_entry_params)
 
     if @work_entry.save
-      redirect_to work_entries_path, notice: "Work entry created successfully."
+      redirect_to work_entries_path, notice: t("flash.work_entries.created")
     else
       redirect_to work_entries_path, alert: @work_entry.errors.full_messages.to_sentence
     end
@@ -31,12 +31,12 @@ class WorkEntriesController < ApplicationController
 
   def update
     if @work_entry.invoiced?
-      redirect_to work_entries_path, alert: "Cannot update an invoiced work entry."
+      redirect_to work_entries_path, alert: t("flash.work_entries.cannot_update_invoiced")
       return
     end
 
     if @work_entry.update(work_entry_params)
-      redirect_to work_entries_path, notice: "Work entry updated successfully."
+      redirect_to work_entries_path, notice: t("flash.work_entries.updated")
     else
       redirect_to work_entries_path, alert: @work_entry.errors.full_messages.to_sentence
     end
@@ -44,12 +44,12 @@ class WorkEntriesController < ApplicationController
 
   def destroy
     if @work_entry.invoiced?
-      redirect_to work_entries_path, alert: "Cannot delete an invoiced work entry."
+      redirect_to work_entries_path, alert: t("flash.work_entries.cannot_delete_invoiced")
       return
     end
 
     @work_entry.destroy
-    redirect_to work_entries_path, notice: "Work entry deleted successfully."
+    redirect_to work_entries_path, notice: t("flash.work_entries.deleted")
   end
 
   def bulk_destroy
@@ -57,7 +57,7 @@ class WorkEntriesController < ApplicationController
     entries = WorkEntry.where(id: entry_ids).unbilled
     deleted_count = entries.destroy_all.count
 
-    redirect_to work_entries_path, notice: "#{deleted_count} work #{deleted_count == 1 ? 'entry' : 'entries'} deleted successfully."
+    redirect_to work_entries_path, notice: t("flash.work_entries.deleted_count", count: deleted_count)
   end
 
   private

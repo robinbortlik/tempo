@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ProjectGroup } from "./ProjectGroup";
 
 interface Entry {
@@ -34,6 +35,8 @@ export function UnbilledSection({
   projectGroups,
   currency,
 }: UnbilledSectionProps) {
+  const { t } = useTranslation();
+
   if (projectGroups.length === 0) {
     return null;
   }
@@ -42,7 +45,7 @@ export function UnbilledSection({
     <section className="mb-8">
       <h2 className="text-lg font-semibold text-stone-900 mb-4 flex items-center gap-2">
         <span className="w-2 h-2 bg-amber-500 rounded-full" />
-        Unbilled Work
+        {t("pages.reports.unbilledWork")}
       </h2>
       <div className="bg-white border border-stone-200 rounded-xl overflow-hidden">
         {projectGroups.map((group, index) => (

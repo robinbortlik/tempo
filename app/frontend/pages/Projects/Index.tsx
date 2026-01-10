@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -18,7 +19,7 @@ interface Project {
   effective_hourly_rate: number;
   active: boolean;
   unbilled_hours: number;
-  time_entries_count: number;
+  work_entries_count: number;
 }
 
 interface ClientGroup {
@@ -39,6 +40,7 @@ interface PageProps {
 
 export default function ProjectsIndex() {
   const { projects, flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (flash.notice) {
@@ -60,15 +62,17 @@ export default function ProjectsIndex() {
 
   return (
     <>
-      <Head title="Projects" />
+      <Head title={t("pages.projects.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">Projects</h1>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.projects.title")}
+            </h1>
             <p className="text-stone-500 mt-1">
-              Manage your projects across clients
+              {t("pages.projects.subtitle")}
             </p>
           </div>
           <Button
@@ -88,20 +92,20 @@ export default function ProjectsIndex() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            Add Project
+            {t("pages.projects.addFirstProject")}
           </Button>
         </div>
 
         {totalProjects === 0 ? (
           <div className="bg-white rounded-xl border border-stone-200 p-8 text-center">
             <p className="text-stone-500 mb-4">
-              No projects yet. Add your first project to get started.
+              {t("pages.projects.noProjects")}
             </p>
             <Button
               onClick={() => router.visit("/projects/new")}
               className="px-4 py-2 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
             >
-              Add Project
+              {t("pages.projects.addFirstProject")}
             </Button>
           </div>
         ) : (
@@ -118,8 +122,9 @@ export default function ProjectsIndex() {
                       {group.client.name}
                     </h2>
                     <span className="text-sm text-stone-500">
-                      {group.projects.length}{" "}
-                      {group.projects.length === 1 ? "project" : "projects"}
+                      {t("pages.projects.projectCount", {
+                        count: group.projects.length,
+                      })}
                     </span>
                   </div>
                   {group.client.currency && (
@@ -150,7 +155,8 @@ export default function ProjectsIndex() {
                               project.effective_hourly_rate,
                               group.client.currency
                             )}
-                            {project.hourly_rate && " (custom rate)"}
+                            {project.hourly_rate &&
+                              ` ${t("pages.projects.customRate")}`}
                           </p>
                         </div>
                       </div>
@@ -158,19 +164,20 @@ export default function ProjectsIndex() {
                         <div className="text-right">
                           {project.unbilled_hours > 0 ? (
                             <span className="text-amber-600 font-medium tabular-nums">
-                              {Math.round(project.unbilled_hours)}h unbilled
+                              {t("pages.clients.unbilledLabel", {
+                                hours: Math.round(project.unbilled_hours),
+                              })}
                             </span>
                           ) : (
                             <span className="text-stone-400">
-                              No unbilled hours
+                              {t("pages.clients.noUnbilledHours")}
                             </span>
                           )}
                         </div>
                         <div className="text-sm text-stone-500">
-                          {project.time_entries_count}{" "}
-                          {project.time_entries_count === 1
-                            ? "entry"
-                            : "entries"}
+                          {t("pages.projects.entryCount", {
+                            count: project.work_entries_count,
+                          })}
                         </div>
                         <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
                           <svg

@@ -1,5 +1,6 @@
 import { Head, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { formatCurrency } from "@/components/CurrencyDisplay";
@@ -66,6 +67,7 @@ interface PageProps {
 
 export default function DashboardIndex() {
   const { stats, charts, flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (flash.notice) {
@@ -83,33 +85,35 @@ export default function DashboardIndex() {
 
   return (
     <>
-      <Head title="Dashboard" />
+      <Head title={t("pages.dashboard.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-stone-900">Dashboard</h1>
-          <p className="text-stone-500 mt-1">Overview of your time tracking</p>
+          <h1 className="text-2xl font-semibold text-stone-900">
+            {t("pages.dashboard.title")}
+          </h1>
+          <p className="text-stone-500 mt-1">{t("pages.dashboard.subtitle")}</p>
         </div>
 
         {/* Stats Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatCard
-            title="This Week"
+            title={t("pages.dashboard.stats.thisWeek")}
             value={Math.round(stats.hours_this_week).toString()}
-            suffix="hrs"
+            suffix={t("common.hoursShort")}
           />
 
           <StatCard
-            title="This Month"
+            title={t("pages.dashboard.stats.thisMonth")}
             value={Math.round(stats.hours_this_month).toString()}
-            suffix="hrs"
+            suffix={t("common.hoursShort")}
           />
 
           <StatCard
-            title="Unbilled Hours"
+            title={t("pages.dashboard.stats.unbilledHours")}
             value={Math.round(stats.unbilled_hours).toString()}
-            suffix="hrs"
+            suffix={t("common.hoursShort")}
             indicator={
               stats.unbilled_hours > 0 ? (
                 <span className="w-2 h-2 bg-amber-400 rounded-full" />
@@ -117,7 +121,11 @@ export default function DashboardIndex() {
             }
           />
 
-          <StatCard title="Unbilled Total" value="" highlight>
+          <StatCard
+            title={t("pages.dashboard.stats.unbilledTotal")}
+            value=""
+            highlight
+          >
             {unbilledAmountEntries.length === 0 ? (
               <p className="text-3xl font-semibold tabular-nums text-amber-900">
                 -

@@ -35,7 +35,7 @@ class ClientsController < ApplicationController
     @client = Client.new(client_params)
 
     if @client.save
-      redirect_to client_path(@client), notice: "Client created successfully."
+      redirect_to client_path(@client), notice: t("flash.clients.created")
     else
       redirect_to new_client_path, alert: @client.errors.full_messages.to_sentence
     end
@@ -43,7 +43,7 @@ class ClientsController < ApplicationController
 
   def update
     if @client.update(client_params)
-      redirect_to client_path(@client), notice: "Client updated successfully."
+      redirect_to client_path(@client), notice: t("flash.clients.updated")
     else
       redirect_to edit_client_path(@client), alert: @client.errors.full_messages.to_sentence
     end
@@ -54,7 +54,7 @@ class ClientsController < ApplicationController
 
     if result[:valid]
       @client.destroy
-      redirect_to clients_path, notice: "Client deleted successfully."
+      redirect_to clients_path, notice: t("flash.clients.deleted")
     else
       redirect_to client_path(@client), alert: result[:error]
     end
@@ -64,7 +64,7 @@ class ClientsController < ApplicationController
     @client.update(sharing_enabled: !@client.sharing_enabled)
 
     respond_to do |format|
-      format.html { redirect_to client_path(@client), notice: "Sharing #{@client.sharing_enabled? ? 'enabled' : 'disabled'} successfully." }
+      format.html { redirect_to client_path(@client), notice: t(@client.sharing_enabled? ? "flash.clients.sharing_enabled" : "flash.clients.sharing_disabled") }
       format.json { render json: { sharing_enabled: @client.sharing_enabled } }
     end
   end
@@ -73,7 +73,7 @@ class ClientsController < ApplicationController
     @client.update(share_token: SecureRandom.uuid)
 
     respond_to do |format|
-      format.html { redirect_to client_path(@client), notice: "Share link regenerated successfully." }
+      format.html { redirect_to client_path(@client), notice: t("flash.clients.share_link_regenerated") }
       format.json { render json: { share_token: @client.share_token } }
     end
   end
@@ -96,7 +96,8 @@ class ClientsController < ApplicationController
       :payment_terms,
       :hourly_rate,
       :currency,
-      :default_vat_rate
+      :default_vat_rate,
+      :locale
     )
   end
 

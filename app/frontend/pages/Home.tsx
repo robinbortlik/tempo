@@ -1,10 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 
-interface HomeProps {
-  message?: string;
-}
+export default function Home() {
+  const { t } = useTranslation();
 
-export default function Home({ message = "Welcome to Tempo!" }: HomeProps) {
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
       <div className="text-center">
@@ -24,10 +23,10 @@ export default function Home({ message = "Welcome to Tempo!" }: HomeProps) {
           </svg>
         </div>
         <h1 className="text-3xl font-semibold text-stone-900 mb-2">Tempo</h1>
-        <p className="text-stone-500 mb-6">{message}</p>
+        <p className="text-stone-500 mb-6">{t("pages.home.welcome")}</p>
         <div className="flex items-center justify-center gap-3">
-          <Button variant="default">Get Started</Button>
-          <Button variant="outline">Learn More</Button>
+          <Button variant="default">{t("pages.home.getStarted")}</Button>
+          <Button variant="outline">{t("pages.home.learnMore")}</Button>
         </div>
       </div>
     </div>

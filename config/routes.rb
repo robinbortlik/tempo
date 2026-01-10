@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   get "reports/:share_token/invoices/:invoice_id/pdf", to: "reports#invoice_pdf", as: :report_invoice_pdf
 
   resource :session
-  resource :settings, only: [ :show, :update ]
+  resource :settings, only: [ :show, :update ] do
+    patch :locale, to: "settings#update_locale", on: :member
+  end
   resource :dashboard, only: [ :show ], controller: "dashboard" do
     get :time_by_client, on: :member
     get :time_by_project, on: :member

@@ -324,9 +324,9 @@
     <div class="invoice-header">
       <div class="invoice-header-line"></div>
       <div class="invoice-title">
-        Invoice <span class="number"><%= @invoice.number %></span>
+        <%= t('invoices.pdf.invoice') %> <span class="number"><%= @invoice.number %></span>
       </div>
-      <div class="invoice-subtitle">Tax Document</div>
+      <div class="invoice-subtitle"><%= t('invoices.pdf.tax_document') %></div>
     </div>
 
     <!-- Supplier and Customer Section -->
@@ -335,48 +335,48 @@
       <div class="party-column">
         <div class="party-header">
           <div class="party-header-line"></div>
-          <span class="party-label">Supplier</span>
+          <span class="party-label"><%= t('invoices.pdf.supplier') %></span>
         </div>
-        <div class="party-name"><%= @settings.company_name || "Your Company" %></div>
+        <div class="party-name"><%= @settings.company_name || t('invoices.pdf.your_company') %></div>
         <div class="party-address"><%= @settings.address %></div>
         <table class="party-details-table">
           <% if @settings.company_registration.present? %>
             <tr>
-              <td>Reg. no.</td>
+              <td><%= t('invoices.pdf.reg_no') %></td>
               <td><%= @settings.company_registration %></td>
             </tr>
           <% end %>
           <% if @settings.vat_id.present? %>
             <tr>
-              <td>VAT ID</td>
+              <td><%= t('invoices.pdf.vat_id') %></td>
               <td><%= @settings.vat_id %></td>
             </tr>
           <% end %>
           <% if @settings.bank_account.present? %>
             <tr>
-              <td>Bank account</td>
+              <td><%= t('invoices.pdf.bank_account') %></td>
               <td><%= @settings.bank_account %></td>
             </tr>
           <% end %>
           <% if @settings.iban.present? %>
             <tr>
-              <td>IBAN</td>
+              <td><%= t('invoices.pdf.iban') %></td>
               <td><%= @settings.iban %></td>
             </tr>
           <% end %>
           <% if @settings.bank_swift.present? %>
             <tr>
-              <td>SWIFT/BIC</td>
+              <td><%= t('invoices.pdf.swift_bic') %></td>
               <td><%= @settings.bank_swift %></td>
             </tr>
           <% end %>
           <tr>
-            <td>Reference</td>
+            <td><%= t('invoices.pdf.reference') %></td>
             <td><%= @invoice.number %></td>
           </tr>
           <tr>
-            <td>Payment method</td>
-            <td>Bank transfer</td>
+            <td><%= t('invoices.pdf.payment_method') %></td>
+            <td><%= t('invoices.pdf.bank_transfer') %></td>
           </tr>
         </table>
       </div>
@@ -385,34 +385,34 @@
       <div class="party-column">
         <div class="party-header">
           <div class="party-header-line"></div>
-          <span class="party-label">Customer</span>
+          <span class="party-label"><%= t('invoices.pdf.customer') %></span>
         </div>
         <div class="party-name"><%= @invoice.client.name %></div>
         <div class="party-address"><%= @invoice.client.address %></div>
         <table class="party-details-table">
           <% if @invoice.client.company_registration.present? %>
             <tr>
-              <td>Reg. no.</td>
+              <td><%= t('invoices.pdf.reg_no') %></td>
               <td><%= @invoice.client.company_registration %></td>
             </tr>
           <% end %>
           <% if @invoice.client.vat_id.present? %>
             <tr>
-              <td>VAT ID</td>
+              <td><%= t('invoices.pdf.vat_id') %></td>
               <td><%= @invoice.client.vat_id %></td>
             </tr>
           <% end %>
           <tr>
-            <td>Issued on</td>
-            <td><%= @invoice.issue_date&.strftime("%b %d, %Y") || "Not set" %></td>
+            <td><%= t('invoices.pdf.issued_on') %></td>
+            <td><%= @invoice.issue_date ? l(@invoice.issue_date, format: :invoice) : t('invoices.pdf.not_set') %></td>
           </tr>
           <tr>
-            <td>Due on</td>
-            <td><%= @invoice.due_date&.strftime("%b %d, %Y") || "Not set" %></td>
+            <td><%= t('invoices.pdf.due_on') %></td>
+            <td><%= @invoice.due_date ? l(@invoice.due_date, format: :invoice) : t('invoices.pdf.not_set') %></td>
           </tr>
           <tr>
-            <td>Date of taxable supply</td>
-            <td><%= @invoice.issue_date&.strftime("%b %d, %Y") || "Not set" %></td>
+            <td><%= t('invoices.pdf.date_of_supply') %></td>
+            <td><%= @invoice.issue_date ? l(@invoice.issue_date, format: :invoice) : t('invoices.pdf.not_set') %></td>
           </tr>
         </table>
       </div>
@@ -425,9 +425,9 @@
           <th></th>
           <th></th>
           <th></th>
-          <th>VAT</th>
-          <th>Unit Price</th>
-          <th>Total w/o VAT</th>
+          <th><%= t('invoices.pdf.vat') %></th>
+          <th><%= t('invoices.pdf.unit_price') %></th>
+          <th><%= t('invoices.pdf.total_wo_vat') %></th>
         </tr>
       </thead>
       <tbody>
@@ -440,7 +440,7 @@
             </td>
             <td class="unit-col">
               <% if item.time_aggregate? && item.quantity.present? %>
-                hrs
+                <%= t('invoices.pdf.hours_unit') %>
               <% end %>
             </td>
             <td class="description-col"><%= item.description %></td>
@@ -460,20 +460,20 @@
     <div class="totals-section">
       <dl class="totals-table">
         <div class="totals-row">
-          <dt>Total w/o VAT</dt>
+          <dt><%= t('invoices.pdf.total_wo_vat') %></dt>
           <dd><%= format_currency(@invoice.subtotal, @invoice.currency) %></dd>
         </div>
         <% vat_totals = @invoice.vat_totals_by_rate %>
         <% if vat_totals.values.any? { |v| v > 0 } %>
           <% vat_totals.select { |rate, amount| rate.to_f > 0 }.sort_by { |rate, _| -rate.to_f }.each do |rate, amount| %>
             <div class="totals-row">
-              <dt>VAT <%= number_with_precision(rate, precision: 0) %> %</dt>
+              <dt><%= t('invoices.pdf.vat') %> <%= number_with_precision(rate, precision: 0) %> %</dt>
               <dd><%= format_currency(amount, @invoice.currency) %></dd>
             </div>
           <% end %>
         <% else %>
           <div class="totals-row">
-            <dt>VAT 0 %</dt>
+            <dt><%= t('invoices.pdf.vat') %> 0 %</dt>
             <dd><%= format_currency(0, @invoice.currency) %></dd>
           </div>
         <% end %>
@@ -487,7 +487,7 @@
     <!-- Notes Section (if present) -->
     <% if @invoice.notes.present? %>
       <div class="notes-section">
-        <div class="notes-title">Notes</div>
+        <div class="notes-title"><%= t('invoices.pdf.notes') %></div>
         <div class="notes-content"><%= @invoice.notes %></div>
       </div>
     <% end %>
@@ -496,8 +496,8 @@
     <% if @qr_code_data_url %>
       <div class="footer-wrapper">
         <div class="qr-code-container">
-          <img src="<%= @qr_code_data_url %>" alt="Payment QR Code" class="qr-code" />
-          <p class="qr-instruction">Scan to pay</p>
+          <img src="<%= @qr_code_data_url %>" alt="<%= t('invoices.pdf.qr_alt') %>" class="qr-code" />
+          <p class="qr-instruction"><%= t('invoices.pdf.scan_to_pay') %></p>
         </div>
       </div>
     <% end %>

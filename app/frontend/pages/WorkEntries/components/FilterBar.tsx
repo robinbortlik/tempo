@@ -1,4 +1,5 @@
 import { router } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
 
 interface Client {
   id: number;
@@ -39,33 +40,37 @@ interface FilterBarProps {
   period: Period;
 }
 
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
 export default function FilterBar({
   clients,
   projects,
   filters,
   period,
 }: FilterBarProps) {
+  const { t } = useTranslation();
+
+  const MONTHS = [
+    t("months.jan"),
+    t("months.feb"),
+    t("months.mar"),
+    t("months.apr"),
+    t("months.may"),
+    t("months.jun"),
+    t("months.jul"),
+    t("months.aug"),
+    t("months.sep"),
+    t("months.oct"),
+    t("months.nov"),
+    t("months.dec"),
+  ];
+
   // Get projects for selected client (or all projects if no client selected)
   const availableProjects = filters.client_id
     ? projects.filter((g) => g.client.id === filters.client_id)
     : projects;
 
-  const buildParams = (overrides: Record<string, string | number | null | undefined>) => {
+  const buildParams = (
+    overrides: Record<string, string | number | null | undefined>
+  ) => {
     const params: Record<string, string | number> = {};
 
     // Always include year
@@ -73,17 +78,27 @@ export default function FilterBar({
     if (year) params.year = year;
 
     // Include month if set
-    const month = overrides.month !== undefined ? overrides.month : period.month;
+    const month =
+      overrides.month !== undefined ? overrides.month : period.month;
     if (month) params.month = month;
 
     // Include filters
-    const clientId = overrides.client_id !== undefined ? overrides.client_id : filters.client_id;
+    const clientId =
+      overrides.client_id !== undefined
+        ? overrides.client_id
+        : filters.client_id;
     if (clientId) params.client_id = clientId;
 
-    const projectId = overrides.project_id !== undefined ? overrides.project_id : filters.project_id;
+    const projectId =
+      overrides.project_id !== undefined
+        ? overrides.project_id
+        : filters.project_id;
     if (projectId) params.project_id = projectId;
 
-    const entryType = overrides.entry_type !== undefined ? overrides.entry_type : filters.entry_type;
+    const entryType =
+      overrides.entry_type !== undefined
+        ? overrides.entry_type
+        : filters.entry_type;
     if (entryType) params.entry_type = entryType as string;
 
     return params;
@@ -105,10 +120,14 @@ export default function FilterBar({
 
   const handleClientChange = (clientId: string) => {
     const newClientId = clientId ? parseInt(clientId, 10) : null;
-    router.get("/work_entries", buildParams({ client_id: newClientId, project_id: null }), {
-      preserveState: true,
-      preserveScroll: true,
-    });
+    router.get(
+      "/work_entries",
+      buildParams({ client_id: newClientId, project_id: null }),
+      {
+        preserveState: true,
+        preserveScroll: true,
+      }
+    );
   };
 
   const handleProjectChange = (projectId: string) => {
@@ -120,17 +139,22 @@ export default function FilterBar({
   };
 
   const handleEntryTypeChange = (entryType: string) => {
-    router.get("/work_entries", buildParams({ entry_type: entryType || null }), {
-      preserveState: true,
-      preserveScroll: true,
-    });
+    router.get(
+      "/work_entries",
+      buildParams({ entry_type: entryType || null }),
+      {
+        preserveState: true,
+        preserveScroll: true,
+      }
+    );
   };
 
   const handleClearFilters = () => {
     router.get("/work_entries", {}, { preserveState: true });
   };
 
-  const hasFilters = filters.client_id || filters.project_id || filters.entry_type;
+  const hasFilters =
+    filters.client_id || filters.project_id || filters.entry_type;
 
   return (
     <div className="bg-stone-100 px-6 py-4">
@@ -143,7 +167,7 @@ export default function FilterBar({
             value={period.year}
             onChange={(e) => handleYearChange(Number(e.target.value))}
             className="px-3 py-2 bg-white border border-stone-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent"
-            aria-label="Year"
+            aria-label={t("pages.workEntries.filter.year")}
           >
             {period.available_years.map((year) => (
               <option key={year} value={year}>
@@ -163,7 +187,7 @@ export default function FilterBar({
                   : "text-stone-500 hover:bg-white"
               }`}
             >
-              All
+              {t("common.all")}
             </button>
             {MONTHS.map((month, index) => (
               <button
@@ -189,7 +213,7 @@ export default function FilterBar({
               htmlFor="filter-client"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Client
+              {t("pages.workEntries.filter.client")}
             </label>
             <select
               id="filter-client"
@@ -197,7 +221,9 @@ export default function FilterBar({
               onChange={(e) => handleClientChange(e.target.value)}
               className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
             >
-              <option value="">All Clients</option>
+              <option value="">
+                {t("pages.workEntries.filter.allClients")}
+              </option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
@@ -210,7 +236,7 @@ export default function FilterBar({
               htmlFor="filter-project"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Project
+              {t("pages.workEntries.filter.project")}
             </label>
             <select
               id="filter-project"
@@ -218,7 +244,9 @@ export default function FilterBar({
               onChange={(e) => handleProjectChange(e.target.value)}
               className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
             >
-              <option value="">All Projects</option>
+              <option value="">
+                {t("pages.workEntries.filter.allProjects")}
+              </option>
               {availableProjects.map((group) =>
                 group.projects.map((project) => (
                   <option key={project.id} value={project.id}>
@@ -233,7 +261,7 @@ export default function FilterBar({
               htmlFor="filter-entry-type"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Entry Type
+              {t("pages.workEntries.filter.entryType")}
             </label>
             <select
               id="filter-entry-type"
@@ -241,9 +269,11 @@ export default function FilterBar({
               onChange={(e) => handleEntryTypeChange(e.target.value)}
               className="w-full h-10 px-3 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900"
             >
-              <option value="">All Types</option>
-              <option value="time">Time</option>
-              <option value="fixed">Fixed</option>
+              <option value="">{t("pages.workEntries.filter.allTypes")}</option>
+              <option value="time">{t("pages.workEntries.filter.time")}</option>
+              <option value="fixed">
+                {t("pages.workEntries.filter.fixed")}
+              </option>
             </select>
           </div>
           {hasFilters && (
@@ -252,7 +282,7 @@ export default function FilterBar({
               onClick={handleClearFilters}
               className="h-10 px-2 text-sm text-stone-500 hover:text-stone-700"
             >
-              Clear
+              {t("common.clear")}
             </button>
           )}
         </div>

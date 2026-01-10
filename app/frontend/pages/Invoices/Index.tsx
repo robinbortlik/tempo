@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -66,23 +67,30 @@ function formatPeriod(start: string, end: string): string {
   return `${startMonth} ${startDay}\u2013${endMonth} ${endDay}, ${year}`;
 }
 
-function StatusBadge({ status }: { status: "draft" | "final" }) {
+function StatusBadge({
+  status,
+  label,
+}: {
+  status: "draft" | "final";
+  label: string;
+}) {
   if (status === "draft") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-        Draft
+        {label}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-      Final
+      {label}
     </span>
   );
 }
 
 export default function InvoicesIndex() {
   const { invoices, filters, flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>(filters.status || "all");
 
   useEffect(() => {
@@ -119,14 +127,18 @@ export default function InvoicesIndex() {
 
   return (
     <>
-      <Head title="Invoices" />
+      <Head title={t("pages.invoices.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">Invoices</h1>
-            <p className="text-stone-500 mt-1">Manage your invoices</p>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.invoices.title")}
+            </h1>
+            <p className="text-stone-500 mt-1">
+              {t("pages.invoices.subtitle")}
+            </p>
           </div>
           <Button
             onClick={() => router.visit("/invoices/new")}
@@ -145,7 +157,7 @@ export default function InvoicesIndex() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            New Invoice
+            {t("pages.invoices.newInvoice")}
           </Button>
         </div>
 
@@ -160,19 +172,19 @@ export default function InvoicesIndex() {
               value="all"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
-              All
+              {t("common.all")}
             </TabsTrigger>
             <TabsTrigger
               value="draft"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
-              Draft ({draftCount})
+              {t("pages.invoices.status.draft")} ({draftCount})
             </TabsTrigger>
             <TabsTrigger
               value="final"
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
-              Final ({finalCount})
+              {t("pages.invoices.status.final")} ({finalCount})
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -181,12 +193,20 @@ export default function InvoicesIndex() {
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
-                <TableHead className="px-6 py-4 font-medium">Invoice</TableHead>
-                <TableHead className="px-6 py-4 font-medium">Client</TableHead>
-                <TableHead className="px-6 py-4 font-medium">Period</TableHead>
-                <TableHead className="px-6 py-4 font-medium">Status</TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.invoices.table.number")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.invoices.table.client")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.invoices.form.periodStart")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("common.status")}
+                </TableHead>
                 <TableHead className="px-6 py-4 font-medium text-right">
-                  Amount
+                  {t("common.amount")}
                 </TableHead>
                 <TableHead className="px-6 py-4"></TableHead>
               </TableRow>
@@ -198,7 +218,7 @@ export default function InvoicesIndex() {
                     colSpan={6}
                     className="px-6 py-8 text-center text-stone-500"
                   >
-                    No invoices yet. Create your first invoice to get started.
+                    {t("pages.invoices.noInvoices")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -220,7 +240,10 @@ export default function InvoicesIndex() {
                       {formatPeriod(invoice.period_start, invoice.period_end)}
                     </TableCell>
                     <TableCell className="px-6 py-4">
-                      <StatusBadge status={invoice.status} />
+                      <StatusBadge
+                        status={invoice.status}
+                        label={t(`pages.invoices.status.${invoice.status}`)}
+                      />
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right tabular-nums font-medium text-stone-900">
                       {formatCurrency(invoice.total_amount, invoice.currency)}

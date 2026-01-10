@@ -7,9 +7,17 @@ class SettingsController < ApplicationController
 
   def update
     if settings.update(settings_params)
-      redirect_to settings_path, notice: "Settings saved successfully."
+      redirect_to settings_path, notice: t("flash.settings.saved")
     else
       redirect_to settings_path, alert: settings.errors.full_messages.to_sentence
+    end
+  end
+
+  def update_locale
+    if Current.session.user.update(locale: params[:locale])
+      redirect_to settings_path, notice: t("flash.settings.language_updated")
+    else
+      redirect_to settings_path, alert: Current.session.user.errors.full_messages.to_sentence
     end
   end
 

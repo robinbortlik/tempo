@@ -240,7 +240,7 @@ describe("WorkEntryRow", () => {
       />
     );
 
-    expect(screen.getByText("8h")).toBeInTheDocument();
+    expect(screen.getByText("8hrs")).toBeInTheDocument();
   });
 
   it("displays amount for fixed entries", () => {
@@ -271,7 +271,7 @@ describe("WorkEntryRow", () => {
       />
     );
 
-    expect(screen.getByText("9h")).toBeInTheDocument();
+    expect(screen.getByText("9hrs")).toBeInTheDocument();
   });
 
   it("handles string amount values from backend (decimal serialization)", () => {

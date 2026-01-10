@@ -1,5 +1,6 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -87,6 +88,7 @@ const ClockIcon = () => (
 
 export default function Header() {
   const { props } = usePage<PageProps>();
+  const { t } = useTranslation();
   const userEmail = props.auth?.user?.email_address || "User";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -105,7 +107,7 @@ export default function Header() {
             data-testid="mobile-menu-button"
           >
             <MenuIcon />
-            <span className="sr-only">Toggle menu</span>
+            <span className="sr-only">{t("accessibility.toggleMenu")}</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="p-0 w-60">
@@ -131,7 +133,7 @@ export default function Header() {
             data-testid="user-menu-button"
           >
             <UserIcon />
-            <span className="sr-only">User menu</span>
+            <span className="sr-only">{t("accessibility.userMenu")}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
@@ -146,7 +148,7 @@ export default function Header() {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href="/settings" className="cursor-pointer">
-              Settings
+              {t("nav.settings")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -159,7 +161,7 @@ export default function Header() {
               data-testid="logout-menu-item"
             >
               <LogoutIcon />
-              <span className="ml-2">Sign out</span>
+              <span className="ml-2">{t("nav.signOut")}</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>

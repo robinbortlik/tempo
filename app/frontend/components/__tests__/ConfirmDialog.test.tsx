@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ConfirmDialog } from "../ConfirmDialog";
+import i18n from "@/lib/i18n";
 
 describe("ConfirmDialog", () => {
   const defaultProps = {
@@ -11,8 +12,9 @@ describe("ConfirmDialog", () => {
     onConfirm: vi.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
 
   it("renders when open is true", () => {

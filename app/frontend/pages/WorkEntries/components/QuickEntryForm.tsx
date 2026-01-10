@@ -1,5 +1,6 @@
 import { router } from "@inertiajs/react";
 import { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputWithAddon } from "@/components/ui/input-with-addon";
@@ -33,6 +34,7 @@ interface QuickEntryFormProps {
 }
 
 export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
+  const { t } = useTranslation();
   const today = new Date().toISOString().split("T")[0];
   const [date, setDate] = useState(today);
   const [projectId, setProjectId] = useState("");
@@ -154,7 +156,9 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-emerald-500 p-6 mb-6">
-      <h3 className="font-semibold text-stone-900 mb-4">Quick Entry</h3>
+      <h3 className="font-semibold text-stone-900 mb-4">
+        {t("pages.workEntries.quickEntry")}
+      </h3>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="flex items-end gap-4">
           <div className="w-40">
@@ -162,7 +166,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               htmlFor="Date"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Date
+              {t("pages.workEntries.form.date")}
             </label>
             <input
               id="Date"
@@ -179,7 +183,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               htmlFor="Project"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Project
+              {t("pages.workEntries.form.project")}
             </label>
             <ProjectSelector
               id="Project"
@@ -195,7 +199,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               htmlFor="Hours"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Hours
+              {t("pages.workEntries.form.hours")}
             </label>
             <Input
               id="Hours"
@@ -215,7 +219,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               htmlFor="Amount"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Amount
+              {t("pages.workEntries.form.amount")}
             </label>
             <InputWithAddon
               id="Amount"
@@ -236,7 +240,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               htmlFor="Description"
               className="block text-sm font-medium text-stone-600 mb-1.5"
             >
-              Description
+              {t("pages.workEntries.form.description")}
             </label>
             <Input
               id="Description"
@@ -245,7 +249,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="h-10 bg-stone-50 border-stone-200 rounded-lg"
-              placeholder="What did you work on?"
+              placeholder={t("pages.workEntries.form.descriptionPlaceholder")}
             />
           </div>
           <Button
@@ -253,7 +257,9 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
             disabled={!isValid || isSubmitting}
             className="h-10 px-6 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors disabled:opacity-50"
           >
-            {isSubmitting ? "Adding..." : "Add Entry"}
+            {isSubmitting
+              ? t("common.adding")
+              : t("pages.workEntries.addEntry")}
           </Button>
         </div>
 
@@ -277,8 +283,10 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                 />
               </svg>
               <span>
-                Rate: {selectedCurrency}
-                {displayRate}/h
+                {t("pages.workEntries.rate", {
+                  symbol: selectedCurrency,
+                  rate: displayRate,
+                })}
               </span>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
@@ -288,7 +296,7 @@ export default function QuickEntryForm({ projects }: QuickEntryFormProps) {
                     htmlFor="hourly_rate"
                     className="block text-sm font-medium text-stone-600 mb-1.5"
                   >
-                    Hourly Rate
+                    {t("pages.workEntries.form.hourlyRate")}
                   </label>
                   <InputWithAddon
                     id="hourly_rate"

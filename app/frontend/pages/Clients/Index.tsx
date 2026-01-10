@@ -1,5 +1,6 @@
 import { Head, usePage, router } from "@inertiajs/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -44,6 +45,7 @@ function getInitials(name: string): string {
 
 export default function ClientsIndex() {
   const { clients, flash } = usePage<PageProps>().props;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (flash.notice) {
@@ -60,16 +62,16 @@ export default function ClientsIndex() {
 
   return (
     <>
-      <Head title="Clients" />
+      <Head title={t("pages.clients.title")} />
       <Toaster position="top-right" />
 
       <div className="p-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-stone-900">Clients</h1>
-            <p className="text-stone-500 mt-1">
-              Manage your client relationships
-            </p>
+            <h1 className="text-2xl font-semibold text-stone-900">
+              {t("pages.clients.title")}
+            </h1>
+            <p className="text-stone-500 mt-1">{t("pages.clients.subtitle")}</p>
           </div>
           <Button
             onClick={() => router.visit("/clients/new")}
@@ -88,7 +90,7 @@ export default function ClientsIndex() {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            Add Client
+            {t("pages.clients.addFirstClient")}
           </Button>
         </div>
 
@@ -96,18 +98,20 @@ export default function ClientsIndex() {
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
-                <TableHead className="px-6 py-4 font-medium">Client</TableHead>
                 <TableHead className="px-6 py-4 font-medium">
-                  Currency
+                  {t("pages.clients.table.name")}
+                </TableHead>
+                <TableHead className="px-6 py-4 font-medium">
+                  {t("pages.clients.form.currency")}
                 </TableHead>
                 <TableHead className="px-6 py-4 font-medium text-right">
-                  Rate
+                  {t("common.rate")}
                 </TableHead>
                 <TableHead className="px-6 py-4 font-medium text-right">
-                  Unbilled
+                  {t("pages.clients.table.unbilledHours")}
                 </TableHead>
                 <TableHead className="px-6 py-4 font-medium text-right">
-                  Projects
+                  {t("pages.clients.table.projects")}
                 </TableHead>
                 <TableHead className="px-6 py-4"></TableHead>
               </TableRow>
@@ -119,7 +123,7 @@ export default function ClientsIndex() {
                     colSpan={6}
                     className="px-6 py-8 text-center text-stone-500"
                   >
-                    No clients yet. Add your first client to get started.
+                    {t("pages.clients.noClients")}
                   </TableCell>
                 </TableRow>
               ) : (
