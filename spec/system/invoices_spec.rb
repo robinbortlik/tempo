@@ -387,7 +387,7 @@ RSpec.describe "Invoices", type: :system do
     it "navigates back to invoice details when clicking Back" do
       visit edit_invoice_path(invoice)
 
-      click_on "Back to Invoice 2024-001"
+      click_on "Back to 2024-001"
 
       expect(page).to have_current_path(invoice_path(invoice))
     end
