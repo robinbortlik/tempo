@@ -192,8 +192,8 @@ RSpec.describe "Settings", type: :system do
       # Check for white card sections
       expect(page).to have_css(".bg-white.rounded-xl.border")
 
-      # Check for correct grid layouts
-      expect(page).to have_css(".grid.grid-cols-2")
+      # Check for correct grid layouts (responsive: grid-cols-1 sm:grid-cols-2)
+      expect(page).to have_css(".grid.grid-cols-1")
 
       # Check for stone color palette
       expect(page).to have_css(".bg-stone-50")
