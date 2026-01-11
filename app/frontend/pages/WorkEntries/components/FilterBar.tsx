@@ -157,7 +157,7 @@ export default function FilterBar({
     filters.client_id || filters.project_id || filters.entry_type;
 
   return (
-    <div className="bg-stone-100 px-6 py-4">
+    <div className="bg-stone-100 px-4 sm:px-6 py-4">
       <div className="flex flex-col gap-4">
         {/* Year and Month Selector */}
         <div className="flex flex-wrap items-center gap-3">
@@ -208,7 +208,7 @@ export default function FilterBar({
 
         {/* Other Filters */}
         <div className="flex flex-wrap gap-4 items-end">
-          <div className="w-48">
+          <div className="w-full sm:w-48">
             <label
               htmlFor="filter-client"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -231,7 +231,7 @@ export default function FilterBar({
               ))}
             </select>
           </div>
-          <div className="w-48">
+          <div className="w-full sm:w-48">
             <label
               htmlFor="filter-project"
               className="block text-sm font-medium text-stone-600 mb-1.5"
@@ -256,7 +256,7 @@ export default function FilterBar({
               )}
             </select>
           </div>
-          <div className="w-36">
+          <div className="w-full sm:w-36">
             <label
               htmlFor="filter-entry-type"
               className="block text-sm font-medium text-stone-600 mb-1.5"

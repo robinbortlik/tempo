@@ -65,8 +65,8 @@ export default function ClientsIndex() {
       <Head title={t("pages.clients.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-stone-900">
               {t("pages.clients.title")}
@@ -94,23 +94,23 @@ export default function ClientsIndex() {
           </Button>
         </div>
 
-        <div className="bg-white rounded-xl border border-stone-200">
+        <div className="bg-white rounded-xl border border-stone-200 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
                 <TableHead className="px-6 py-4 font-medium">
                   {t("pages.clients.table.name")}
                 </TableHead>
-                <TableHead className="px-6 py-4 font-medium">
+                <TableHead className="hidden sm:table-cell px-6 py-4 font-medium">
                   {t("pages.clients.form.currency")}
                 </TableHead>
-                <TableHead className="px-6 py-4 font-medium text-right">
+                <TableHead className="hidden md:table-cell px-6 py-4 font-medium text-right">
                   {t("common.rate")}
                 </TableHead>
                 <TableHead className="px-6 py-4 font-medium text-right">
                   {t("pages.clients.table.unbilledHours")}
                 </TableHead>
-                <TableHead className="px-6 py-4 font-medium text-right">
+                <TableHead className="hidden lg:table-cell px-6 py-4 font-medium text-right">
                   {t("pages.clients.table.projects")}
                 </TableHead>
                 <TableHead className="px-6 py-4"></TableHead>
@@ -150,10 +150,10 @@ export default function ClientsIndex() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="px-6 py-4 text-stone-600">
+                    <TableCell className="hidden sm:table-cell px-6 py-4 text-stone-600">
                       {client.currency || "-"}
                     </TableCell>
-                    <TableCell className="px-6 py-4 text-right tabular-nums text-stone-900">
+                    <TableCell className="hidden md:table-cell px-6 py-4 text-right tabular-nums text-stone-900">
                       {formatRate(client.hourly_rate, client.currency)}
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right">
@@ -174,7 +174,7 @@ export default function ClientsIndex() {
                         <span className="text-stone-400">0h</span>
                       )}
                     </TableCell>
-                    <TableCell className="px-6 py-4 text-right text-stone-600">
+                    <TableCell className="hidden lg:table-cell px-6 py-4 text-right text-stone-600">
                       {client.projects_count}
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right">

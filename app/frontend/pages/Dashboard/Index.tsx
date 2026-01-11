@@ -88,8 +88,8 @@ export default function DashboardIndex() {
       <Head title={t("pages.dashboard.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl font-semibold text-stone-900">
             {t("pages.dashboard.title")}
           </h1>

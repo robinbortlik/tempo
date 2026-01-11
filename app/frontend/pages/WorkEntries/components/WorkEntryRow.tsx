@@ -196,8 +196,8 @@ export default function WorkEntryRow({
         `}
         data-testid={`work-entry-row-${entry.id}`}
       >
-        <div className="flex items-center gap-4">
-          <div className="w-32">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+          <div className="w-full sm:w-32">
             <input
               type="date"
               value={editData.date}
@@ -208,7 +208,7 @@ export default function WorkEntryRow({
               className="w-full px-3 py-2 bg-white border border-stone-200 rounded-lg text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900/10 focus:border-stone-400 transition-all"
             />
           </div>
-          <div className="w-44">
+          <div className="w-full sm:w-44">
             <ProjectSelector
               projects={projects}
               value={editData.project_id}
@@ -219,7 +219,7 @@ export default function WorkEntryRow({
               className="w-full text-sm py-2"
             />
           </div>
-          <div className="w-20">
+          <div className="w-[calc(50%-0.25rem)] sm:w-20">
             <Input
               type="number"
               step="0.25"
@@ -233,7 +233,7 @@ export default function WorkEntryRow({
               placeholder="Hours"
             />
           </div>
-          <div className="w-28">
+          <div className="w-[calc(50%-0.25rem)] sm:w-28">
             <InputWithAddon
               type="number"
               step="1"
@@ -248,7 +248,7 @@ export default function WorkEntryRow({
               placeholder="500"
             />
           </div>
-          <div className="flex-1">
+          <div className="w-full sm:flex-1">
             <Input
               type="text"
               value={editData.description}
@@ -259,7 +259,7 @@ export default function WorkEntryRow({
               placeholder="What did you work on?"
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <Button
               type="submit"
               disabled={isSubmitting || !isValid}
@@ -355,10 +355,10 @@ export default function WorkEntryRow({
       `}
       data-testid={`work-entry-row-${entry.id}`}
     >
-      <div className="flex items-center px-4 py-3 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center px-4 py-3 gap-2 sm:gap-4">
         {/* Date (when showDate is true) */}
         {showDate && (
-          <div className="w-16 shrink-0">
+          <div className="w-full sm:w-16 shrink-0">
             <span className="text-sm font-medium text-stone-500 tabular-nums">
               {(() => {
                 const { isToday, isYesterday, formatted } = formatShortDate(
@@ -408,10 +408,10 @@ export default function WorkEntryRow({
         </div>
 
         {/* Right section: Hours, Rate, Total, Status, Actions */}
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto sm:shrink-0">
           {/* Calculation breakdown */}
           <div
-            className={`flex items-center gap-2 text-sm tabular-nums ${isInvoiced ? "text-stone-500" : "text-stone-700"}`}
+            className={`flex flex-wrap items-center gap-1 sm:gap-2 text-sm tabular-nums ${isInvoiced ? "text-stone-500" : "text-stone-700"}`}
           >
             {isTimeEntry ? (
               <>
@@ -419,8 +419,8 @@ export default function WorkEntryRow({
                   {formatHours(entry.hours)}
                   {t("common.hoursShort")}
                 </span>
-                <span className="text-stone-400">×</span>
-                <span>
+                <span className="hidden sm:inline text-stone-400">×</span>
+                <span className="hidden sm:inline">
                   {formatCurrency(
                     entry.hourly_rate || 0,
                     entry.client_currency,
@@ -428,8 +428,8 @@ export default function WorkEntryRow({
                   )}
                   /{t("common.hoursShort")}
                 </span>
-                <span className="text-stone-400">=</span>
-                <span className="font-semibold min-w-[80px] text-right">
+                <span className="hidden sm:inline text-stone-400">=</span>
+                <span className="font-semibold sm:min-w-[80px] text-right">
                   {formatCurrency(
                     entry.calculated_amount,
                     entry.client_currency,
