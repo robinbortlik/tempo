@@ -77,3 +77,22 @@ cs:
       disabled: "Plugin '%{name}' byl deaktivovan."
       sync_complete: "Synchronizace pluginu '%{name}' byla uspesna."
       sync_failed: "Synchronizace pluginu '%{name}' selhala: %{error}"
+      credentials_saved: "Prihlasovaci udaje ulozeny."
+      credentials_cleared: "Prihlasovaci udaje smazany."
+      settings_saved: "Nastaveni ulozeno."
+  pages:
+    plugins:
+      configuration:
+        title: "Nastaveni %{name}"
+        subtitle: "Nastavte prihlasovaci udaje a preference pluginu"
+        credentialsSection: "Prihlasovaci udaje"
+        credentialsDescription: "API klice a autentizacni udaje"
+        settingsSection: "Nastaveni"
+        settingsDescription: "Chovani a preference pluginu"
+        saveCredentials: "Ulozit udaje"
+        saveSettings: "Ulozit nastaveni"
+        clearCredentials: "Smazat udaje"
+        clearCredentialsConfirm: "Opravdu chcete smazat vsechny prihlasovaci udaje? Plugin prestane fungovat dokud nebudou zadany nove."
+        backToPlugins: "Zpet na pluginy"
+        noCredentials: "Zadne prihlasovaci udaje"
+        credentialsMasked: "Prihlasovaci udaje jsou bezpecne ulozeny. Zobrazene hodnoty jsou maskovane."

@@ -76,3 +76,22 @@ en:
       disabled: "Plugin '%{name}' has been disabled."
       sync_complete: "Plugin '%{name}' sync completed successfully."
       sync_failed: "Plugin '%{name}' sync failed: %{error}"
+      credentials_saved: "Credentials saved successfully."
+      credentials_cleared: "Credentials cleared successfully."
+      settings_saved: "Settings saved successfully."
+  pages:
+    plugins:
+      configuration:
+        title: "Configure %{name}"
+        subtitle: "Set up credentials and settings for this plugin"
+        credentialsSection: "Credentials"
+        credentialsDescription: "API keys and authentication details"
+        settingsSection: "Settings"
+        settingsDescription: "Plugin behavior and preferences"
+        saveCredentials: "Save Credentials"
+        saveSettings: "Save Settings"
+        clearCredentials: "Clear Credentials"
+        clearCredentialsConfirm: "Are you sure you want to clear all credentials? The plugin will stop working until new credentials are provided."
+        backToPlugins: "Back to Plugins"
+        noCredentials: "No credentials configured"
+        credentialsMasked: "Credentials are stored securely. Values shown are masked."
