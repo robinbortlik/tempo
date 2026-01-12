@@ -7,7 +7,6 @@ FactoryBot.define do
     records_processed { 0 }
     records_created { 0 }
     records_updated { 0 }
-    records_failed { 0 }
     error_message { nil }
 
     trait :running do

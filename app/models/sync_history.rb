@@ -120,7 +120,7 @@ class SyncHistory < ApplicationRecord
     end
 
     def calculate_average_duration(scope)
-      completed_syncs = scope.successful.where.not(started_at: nil, completed_at: nil)
+      completed_syncs = scope.successful.where.not(started_at: nil).where.not(completed_at: nil)
       return nil if completed_syncs.empty?
 
       total_duration = completed_syncs.sum { |s| s.completed_at - s.started_at }
