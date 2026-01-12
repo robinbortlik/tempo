@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_12_213959) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_214152) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -145,6 +145,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_213959) do
     t.string "phone"
     t.datetime "updated_at", null: false
     t.string "vat_id"
+  end
+
+  create_table "sync_histories", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.text "error_backtrace"
+    t.text "error_message"
+    t.text "metadata"
+    t.string "plugin_name", null: false
+    t.integer "records_created", default: 0
+    t.integer "records_processed", default: 0
+    t.integer "records_updated", default: 0
+    t.datetime "started_at"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["plugin_name"], name: "index_sync_histories_on_plugin_name"
+    t.index ["status"], name: "index_sync_histories_on_status"
   end
 
   create_table "users", force: :cascade do |t|
