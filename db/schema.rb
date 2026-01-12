@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_213959) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -100,6 +100,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["status"], name: "index_invoices_on_status"
+  end
+
+  create_table "plugin_configurations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "credentials"
+    t.boolean "enabled", default: false, null: false
+    t.string "plugin_name", null: false
+    t.text "settings"
+    t.datetime "updated_at", null: false
+    t.index ["plugin_name"], name: "index_plugin_configurations_on_plugin_name", unique: true
   end
 
   create_table "projects", force: :cascade do |t|
