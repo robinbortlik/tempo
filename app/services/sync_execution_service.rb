@@ -91,18 +91,14 @@ class SyncExecutionService
   def run_sync(plugin_class)
     plugin = plugin_class.new
 
-    # Update status to running
-    # Note: The plugin's sync method handles creating/updating SyncHistory via BasePlugin helpers
-
-    sync_result = plugin.sync
-
-    # Get the most recent sync history for this plugin (created by plugin.sync)
-    sync_history = SyncHistory.for_plugin(plugin_class.name).order(created_at: :desc).first
+    # Use sync_with_audit to ensure all data changes are tracked
+    # This sets Current.audit_source and Current.audit_sync_history_id
+    sync_result = plugin.sync_with_audit
 
     {
       success: sync_result[:success],
       plugin_name: plugin_class.name,
-      sync_history_id: sync_history&.id,
+      sync_history_id: sync_result[:sync_history_id],
       data: sync_result
     }
   end
