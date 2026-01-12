@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_12_214152) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_214239) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -100,6 +100,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_214152) do
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["status"], name: "index_invoices_on_status"
+  end
+
+  create_table "money_transactions", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.string "counterparty"
+    t.datetime "created_at", null: false
+    t.string "currency", default: "EUR", null: false
+    t.text "description"
+    t.string "external_id"
+    t.integer "invoice_id"
+    t.text "raw_data"
+    t.string "reference"
+    t.string "source", null: false
+    t.date "transacted_on", null: false
+    t.integer "transaction_type", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_money_transactions_on_external_id"
+    t.index ["invoice_id"], name: "index_money_transactions_on_invoice_id"
+    t.index ["source"], name: "index_money_transactions_on_source"
+    t.index ["transacted_on"], name: "index_money_transactions_on_transacted_on"
   end
 
   create_table "plugin_configurations", force: :cascade do |t|
@@ -199,6 +219,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_214152) do
   add_foreign_key "invoice_line_item_work_entries", "work_entries"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "money_transactions", "invoices"
   add_foreign_key "projects", "clients"
   add_foreign_key "sessions", "users"
   add_foreign_key "work_entries", "projects"
