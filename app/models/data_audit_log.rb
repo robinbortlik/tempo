@@ -42,7 +42,10 @@ class DataAuditLog < ApplicationRecord
   # Returns human-readable description of the change
   # @return [String] description like "Created MoneyTransaction #123"
   def description
-    case action
+    # For persisted records, action_before_type_cast is the DB string (create, update, destroy)
+    # For new records, it's the symbol (:create_action, :update_action, :destroy_action)
+    action_value = persisted? ? action_before_type_cast : action_before_type_cast.to_s.sub(/_action$/, "")
+    case action_value
     when "create"
       "Created #{auditable_type} ##{auditable_id}"
     when "update"
@@ -60,7 +63,7 @@ class DataAuditLog < ApplicationRecord
       id: id,
       auditable_type: auditable_type,
       auditable_id: auditable_id,
-      action: action,
+      action: action_before_type_cast,
       source: source,
       sync_history_id: sync_history_id,
       changes_made: changes_made,
