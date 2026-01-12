@@ -462,6 +462,24 @@
       "previouslyInvoiced": "Dříve vyfakturováno",
       "invoiceNumber": "Faktura č. {{number}}",
       "hoursCount": "{{hours}} hodin"
+    },
+    "plugins": {
+      "title": "Pluginy",
+      "subtitle": "Sprava integraci a synchronizacnich pluginu",
+      "noPlugins": "Zadne pluginy",
+      "noPluginsDescription": "Pluginy se zobrazi az budou nainstalovany.",
+      "configured": "Nakonfigurovano",
+      "notConfigured": "Nenastaveno",
+      "lastSync": "Posledni sync",
+      "totalSyncs": "Celkem syncu",
+      "successRate": "Uspesnost",
+      "configure": "Nastavit",
+      "syncNow": "Synchronizovat",
+      "syncing": "Synchronizuji...",
+      "enable": "Aktivovat plugin",
+      "disable": "Deaktivovat plugin",
+      "enabled": "Aktivni",
+      "disabled": "Neaktivni"
     }
   },
   "languages": {

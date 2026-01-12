@@ -458,6 +458,24 @@
       "previouslyInvoiced": "Previously Invoiced",
       "invoiceNumber": "Invoice #{{number}}",
       "hoursCount": "{{hours}} hours"
+    },
+    "plugins": {
+      "title": "Plugins",
+      "subtitle": "Manage integrations and data sync plugins",
+      "noPlugins": "No plugins available",
+      "noPluginsDescription": "Plugins will appear here once they are installed.",
+      "configured": "Configured",
+      "notConfigured": "Not configured",
+      "lastSync": "Last sync",
+      "totalSyncs": "Total syncs",
+      "successRate": "Success rate",
+      "configure": "Configure",
+      "syncNow": "Sync now",
+      "syncing": "Syncing...",
+      "enable": "Enable plugin",
+      "disable": "Disable plugin",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
     }
   },
   "languages": {
