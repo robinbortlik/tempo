@@ -475,7 +475,22 @@
       "enable": "Enable plugin",
       "disable": "Disable plugin",
       "enabled": "Enabled",
-      "disabled": "Disabled"
+      "disabled": "Disabled",
+      "configuration": {
+        "title": "Configure {{name}}",
+        "subtitle": "Set up credentials and settings for this plugin",
+        "credentialsSection": "Credentials",
+        "credentialsDescription": "API keys and authentication details",
+        "settingsSection": "Settings",
+        "settingsDescription": "Plugin behavior and preferences",
+        "saveCredentials": "Save Credentials",
+        "saveSettings": "Save Settings",
+        "clearCredentials": "Clear Credentials",
+        "clearCredentialsConfirm": "Are you sure you want to clear all credentials? The plugin will stop working until new credentials are provided.",
+        "backToPlugins": "Back to Plugins",
+        "noCredentials": "No credentials configured",
+        "credentialsMasked": "Credentials are stored securely. Values shown are masked."
+      }
     }
   },
   "languages": {

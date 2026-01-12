@@ -479,7 +479,22 @@
       "enable": "Aktivovat plugin",
       "disable": "Deaktivovat plugin",
       "enabled": "Aktivni",
-      "disabled": "Neaktivni"
+      "disabled": "Neaktivni",
+      "configuration": {
+        "title": "Nastaveni {{name}}",
+        "subtitle": "Nastavte prihlasovaci udaje a preference pluginu",
+        "credentialsSection": "Prihlasovaci udaje",
+        "credentialsDescription": "API klice a autentizacni udaje",
+        "settingsSection": "Nastaveni",
+        "settingsDescription": "Chovani a preference pluginu",
+        "saveCredentials": "Ulozit udaje",
+        "saveSettings": "Ulozit nastaveni",
+        "clearCredentials": "Smazat udaje",
+        "clearCredentialsConfirm": "Opravdu chcete smazat vsechny prihlasovaci udaje? Plugin prestane fungovat dokud nebudou zadany nove.",
+        "backToPlugins": "Zpet na pluginy",
+        "noCredentials": "Zadne prihlasovaci udaje",
+        "credentialsMasked": "Prihlasovaci udaje jsou bezpecne ulozeny. Zobrazene hodnoty jsou maskovane."
+      }
     }
   },
   "languages": {
