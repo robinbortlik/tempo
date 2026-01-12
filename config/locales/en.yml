@@ -71,3 +71,8 @@ en:
     sessions:
       invalid_credentials: "Try another email address or password."
       rate_limited: "Try again later."
+    plugins:
+      enabled: "Plugin '%{name}' has been enabled."
+      disabled: "Plugin '%{name}' has been disabled."
+      sync_complete: "Plugin '%{name}' sync completed successfully."
+      sync_failed: "Plugin '%{name}' sync failed: %{error}"

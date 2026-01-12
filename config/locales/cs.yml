@@ -72,3 +72,8 @@ cs:
     sessions:
       invalid_credentials: "Zkuste jiný e-mail nebo heslo."
       rate_limited: "Zkuste to později."
+    plugins:
+      enabled: "Plugin '%{name}' byl aktivovan."
+      disabled: "Plugin '%{name}' byl deaktivovan."
+      sync_complete: "Synchronizace pluginu '%{name}' byla uspesna."
+      sync_failed: "Synchronizace pluginu '%{name}' selhala: %{error}"
