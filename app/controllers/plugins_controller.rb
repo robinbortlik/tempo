@@ -1,5 +1,5 @@
 class PluginsController < ApplicationController
-  before_action :set_plugin_name, only: [:enable, :disable, :sync, :configure, :update_credentials, :update_settings, :clear_credentials]
+  before_action :set_plugin_name, only: [:enable, :disable, :sync, :configure, :update_credentials, :update_settings, :clear_credentials, :history, :show_sync]
 
   def index
     plugins = PluginConfigurationService.all_plugins_summary
@@ -98,6 +98,43 @@ class PluginsController < ApplicationController
     else
       redirect_to configure_plugin_path(@plugin_name), alert: result[:errors].to_sentence
     end
+  rescue PluginRegistry::NotFoundError => e
+    redirect_to plugins_path, alert: e.message
+  end
+
+  def history
+    service = PluginConfigurationService.new(plugin_name: @plugin_name)
+    sync_histories = SyncHistory.for_plugin(@plugin_name)
+                                .order(created_at: :desc)
+                                .limit(50)
+
+    render inertia: "Plugins/History", props: {
+      plugin: PluginSerializer.new(service.summary).serializable_hash,
+      sync_histories: SyncHistorySerializer::List.new(sync_histories).serializable_hash,
+      stats: SyncHistory.stats_for_plugin(@plugin_name),
+      aggregate_stats: SyncHistory.aggregate_stats
+    }
+  rescue PluginRegistry::NotFoundError => e
+    redirect_to plugins_path, alert: e.message
+  end
+
+  def show_sync
+    sync_history = SyncHistory.find(params[:sync_id])
+
+    # Verify sync belongs to the plugin
+    unless sync_history.plugin_name == @plugin_name
+      redirect_to history_plugin_path(@plugin_name), alert: t("flash.plugins.sync_not_found")
+      return
+    end
+
+    service = PluginConfigurationService.new(plugin_name: @plugin_name)
+
+    render inertia: "Plugins/SyncDetail", props: {
+      plugin: PluginSerializer.new(service.summary).serializable_hash,
+      sync_history: SyncHistorySerializer::Detail.new(sync_history).serializable_hash
+    }
+  rescue ActiveRecord::RecordNotFound
+    redirect_to history_plugin_path(@plugin_name), alert: t("flash.plugins.sync_not_found")
   rescue PluginRegistry::NotFoundError => e
     redirect_to plugins_path, alert: e.message
   end
