@@ -45,6 +45,10 @@ Rails.application.routes.draw do
       patch :enable
       patch :disable
       post :sync
+      get :configure
+      patch :update_credentials
+      patch :update_settings
+      delete :clear_credentials
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
