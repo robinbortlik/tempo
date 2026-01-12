@@ -49,6 +49,8 @@ Rails.application.routes.draw do
       patch :update_credentials
       patch :update_settings
       delete :clear_credentials
+      get :history
+      get "sync/:sync_id", action: :show_sync, as: :show_sync
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
