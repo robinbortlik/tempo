@@ -476,6 +476,7 @@
       "disable": "Disable plugin",
       "enabled": "Enabled",
       "disabled": "Disabled",
+      "viewHistory": "View History",
       "configuration": {
         "title": "Configure {{name}}",
         "subtitle": "Set up credentials and settings for this plugin",
@@ -490,6 +491,46 @@
         "backToPlugins": "Back to Plugins",
         "noCredentials": "No credentials configured",
         "credentialsMasked": "Credentials are stored securely. Values shown are masked."
+      },
+      "history": {
+        "title": "Sync History - {{name}}",
+        "subtitle": "View past sync operations and their results",
+        "backToPlugins": "Back to Plugins",
+        "noHistory": "No sync history",
+        "noHistoryDescription": "Sync operations will appear here once you run your first sync.",
+        "stats": {
+          "totalSyncs": "Total Syncs",
+          "successRate": "Success Rate",
+          "averageDuration": "Avg Duration",
+          "recordsProcessed": "Records Processed"
+        },
+        "table": {
+          "date": "Date",
+          "status": "Status",
+          "duration": "Duration",
+          "records": "Records",
+          "error": "Error",
+          "actions": "Actions"
+        },
+        "viewDetails": "View Details"
+      },
+      "syncDetail": {
+        "title": "Sync Details",
+        "backToHistory": "Back to History",
+        "summary": "Summary",
+        "auditTrail": "Changes Made",
+        "noChanges": "No data changes recorded for this sync.",
+        "recordsProcessed": "Records Processed",
+        "recordsCreated": "Records Created",
+        "recordsUpdated": "Records Updated",
+        "startedAt": "Started",
+        "completedAt": "Completed",
+        "duration": "Duration",
+        "auditEntry": {
+          "created": "Created",
+          "updated": "Updated",
+          "destroyed": "Destroyed"
+        }
       }
     }
   },
