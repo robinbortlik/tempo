@@ -35,6 +35,28 @@ class ExamplePlugin < BasePlugin
     "Example plugin for documentation purposes"
   end
 
+  # Define credential fields for configuration UI
+  # @return [Array<Hash>] field definitions
+  def self.credential_fields
+    [
+      { name: "api_key", label: "API Key", type: "password", required: true,
+        description: "Your API key from the external service" },
+      { name: "account_id", label: "Account ID", type: "text", required: false,
+        description: "Optional account identifier" }
+    ]
+  end
+
+  # Define setting fields for configuration UI
+  # @return [Array<Hash>] field definitions
+  def self.setting_fields
+    [
+      { name: "sync_from_date", label: "Sync from date", type: "date", required: false,
+        description: "Only import transactions after this date" },
+      { name: "import_limit", label: "Import limit", type: "number", required: false,
+        description: "Maximum number of records to import per sync" }
+    ]
+  end
+
   def sync
     history = create_sync_history
 
