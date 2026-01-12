@@ -227,6 +227,16 @@ export default function PluginsIndex() {
                       {t("pages.plugins.configure")}
                     </Button>
 
+                    {/* History button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.visit(`/plugins/${plugin.plugin_name}/history`)}
+                      className="text-stone-600"
+                    >
+                      {t("pages.plugins.viewHistory")}
+                    </Button>
+
                     {/* Sync button */}
                     <Button
                       variant="outline"
