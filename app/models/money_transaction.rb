@@ -1,4 +1,6 @@
 class MoneyTransaction < ApplicationRecord
+  include Auditable
+
   # Associations
   belongs_to :invoice, optional: true
 
