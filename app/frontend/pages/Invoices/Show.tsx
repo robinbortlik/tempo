@@ -305,7 +305,7 @@ export default function InvoiceShow() {
       <Head title={`Invoice ${invoice.number}`} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="mb-6">
           <button
             onClick={() => router.visit("/invoices")}
@@ -326,7 +326,7 @@ export default function InvoiceShow() {
             </svg>
             {t("common.backTo", { name: t("pages.invoices.title") })}
           </button>
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-semibold text-stone-900 font-mono">
@@ -346,7 +346,7 @@ export default function InvoiceShow() {
                 )}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="outline"
                 asChild
@@ -456,7 +456,7 @@ export default function InvoiceShow() {
         </div>
 
         {/* Invoice Preview */}
-        <div className="bg-white rounded-xl border border-stone-200 p-8 max-w-4xl">
+        <div className="bg-white rounded-xl border border-stone-200 p-4 sm:p-6 lg:p-8 max-w-4xl">
           {/* Invoice Header */}
           <div className="text-right mb-8">
             <div className="w-48 h-0.5 bg-stone-900 ml-auto mb-3"></div>
@@ -470,7 +470,7 @@ export default function InvoiceShow() {
           </div>
 
           {/* Supplier and Customer Section */}
-          <div className="flex gap-10 mb-10">
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 mb-10">
             {/* Supplier Column */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
@@ -605,8 +605,8 @@ export default function InvoiceShow() {
           </div>
 
           {/* Line Items */}
-          <div className="mb-8">
-            <table className="w-full">
+          <div className="mb-8 overflow-x-auto">
+            <table className="w-full min-w-[500px]">
               <thead>
                 <tr className="text-sm text-stone-500 border-b border-stone-200">
                   <th className="pb-3 font-medium text-left w-12"></th>

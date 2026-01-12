@@ -130,8 +130,8 @@ export default function InvoicesIndex() {
       <Head title={t("pages.invoices.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-stone-900">
               {t("pages.invoices.title")}
@@ -189,7 +189,7 @@ export default function InvoicesIndex() {
           </TabsList>
         </Tabs>
 
-        <div className="bg-white rounded-xl border border-stone-200">
+        <div className="bg-white rounded-xl border border-stone-200 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="text-left text-sm text-stone-500 border-b border-stone-200">
@@ -199,7 +199,7 @@ export default function InvoicesIndex() {
                 <TableHead className="px-6 py-4 font-medium">
                   {t("pages.invoices.table.client")}
                 </TableHead>
-                <TableHead className="px-6 py-4 font-medium">
+                <TableHead className="hidden sm:table-cell px-6 py-4 font-medium">
                   {t("pages.invoices.form.periodStart")}
                 </TableHead>
                 <TableHead className="px-6 py-4 font-medium">
@@ -236,7 +236,7 @@ export default function InvoicesIndex() {
                     <TableCell className="px-6 py-4 text-stone-700">
                       {invoice.client_name}
                     </TableCell>
-                    <TableCell className="px-6 py-4 text-stone-500">
+                    <TableCell className="hidden sm:table-cell px-6 py-4 text-stone-500">
                       {formatPeriod(invoice.period_start, invoice.period_end)}
                     </TableCell>
                     <TableCell className="px-6 py-4">

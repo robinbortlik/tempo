@@ -115,7 +115,7 @@ export default function ClientForm({
           {t("pages.clients.clientDetails")}
         </h3>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label
                 htmlFor="name"
@@ -186,7 +186,7 @@ export default function ClientForm({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label
                 htmlFor="vat_id"
@@ -253,7 +253,7 @@ export default function ClientForm({
           {t("pages.clients.billingDetails")}
         </h3>
         <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <Label
                 htmlFor="currency"

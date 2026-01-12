@@ -50,7 +50,7 @@ export default function NewProject() {
       <Head title={t("pages.projects.newProject")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
+      <div className="p-4 sm:p-6 lg:p-8">
         <div className="mb-6">
           <button
             onClick={() => router.visit("/projects")}

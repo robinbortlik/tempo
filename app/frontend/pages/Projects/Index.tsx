@@ -65,8 +65,8 @@ export default function ProjectsIndex() {
       <Head title={t("pages.projects.title")} />
       <Toaster position="top-right" />
 
-      <div className="p-8">
-        <div className="mb-8 flex items-center justify-between">
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-stone-900">
               {t("pages.projects.title")}
@@ -160,7 +160,7 @@ export default function ProjectsIndex() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-3 sm:gap-6">
                         <div className="text-right">
                           {project.unbilled_hours > 0 ? (
                             <span className="text-amber-600 font-medium tabular-nums">
@@ -174,12 +174,12 @@ export default function ProjectsIndex() {
                             </span>
                           )}
                         </div>
-                        <div className="text-sm text-stone-500">
+                        <div className="hidden sm:block text-sm text-stone-500">
                           {t("pages.projects.entryCount", {
                             count: project.work_entries_count,
                           })}
                         </div>
-                        <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
+                        <button className="hidden sm:block p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
                           <svg
                             className="w-4 h-4"
                             fill="none"
