@@ -73,7 +73,7 @@ class BasePlugin
 
   # Marks a sync history as completed with the given stats
   # @param sync_history [SyncHistory] the sync history to update
-  # @param stats [Hash] statistics about the sync operation
+  # @param stats [Hash] statistics about the sync operation (records_processed, records_created, records_updated)
   # @return [SyncHistory] the updated sync history record
   def complete_sync(sync_history, stats = {})
     sync_history.update!(
@@ -81,8 +81,7 @@ class BasePlugin
       completed_at: Time.current,
       records_processed: stats[:records_processed] || 0,
       records_created: stats[:records_created] || 0,
-      records_updated: stats[:records_updated] || 0,
-      records_failed: stats[:records_failed] || 0
+      records_updated: stats[:records_updated] || 0
     )
     sync_history
   end
@@ -98,5 +97,30 @@ class BasePlugin
       error_message: error
     )
     sync_history
+  end
+
+  # Executes the sync method within an audit context
+  # This ensures all data changes are attributed to this plugin
+  # @return [Hash] result from sync method
+  def sync_with_audit
+    sync_history = create_sync_history
+    sync_history.update!(status: :running)
+
+    Current.with_audit_context(source: self.class.name, sync_history_id: sync_history.id) do
+      begin
+        result = sync
+
+        if result[:success]
+          complete_sync(sync_history, result.slice(:records_processed, :records_created, :records_updated))
+        else
+          fail_sync(sync_history, result[:error] || "Sync returned failure")
+        end
+
+        result.merge(sync_history_id: sync_history.id)
+      rescue StandardError => e
+        fail_sync(sync_history, e.message)
+        raise
+      end
+    end
   end
 end
