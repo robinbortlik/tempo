@@ -1,20 +1,80 @@
 # Base class for all plugins. Defines the contract that plugins must follow.
 #
-# Required class methods (MUST override):
-#   - name        - returns the plugin's unique identifier (string)
-#   - version     - returns semantic version string (e.g., "1.0.0")
-#   - description - returns human-readable description
+# == Plugin Contract
 #
-# Required instance method (MUST override):
-#   - sync        - performs the actual sync operation, returns result hash
+# Plugins are simple Ruby classes that extend BasePlugin. The minimal contract requires:
 #
-# Available helpers:
-#   - configuration      - PluginConfiguration record for this plugin
-#   - credentials        - parsed credentials hash from configuration
-#   - settings           - parsed settings hash from configuration
-#   - create_sync_history - creates SyncHistory with pending status
-#   - complete_sync(history, stats) - marks sync as completed with stats
-#   - fail_sync(history, error) - marks sync as failed with error message
+# === Required Class Methods
+#
+# - name        - Returns unique plugin identifier (string, lowercase with underscores)
+# - version     - Returns semantic version string (e.g., "1.0.0")
+# - description - Returns human-readable description for UI display
+#
+# === Required Instance Method
+#
+# - sync        - Performs the sync operation, returns result hash with :success key
+#
+# === Optional Class Methods
+#
+# - credential_fields - Array of field definitions for credential configuration UI
+# - setting_fields    - Array of field definitions for settings configuration UI
+#
+# == Available Helpers
+#
+# Instance methods available in your plugin:
+#
+# - configuration       - Returns PluginConfiguration record for this plugin
+# - credentials         - Returns decrypted credentials as Hash
+# - settings            - Returns settings as Hash
+# - create_sync_history - Creates SyncHistory with pending status
+# - complete_sync(history, stats) - Marks sync as completed with stats
+# - fail_sync(history, error) - Marks sync as failed with error message
+# - sync_with_audit     - Wraps sync in audit context (used by SyncExecutionService)
+#
+# == Example
+#
+#   class MyBankPlugin < BasePlugin
+#     def self.name
+#       "my_bank"
+#     end
+#
+#     def self.version
+#       "1.0.0"
+#     end
+#
+#     def self.description
+#       "Sync transactions from My Bank"
+#     end
+#
+#     def self.credential_fields
+#       [{ name: "api_key", label: "API Key", type: "password", required: true }]
+#     end
+#
+#     def sync
+#       api_key = credentials["api_key"]
+#       # ... fetch and process data ...
+#       { success: true, records_processed: 10, records_created: 5 }
+#     end
+#   end
+#
+# == Sync Result Hash
+#
+# The sync method must return a Hash with at least :success key:
+#
+#   # Success
+#   { success: true, records_processed: 10, records_created: 5, records_updated: 2 }
+#
+#   # Failure
+#   { success: false, error: "API returned 401 Unauthorized" }
+#
+# == Audit Trail
+#
+# When sync is called via SyncExecutionService (or sync_with_audit directly),
+# all data changes are automatically logged to DataAuditLog with your plugin
+# name as the source. Use MoneyTransaction (which includes Auditable) for
+# financial data to get automatic audit logging.
+#
+# See docs/PLUGIN_DEVELOPMENT.md for comprehensive documentation.
 #
 class BasePlugin
   class << self
