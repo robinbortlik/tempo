@@ -113,6 +113,22 @@ const InvoicesIcon = () => (
   </svg>
 );
 
+const PluginsIcon = () => (
+  <svg
+    className="w-5 h-5"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M13 10V3L4 14h7v7l9-11h-7z"
+    />
+  </svg>
+);
+
 const SettingsIcon = () => (
   <svg
     className="w-5 h-5"
@@ -222,6 +238,13 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
 
       {/* Bottom Navigation */}
       <div className="p-3 border-t border-stone-200 space-y-1">
+        <NavItem
+          href="/plugins"
+          icon={<PluginsIcon />}
+          label={t("nav.plugins")}
+          isActive={isActive("/plugins")}
+          onClick={onNavigate}
+        />
         <NavItem
           href="/settings"
           icon={<SettingsIcon />}

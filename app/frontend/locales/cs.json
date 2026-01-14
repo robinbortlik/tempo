@@ -5,6 +5,7 @@
     "clients": "Klienti",
     "projects": "Projekty",
     "invoices": "Faktury",
+    "plugins": "Pluginy",
     "settings": "Nastavení",
     "signOut": "Odhlásit se"
   },
@@ -462,6 +463,80 @@
       "previouslyInvoiced": "Dříve vyfakturováno",
       "invoiceNumber": "Faktura č. {{number}}",
       "hoursCount": "{{hours}} hodin"
+    },
+    "plugins": {
+      "title": "Pluginy",
+      "subtitle": "Sprava integraci a synchronizacnich pluginu",
+      "noPlugins": "Zadne pluginy",
+      "noPluginsDescription": "Pluginy se zobrazi az budou nainstalovany.",
+      "configured": "Nakonfigurovano",
+      "notConfigured": "Nenastaveno",
+      "lastSync": "Posledni sync",
+      "totalSyncs": "Celkem syncu",
+      "successRate": "Uspesnost",
+      "configure": "Nastavit",
+      "syncNow": "Synchronizovat",
+      "syncing": "Synchronizuji...",
+      "enable": "Aktivovat plugin",
+      "disable": "Deaktivovat plugin",
+      "enabled": "Aktivni",
+      "disabled": "Neaktivni",
+      "viewHistory": "Zobrazit historii",
+      "configuration": {
+        "title": "Nastaveni {{name}}",
+        "subtitle": "Nastavte prihlasovaci udaje a preference pluginu",
+        "credentialsSection": "Prihlasovaci udaje",
+        "credentialsDescription": "API klice a autentizacni udaje",
+        "settingsSection": "Nastaveni",
+        "settingsDescription": "Chovani a preference pluginu",
+        "saveCredentials": "Ulozit udaje",
+        "saveSettings": "Ulozit nastaveni",
+        "clearCredentials": "Smazat udaje",
+        "clearCredentialsConfirm": "Opravdu chcete smazat vsechny prihlasovaci udaje? Plugin prestane fungovat dokud nebudou zadany nove.",
+        "backToPlugins": "Zpet na pluginy",
+        "noCredentials": "Zadne prihlasovaci udaje",
+        "credentialsMasked": "Prihlasovaci udaje jsou bezpecne ulozeny. Zobrazene hodnoty jsou maskovane."
+      },
+      "history": {
+        "title": "Historie synchronizace - {{name}}",
+        "subtitle": "Zobrazit predchozi synchronizace a jejich vysledky",
+        "backToPlugins": "Zpet na pluginy",
+        "noHistory": "Zadna historie",
+        "noHistoryDescription": "Synchronizace se zobrazi po spusteni prvni synchronizace.",
+        "stats": {
+          "totalSyncs": "Celkem syncu",
+          "successRate": "Uspesnost",
+          "averageDuration": "Prumerna doba",
+          "recordsProcessed": "Zpracovano zaznamu"
+        },
+        "table": {
+          "date": "Datum",
+          "status": "Stav",
+          "duration": "Doba",
+          "records": "Zaznamy",
+          "error": "Chyba",
+          "actions": "Akce"
+        },
+        "viewDetails": "Zobrazit detaily"
+      },
+      "syncDetail": {
+        "title": "Detail synchronizace",
+        "backToHistory": "Zpet na historii",
+        "summary": "Souhrn",
+        "auditTrail": "Provedene zmeny",
+        "noChanges": "Pro tuto synchronizaci nebyly zaznamenany zadne zmeny.",
+        "recordsProcessed": "Zpracovano zaznamu",
+        "recordsCreated": "Vytvoreno zaznamu",
+        "recordsUpdated": "Aktualizovano zaznamu",
+        "startedAt": "Zahajeno",
+        "completedAt": "Dokonceno",
+        "duration": "Doba",
+        "auditEntry": {
+          "created": "Vytvoreno",
+          "updated": "Aktualizovano",
+          "destroyed": "Smazano"
+        }
+      }
     }
   },
   "languages": {

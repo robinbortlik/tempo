@@ -5,6 +5,7 @@
     "clients": "Clients",
     "projects": "Projects",
     "invoices": "Invoices",
+    "plugins": "Plugins",
     "settings": "Settings",
     "signOut": "Sign out"
   },
@@ -458,6 +459,80 @@
       "previouslyInvoiced": "Previously Invoiced",
       "invoiceNumber": "Invoice #{{number}}",
       "hoursCount": "{{hours}} hours"
+    },
+    "plugins": {
+      "title": "Plugins",
+      "subtitle": "Manage integrations and data sync plugins",
+      "noPlugins": "No plugins available",
+      "noPluginsDescription": "Plugins will appear here once they are installed.",
+      "configured": "Configured",
+      "notConfigured": "Not configured",
+      "lastSync": "Last sync",
+      "totalSyncs": "Total syncs",
+      "successRate": "Success rate",
+      "configure": "Configure",
+      "syncNow": "Sync now",
+      "syncing": "Syncing...",
+      "enable": "Enable plugin",
+      "disable": "Disable plugin",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "viewHistory": "View History",
+      "configuration": {
+        "title": "Configure {{name}}",
+        "subtitle": "Set up credentials and settings for this plugin",
+        "credentialsSection": "Credentials",
+        "credentialsDescription": "API keys and authentication details",
+        "settingsSection": "Settings",
+        "settingsDescription": "Plugin behavior and preferences",
+        "saveCredentials": "Save Credentials",
+        "saveSettings": "Save Settings",
+        "clearCredentials": "Clear Credentials",
+        "clearCredentialsConfirm": "Are you sure you want to clear all credentials? The plugin will stop working until new credentials are provided.",
+        "backToPlugins": "Back to Plugins",
+        "noCredentials": "No credentials configured",
+        "credentialsMasked": "Credentials are stored securely. Values shown are masked."
+      },
+      "history": {
+        "title": "Sync History - {{name}}",
+        "subtitle": "View past sync operations and their results",
+        "backToPlugins": "Back to Plugins",
+        "noHistory": "No sync history",
+        "noHistoryDescription": "Sync operations will appear here once you run your first sync.",
+        "stats": {
+          "totalSyncs": "Total Syncs",
+          "successRate": "Success Rate",
+          "averageDuration": "Avg Duration",
+          "recordsProcessed": "Records Processed"
+        },
+        "table": {
+          "date": "Date",
+          "status": "Status",
+          "duration": "Duration",
+          "records": "Records",
+          "error": "Error",
+          "actions": "Actions"
+        },
+        "viewDetails": "View Details"
+      },
+      "syncDetail": {
+        "title": "Sync Details",
+        "backToHistory": "Back to History",
+        "summary": "Summary",
+        "auditTrail": "Changes Made",
+        "noChanges": "No data changes recorded for this sync.",
+        "recordsProcessed": "Records Processed",
+        "recordsCreated": "Records Created",
+        "recordsUpdated": "Records Updated",
+        "startedAt": "Started",
+        "completedAt": "Completed",
+        "duration": "Duration",
+        "auditEntry": {
+          "created": "Created",
+          "updated": "Updated",
+          "destroyed": "Destroyed"
+        }
+      }
     }
   },
   "languages": {

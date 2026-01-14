@@ -40,6 +40,19 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :plugins, only: [ :index ] do
+    member do
+      patch :enable
+      patch :disable
+      post :sync
+      get :configure
+      patch :update_credentials
+      patch :update_settings
+      delete :clear_credentials
+      get :history
+      get "sync/:sync_id", action: :show_sync, as: :show_sync
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

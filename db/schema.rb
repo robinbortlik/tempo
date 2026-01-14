@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_223353) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -59,6 +59,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
     t.index ["share_token"], name: "index_clients_on_share_token", unique: true
   end
 
+  create_table "data_audit_logs", force: :cascade do |t|
+    t.string "action", null: false
+    t.integer "auditable_id", null: false
+    t.string "auditable_type", null: false
+    t.json "changes_made"
+    t.datetime "created_at", null: false
+    t.string "source"
+    t.integer "sync_history_id"
+    t.datetime "updated_at", null: false
+    t.index ["action"], name: "index_data_audit_logs_on_action"
+    t.index ["auditable_type", "auditable_id"], name: "index_data_audit_logs_on_auditable_type_and_auditable_id"
+    t.index ["created_at"], name: "index_data_audit_logs_on_created_at"
+    t.index ["source"], name: "index_data_audit_logs_on_source"
+    t.index ["sync_history_id"], name: "index_data_audit_logs_on_sync_history_id"
+  end
+
   create_table "invoice_line_item_work_entries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "invoice_line_item_id", null: false
@@ -102,6 +118,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
     t.index ["status"], name: "index_invoices_on_status"
   end
 
+  create_table "money_transactions", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.string "counterparty"
+    t.datetime "created_at", null: false
+    t.string "currency", default: "EUR", null: false
+    t.text "description"
+    t.string "external_id"
+    t.integer "invoice_id"
+    t.text "raw_data"
+    t.string "reference"
+    t.string "source", null: false
+    t.date "transacted_on", null: false
+    t.integer "transaction_type", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_money_transactions_on_external_id"
+    t.index ["invoice_id"], name: "index_money_transactions_on_invoice_id"
+    t.index ["source"], name: "index_money_transactions_on_source"
+    t.index ["transacted_on"], name: "index_money_transactions_on_transacted_on"
+  end
+
+  create_table "plugin_configurations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "credentials"
+    t.boolean "enabled", default: false, null: false
+    t.string "plugin_name", null: false
+    t.text "settings"
+    t.datetime "updated_at", null: false
+    t.index ["plugin_name"], name: "index_plugin_configurations_on_plugin_name", unique: true
+  end
+
   create_table "projects", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.integer "client_id", null: false
@@ -135,6 +181,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
     t.string "phone"
     t.datetime "updated_at", null: false
     t.string "vat_id"
+  end
+
+  create_table "sync_histories", force: :cascade do |t|
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.text "error_backtrace"
+    t.text "error_message"
+    t.text "metadata"
+    t.string "plugin_name", null: false
+    t.integer "records_created", default: 0
+    t.integer "records_processed", default: 0
+    t.integer "records_updated", default: 0
+    t.datetime "started_at"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["plugin_name"], name: "index_sync_histories_on_plugin_name"
+    t.index ["status"], name: "index_sync_histories_on_status"
   end
 
   create_table "users", force: :cascade do |t|
@@ -172,6 +235,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_10_203428) do
   add_foreign_key "invoice_line_item_work_entries", "work_entries"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "money_transactions", "invoices"
   add_foreign_key "projects", "clients"
   add_foreign_key "sessions", "users"
   add_foreign_key "work_entries", "projects"
