@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_12_214239) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_223353) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -57,6 +57,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_214239) do
     t.datetime "updated_at", null: false
     t.string "vat_id"
     t.index ["share_token"], name: "index_clients_on_share_token", unique: true
+  end
+
+  create_table "data_audit_logs", force: :cascade do |t|
+    t.string "action", null: false
+    t.integer "auditable_id", null: false
+    t.string "auditable_type", null: false
+    t.json "changes_made"
+    t.datetime "created_at", null: false
+    t.string "source"
+    t.integer "sync_history_id"
+    t.datetime "updated_at", null: false
+    t.index ["action"], name: "index_data_audit_logs_on_action"
+    t.index ["auditable_type", "auditable_id"], name: "index_data_audit_logs_on_auditable_type_and_auditable_id"
+    t.index ["created_at"], name: "index_data_audit_logs_on_created_at"
+    t.index ["source"], name: "index_data_audit_logs_on_source"
+    t.index ["sync_history_id"], name: "index_data_audit_logs_on_sync_history_id"
   end
 
   create_table "invoice_line_item_work_entries", force: :cascade do |t|
