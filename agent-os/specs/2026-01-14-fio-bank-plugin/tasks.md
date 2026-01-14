@@ -91,13 +91,13 @@ This feature adds FIO bank integration to automatically sync transactions, match
 #### Task Group 3: Plugin Sync Orchestrator Job
 **Dependencies:** Task Group 2
 
-- [ ] 3.0 Complete plugin sync orchestrator
-  - [ ] 3.1 Write 3-4 focused tests for orchestrator job
+- [x] 3.0 Complete plugin sync orchestrator
+  - [x] 3.1 Write 3-4 focused tests for orchestrator job
     - Test job iterates through enabled PluginConfiguration records
     - Test cron schedule parsing with fugit gem
     - Test sync is executed when schedule matches current time
     - Test errors are logged but don't crash orchestrator
-  - [ ] 3.2 Create PluginSyncOrchestratorJob
+  - [x] 3.2 Create PluginSyncOrchestratorJob
     - File: `app/jobs/plugin_sync_orchestrator_job.rb`
     - Inherit from `ApplicationJob`
     - Iterate through `PluginConfiguration.enabled` records
@@ -105,10 +105,10 @@ This feature adds FIO bank integration to automatically sync transactions, match
     - Execute `SyncExecutionService.execute(plugin_name:)` for matching plugins
     - Skip plugins with blank/invalid cron_schedule
     - Handle errors gracefully: log failures, continue with next plugin
-  - [ ] 3.3 Add recurring schedule to config/recurring.yml
+  - [x] 3.3 Add recurring schedule to config/recurring.yml
     - Add job entry to run every minute
     - Configure for all environments (or at minimum production)
-  - [ ] 3.4 Run orchestrator job tests
+  - [x] 3.4 Run orchestrator job tests
     - Run ONLY the tests written in 3.1
 
 **Acceptance Criteria:**
