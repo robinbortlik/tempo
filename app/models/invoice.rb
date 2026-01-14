@@ -8,7 +8,7 @@ class Invoice < ApplicationRecord
   alias_method :time_entries, :work_entries
 
   # Enums
-  enum :status, { draft: 0, final: 1 }
+  enum :status, { draft: 0, final: 1, paid: 2 }
 
   # Callbacks
   before_validation :set_invoice_number, on: :create
@@ -26,6 +26,7 @@ class Invoice < ApplicationRecord
   # Scopes
   scope :for_year, ->(year) { where("number LIKE ?", "#{year}-%") }
   scope :for_client, ->(client) { where(client: client) }
+  scope :payable, -> { final }
 
   # Calculates and updates total_hours and total_amount
   # Uses line_items if present, otherwise falls back to work_entries

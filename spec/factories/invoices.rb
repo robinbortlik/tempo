@@ -20,6 +20,11 @@ FactoryBot.define do
       status { :final }
     end
 
+    trait :paid do
+      status { :paid }
+      paid_at { Time.current }
+    end
+
     trait :with_notes do
       notes { "Thank you for your business!" }
     end

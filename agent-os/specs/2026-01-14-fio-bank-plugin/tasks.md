@@ -12,20 +12,20 @@ This feature adds FIO bank integration to automatically sync transactions, match
 #### Task Group 1: Invoice Paid Status
 **Dependencies:** None
 
-- [ ] 1.0 Complete invoice paid status implementation
-  - [ ] 1.1 Write 3-5 focused tests for Invoice paid status
+- [x] 1.0 Complete invoice paid status implementation
+  - [x] 1.1 Write 3-5 focused tests for Invoice paid status
     - Test that `paid: 2` enum value works correctly
     - Test `paid_at` timestamp is set when marking as paid
     - Test `payable` scope returns only "final" invoices
     - Test status transition from final to paid
-  - [ ] 1.2 Create migration adding `paid_at` to invoices
-    - File: `db/migrate/XXXXXX_add_paid_at_to_invoices.rb`
+  - [x] 1.2 Create migration adding `paid_at` to invoices
+    - File: `db/migrate/20260114213237_add_paid_at_to_invoices.rb`
     - Add `paid_at:datetime` column (nullable)
-  - [ ] 1.3 Update Invoice model with paid status
+  - [x] 1.3 Update Invoice model with paid status
     - File: `app/models/invoice.rb`
     - Add `paid: 2` to existing status enum: `enum :status, { draft: 0, final: 1, paid: 2 }`
     - Add scope `payable` for invoices in "final" status
-  - [ ] 1.4 Run database layer tests
+  - [x] 1.4 Run database layer tests
     - Run ONLY the tests written in 1.1
     - Verify migration runs successfully
 
