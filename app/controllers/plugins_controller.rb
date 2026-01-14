@@ -1,5 +1,5 @@
 class PluginsController < ApplicationController
-  before_action :set_plugin_name, only: [:enable, :disable, :sync, :configure, :update_credentials, :update_settings, :clear_credentials, :history, :show_sync]
+  before_action :set_plugin_name, only: [ :enable, :disable, :sync, :configure, :update_credentials, :update_settings, :clear_credentials, :history, :show_sync ]
 
   def index
     plugins = PluginConfigurationService.all_plugins_summary

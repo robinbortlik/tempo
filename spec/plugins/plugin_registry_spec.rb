@@ -144,8 +144,8 @@ RSpec.describe PluginRegistry do
 
       expect(example_metadata).not_to be_nil
       expect(example_metadata[:name]).to eq("example")
-      expect(example_metadata[:version]).to eq("1.0.0")
-      expect(example_metadata[:description]).to eq("Example plugin for documentation purposes")
+      expect(example_metadata[:version]).to eq("2.0.0")
+      expect(example_metadata[:description]).to eq("Example bank integration plugin - demonstrates the plugin interface with mock bank data")
       expect(example_metadata[:class]).to eq(ExamplePlugin)
     end
 

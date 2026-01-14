@@ -129,7 +129,7 @@ RSpec.describe "PluginsController", type: :request do
           create(:plugin_configuration,
                  plugin_name: plugin_name,
                  enabled: true,
-                 credentials: { api_key: "test" }.to_json)
+                 credentials: { api_key: "test_api_key_12345" }.to_json)
         end
 
         it "executes plugin sync" do

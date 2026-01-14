@@ -71,7 +71,7 @@ RSpec.describe SyncHistorySerializer do
 
   describe SyncHistorySerializer::List do
     it "serializes sync history for list view" do
-      result = described_class.new([sync_history]).serializable_hash
+      result = described_class.new([ sync_history ]).serializable_hash
 
       history = result.first
       expect(history["id"]).to eq(sync_history.id)
@@ -84,14 +84,14 @@ RSpec.describe SyncHistorySerializer do
     end
 
     it "excludes plugin_name for list view" do
-      result = described_class.new([sync_history]).serializable_hash
+      result = described_class.new([ sync_history ]).serializable_hash
 
       history = result.first
       expect(history).not_to have_key("plugin_name")
     end
 
     it "excludes full duration for list view" do
-      result = described_class.new([sync_history]).serializable_hash
+      result = described_class.new([ sync_history ]).serializable_hash
 
       history = result.first
       expect(history).not_to have_key("duration")
@@ -101,7 +101,7 @@ RSpec.describe SyncHistorySerializer do
       sync1 = create(:sync_history, plugin_name: "example", status: :completed)
       sync2 = create(:sync_history, plugin_name: "example", status: :failed, error_message: "Connection timeout")
 
-      result = described_class.new([sync1, sync2]).serializable_hash
+      result = described_class.new([ sync1, sync2 ]).serializable_hash
 
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)

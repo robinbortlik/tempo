@@ -64,7 +64,7 @@ RSpec.describe PluginSerializer do
     end
 
     it "serializes plugin with sync stats" do
-      result = described_class.new([plugin_summary], params: { sync_stats: sync_stats }).serializable_hash
+      result = described_class.new([ plugin_summary ], params: { sync_stats: sync_stats }).serializable_hash
 
       plugin = result.first
       expect(plugin["plugin_name"]).to eq("example")
@@ -77,7 +77,7 @@ RSpec.describe PluginSerializer do
     end
 
     it "handles missing sync stats" do
-      result = described_class.new([plugin_summary], params: { sync_stats: {} }).serializable_hash
+      result = described_class.new([ plugin_summary ], params: { sync_stats: {} }).serializable_hash
 
       plugin = result.first
       expect(plugin["total_syncs"]).to eq(0)
@@ -87,7 +87,7 @@ RSpec.describe PluginSerializer do
     end
 
     it "handles nil sync_stats param" do
-      result = described_class.new([plugin_summary], params: { sync_stats: nil }).serializable_hash
+      result = described_class.new([ plugin_summary ], params: { sync_stats: nil }).serializable_hash
 
       plugin = result.first
       expect(plugin["total_syncs"]).to eq(0)
@@ -103,7 +103,7 @@ RSpec.describe PluginSerializer do
         configured: false
       }
 
-      result = described_class.new([plugin_summary, plugin2], params: { sync_stats: {} }).serializable_hash
+      result = described_class.new([ plugin_summary, plugin2 ], params: { sync_stats: {} }).serializable_hash
 
       expect(result).to be_an(Array)
       expect(result.length).to eq(2)

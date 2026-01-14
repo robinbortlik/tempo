@@ -52,7 +52,7 @@ class SyncExecutionService
       total: results.count,
       successful: results.count { |r| r[:success] },
       failed: results.count { |r| !r[:success] && r[:error_type] == :execution_error },
-      skipped: results.count { |r| !r[:success] && [:not_enabled, :not_configured].include?(r[:error_type]) },
+      skipped: results.count { |r| !r[:success] && [ :not_enabled, :not_configured ].include?(r[:error_type]) },
       results: results
     }
   end

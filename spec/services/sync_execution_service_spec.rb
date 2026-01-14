@@ -119,7 +119,7 @@ RSpec.describe SyncExecutionService do
         create(:plugin_configuration,
                plugin_name: plugin_name,
                enabled: true,
-               credentials: { api_key: "test" }.to_json)
+               credentials: { api_key: "test_api_key" }.to_json)
         create(:plugin_configuration,
                plugin_name: "disabled_plugin",
                enabled: false)
@@ -139,7 +139,7 @@ RSpec.describe SyncExecutionService do
         create(:plugin_configuration,
                plugin_name: plugin_name,
                enabled: true,
-               credentials: { api_key: "test" }.to_json)
+               credentials: { api_key: "test_api_key" }.to_json)
       end
 
       it "returns results for each plugin" do
@@ -157,7 +157,7 @@ RSpec.describe SyncExecutionService do
       create(:plugin_configuration,
              plugin_name: plugin_name,
              enabled: true,
-             credentials: { api_key: "test" }.to_json)
+             credentials: { api_key: "test_api_key" }.to_json)
     end
 
     it "returns aggregated summary" do

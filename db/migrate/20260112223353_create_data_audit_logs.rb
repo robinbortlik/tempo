@@ -16,7 +16,7 @@ class CreateDataAuditLogs < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :data_audit_logs, [:auditable_type, :auditable_id]
+    add_index :data_audit_logs, [ :auditable_type, :auditable_id ]
     add_index :data_audit_logs, :source
     add_index :data_audit_logs, :sync_history_id
     add_index :data_audit_logs, :action

@@ -40,7 +40,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  resources :plugins, only: [:index] do
+  resources :plugins, only: [ :index ] do
     member do
       patch :enable
       patch :disable

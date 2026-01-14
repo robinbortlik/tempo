@@ -13,7 +13,7 @@ class SyncHistory < ApplicationRecord
   # Scopes - By status
   scope :successful, -> { completed }
   scope :unsuccessful, -> { failed }
-  scope :in_progress, -> { where(status: [:pending, :running]) }
+  scope :in_progress, -> { where(status: [ :pending, :running ]) }
 
   # Scopes - Time-based
   scope :today, -> { where(created_at: Time.current.beginning_of_day..Time.current.end_of_day) }
@@ -113,7 +113,7 @@ class SyncHistory < ApplicationRecord
     private
 
     def calculate_success_rate(scope)
-      total = scope.where(status: [:completed, :failed]).count
+      total = scope.where(status: [ :completed, :failed ]).count
       return 0.0 if total.zero?
 
       ((scope.successful.count.to_f / total) * 100).round(1)
