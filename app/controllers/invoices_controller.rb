@@ -1,7 +1,7 @@
 class InvoicesController < ApplicationController
   include InvoicesHelper
 
-  before_action :set_invoice, only: [ :show, :edit, :update, :destroy, :finalize, :pdf ]
+  before_action :set_invoice, only: [ :show, :edit, :update, :destroy, :finalize, :pdf, :mark_as_paid ]
 
   def index
     render inertia: "Invoices/Index", props: {
@@ -116,6 +116,18 @@ class InvoicesController < ApplicationController
               filename: pdf_service.filename,
               type: "application/pdf",
               disposition: "attachment"
+  end
+
+  def mark_as_paid
+    unless @invoice.final?
+      redirect_to invoice_path(@invoice), alert: t("flash.invoices.only_final_can_be_paid")
+      return
+    end
+
+    paid_at = params[:paid_at].present? ? Date.parse(params[:paid_at]) : Date.current
+    @invoice.update!(status: :paid, paid_at: paid_at)
+
+    redirect_to invoice_path(@invoice), notice: t("flash.invoices.marked_as_paid")
   end
 
   private

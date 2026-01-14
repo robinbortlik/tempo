@@ -123,42 +123,42 @@ This feature adds FIO bank integration to automatically sync transactions, match
 #### Task Group 4: Manual Payment Marking
 **Dependencies:** Task Group 1
 
-- [ ] 4.0 Complete manual payment marking feature
-  - [ ] 4.1 Write 3-5 focused tests for mark_as_paid functionality
+- [x] 4.0 Complete manual payment marking feature
+  - [x] 4.1 Write 3-5 focused tests for mark_as_paid functionality
     - Test mark_as_paid action on InvoicesController
     - Test only final invoices can be marked as paid (reject drafts)
     - Test paid_at is set to provided date
     - Test UI shows "Mark as Paid" button for final invoices only
-  - [ ] 4.2 Add mark_as_paid action to InvoicesController
+  - [x] 4.2 Add mark_as_paid action to InvoicesController
     - File: `app/controllers/invoices_controller.rb`
     - Accept `paid_at` date parameter
     - Guard: only allow marking "final" invoices as paid
     - Update invoice status to `:paid` and set `paid_at`
     - Return redirect with flash message
-  - [ ] 4.3 Add route for mark_as_paid
+  - [x] 4.3 Add route for mark_as_paid
     - File: `config/routes.rb`
     - Add member route: `post :mark_as_paid`
-  - [ ] 4.4 Update Invoice Show page UI
+  - [x] 4.4 Update Invoice Show page UI
     - File: `app/frontend/pages/Invoices/Show.tsx`
     - Add "Mark as Paid" button (visible when invoice is "final", not "paid")
     - Use AlertDialog pattern from finalize/delete for confirmation modal
     - Add date picker for payment date (default: today)
     - Handle confirmation and submit to mark_as_paid endpoint
-  - [ ] 4.5 Update StatusBadge for paid status
+  - [x] 4.5 Update StatusBadge for paid status
     - File: `app/frontend/pages/Invoices/Show.tsx` and `Index.tsx`
     - Add styling for "paid" status badge (distinct from draft/final)
     - Display `paid_at` date on invoice show page when paid
-  - [ ] 4.6 Update Invoice Index page filtering
+  - [x] 4.6 Update Invoice Index page filtering
     - File: `app/frontend/pages/Invoices/Index.tsx`
     - Add "paid" tab to filter tabs
     - Update counts to include paid invoices
-  - [ ] 4.7 Update InvoiceSerializer
+  - [x] 4.7 Update InvoiceSerializer
     - Include `paid_at` in serialized data
     - Ensure status "paid" is properly serialized
-  - [ ] 4.8 Add translations for paid status
+  - [x] 4.8 Add translations for paid status
     - Add `pages.invoices.status.paid` translation
     - Add `pages.invoices.markAsPaid.*` translations for modal
-  - [ ] 4.9 Run manual payment marking tests
+  - [x] 4.9 Run manual payment marking tests
     - Run ONLY the tests written in 4.1
 
 **Acceptance Criteria:**

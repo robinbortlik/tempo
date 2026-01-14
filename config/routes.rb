@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   resources :invoices do
     member do
       post :finalize
+      post :mark_as_paid
       get :pdf
     end
     resources :line_items, controller: "invoice_line_items", only: [ :create, :update, :destroy ] do

@@ -18,7 +18,7 @@ import { formatCurrency } from "@/components/CurrencyDisplay";
 interface Invoice {
   id: number;
   number: string;
-  status: "draft" | "final";
+  status: "draft" | "final" | "paid";
   issue_date: string;
   due_date: string;
   period_start: string;
@@ -28,6 +28,7 @@ interface Invoice {
   currency: string;
   client_id: number;
   client_name: string;
+  paid_at: string | null;
 }
 
 interface Client {
@@ -71,12 +72,19 @@ function StatusBadge({
   status,
   label,
 }: {
-  status: "draft" | "final";
+  status: "draft" | "final" | "paid";
   label: string;
 }) {
   if (status === "draft") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+        {label}
+      </span>
+    );
+  }
+  if (status === "paid") {
+    return (
+      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
         {label}
       </span>
     );
@@ -124,6 +132,7 @@ export default function InvoicesIndex() {
 
   const draftCount = invoices.filter((inv) => inv.status === "draft").length;
   const finalCount = invoices.filter((inv) => inv.status === "final").length;
+  const paidCount = invoices.filter((inv) => inv.status === "paid").length;
 
   return (
     <>
@@ -185,6 +194,12 @@ export default function InvoicesIndex() {
               className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
             >
               {t("pages.invoices.status.final")} ({finalCount})
+            </TabsTrigger>
+            <TabsTrigger
+              value="paid"
+              className="px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:border data-[state=inactive]:border-stone-200 data-[state=inactive]:text-stone-600 data-[state=inactive]:hover:bg-stone-50"
+            >
+              {t("pages.invoices.status.paid")} ({paidCount})
             </TabsTrigger>
           </TabsList>
         </Tabs>

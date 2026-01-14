@@ -36,7 +36,7 @@ interface LineItem {
 interface Invoice {
   id: number;
   number: string;
-  status: "draft" | "final";
+  status: "draft" | "final" | "paid";
   issue_date: string;
   due_date: string;
   period_start: string;
@@ -57,6 +57,7 @@ interface Invoice {
   client_company_registration: string | null;
   client_default_vat_rate: number | null;
   client_locale: string;
+  paid_at: string | null;
 }
 
 interface Settings {
@@ -154,12 +155,19 @@ function StatusBadge({
   status,
   label,
 }: {
-  status: "draft" | "final";
+  status: "draft" | "final" | "paid";
   label: string;
 }) {
   if (status === "draft") {
     return (
       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+        {label}
+      </span>
+    );
+  }
+  if (status === "paid") {
+    return (
+      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
         {label}
       </span>
     );
@@ -184,6 +192,10 @@ export default function InvoiceShow() {
   );
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isMarkingPaid, setIsMarkingPaid] = useState(false);
+  const [paidDate, setPaidDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [editingLineItemId, setEditingLineItemId] = useState<number | null>(
     null
   );
@@ -215,6 +227,17 @@ export default function InvoiceShow() {
     router.delete(`/invoices/${invoice.id}`, {
       onFinish: () => setIsDeleting(false),
     });
+  };
+
+  const handleMarkAsPaid = () => {
+    setIsMarkingPaid(true);
+    router.post(
+      `/invoices/${invoice.id}/mark_as_paid`,
+      { paid_at: paidDate },
+      {
+        onFinish: () => setIsMarkingPaid(false),
+      }
+    );
   };
 
   const handleEditLineItem = (id: number) => {
@@ -299,6 +322,8 @@ export default function InvoiceShow() {
   };
 
   const isDraft = invoice.status === "draft";
+  const isFinal = invoice.status === "final";
+  const isPaid = invoice.status === "paid";
 
   return (
     <>
@@ -344,6 +369,15 @@ export default function InvoiceShow() {
                   invoice.period_end,
                   i18n.language
                 )}
+                {isPaid && invoice.paid_at && (
+                  <>
+                    {" "}
+                    {"\u00B7"}{" "}
+                    {t("pages.invoices.paidOn", {
+                      date: formatDate(invoice.paid_at, i18n.language),
+                    })}
+                  </>
+                )}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -369,6 +403,53 @@ export default function InvoiceShow() {
                   {t("pages.invoices.actions.downloadPdf")}
                 </a>
               </Button>
+              {isFinal && (
+                <>
+                  {/* Mark as Paid Dialog */}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                        {t("pages.invoices.actions.markAsPaid")}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          {t("pages.invoices.markAsPaid.title")}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t("pages.invoices.markAsPaid.description")}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <div className="py-4">
+                        <label className="block text-sm font-medium text-stone-700 mb-1">
+                          {t("pages.invoices.markAsPaid.dateLabel")}
+                        </label>
+                        <input
+                          type="date"
+                          value={paidDate}
+                          onChange={(e) => setPaidDate(e.target.value)}
+                          className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>
+                          {t("common.cancel")}
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleMarkAsPaid}
+                          disabled={isMarkingPaid}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          {isMarkingPaid
+                            ? t("pages.invoices.markAsPaid.marking")
+                            : t("pages.invoices.markAsPaid.confirm")}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </>
+              )}
               {isDraft && (
                 <>
                   <Button

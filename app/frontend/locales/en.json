@@ -381,6 +381,14 @@
         "title": "Delete Invoice {{number}}?",
         "description": "This will permanently delete the invoice and unassociate all work entries. The work entries will become unbilled again."
       },
+      "markAsPaid": {
+        "title": "Mark Invoice as Paid?",
+        "description": "This will mark the invoice as paid. You can specify the payment date.",
+        "dateLabel": "Payment Date",
+        "confirm": "Mark as Paid",
+        "marking": "Marking..."
+      },
+      "paidOn": "Paid on {{date}}",
       "errors": {
         "selectClient": "Please select a client",
         "noEntries": "No unbilled entries found for the selected period"

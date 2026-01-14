@@ -383,6 +383,14 @@
         "title": "Smazat fakturu {{number}}?",
         "description": "Tím trvale smažete fakturu a odpojíte všechny záznamy práce. Záznamy práce se stanou opět nevyfakturovanými."
       },
+      "markAsPaid": {
+        "title": "Označit fakturu jako zaplacenou?",
+        "description": "Tímto označíte fakturu jako zaplacenou. Můžete zadat datum platby.",
+        "dateLabel": "Datum platby",
+        "confirm": "Označit jako zaplacenou",
+        "marking": "Označuji..."
+      },
+      "paidOn": "Zaplaceno {{date}}",
       "errors": {
         "selectClient": "Prosím vyberte klienta",
         "noEntries": "Pro vybrané období nebyly nalezeny žádné nevyfakturované záznamy"
