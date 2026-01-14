@@ -55,35 +55,50 @@ RSpec.describe FioBankPlugin do
     end
 
     context "with valid configuration" do
-      let(:api_response) do
-        {
-          "accountStatement" => {
-            "transactionList" => {
-              "transaction" => [
-                {
-                  "column22" => { "value" => "12345" },
-                  "column1" => { "value" => 1000.0 },
-                  "column14" => { "value" => "CZK" },
-                  "column0" => { "value" => Date.current.to_s },
-                  "column5" => { "value" => "2026-001" },
-                  "column10" => { "value" => "Test Company" },
-                  "column2" => { "value" => "123456789" },
-                  "column25" => { "value" => "Payment for invoice" }
-                },
-                {
-                  "column22" => { "value" => "12346" },
-                  "column1" => { "value" => -500.0 },
-                  "column14" => { "value" => "CZK" },
-                  "column0" => { "value" => Date.current.to_s },
-                  "column5" => { "value" => nil },
-                  "column10" => { "value" => "Expense Corp" },
-                  "column2" => { "value" => "987654321" },
-                  "column25" => { "value" => "Office supplies" }
-                }
-              ]
-            }
-          }
-        }
+      let(:income_transaction) do
+        instance_double(FioAPI::Transaction,
+          transaction_id: 12345,
+          date: Date.current.to_s,
+          amount: 1000.0,
+          currency: "CZK",
+          account: "123456789",
+          account_name: "Test Company",
+          bank_code: "0100",
+          bank_name: "KB",
+          vs: "2026-001",
+          ks: nil,
+          ss: nil,
+          user_identification: "Test Company",
+          message_for_recipient: "Payment for invoice",
+          transaction_type: "Příchozí platba",
+          comment: "Test Company"
+        )
+      end
+
+      let(:expense_transaction) do
+        instance_double(FioAPI::Transaction,
+          transaction_id: 12346,
+          date: Date.current.to_s,
+          amount: -500.0,
+          currency: "CZK",
+          account: "987654321",
+          account_name: "Expense Corp",
+          bank_code: "0300",
+          bank_name: "CSOB",
+          vs: nil,
+          ks: nil,
+          ss: nil,
+          user_identification: nil,
+          message_for_recipient: "Office supplies",
+          transaction_type: "Odchozí platba",
+          comment: nil
+        )
+      end
+
+      let(:response_double) do
+        instance_double(FioAPI::ListResponseDeserializer,
+          transactions: [ income_transaction, expense_transaction ]
+        )
       end
 
       before do
@@ -97,7 +112,7 @@ RSpec.describe FioBankPlugin do
         list_double = instance_double(FioAPI::List)
         allow(FioAPI::List).to receive(:new).and_return(list_double)
         allow(list_double).to receive(:by_date_range)
-        allow(list_double).to receive(:response).and_return(api_response)
+        allow(list_double).to receive(:response).and_return(response_double)
       end
 
       it "returns success result" do
@@ -137,25 +152,30 @@ RSpec.describe FioBankPlugin do
     end
 
     context "deduplication" do
-      let(:api_response) do
-        {
-          "accountStatement" => {
-            "transactionList" => {
-              "transaction" => [
-                {
-                  "column22" => { "value" => "99999" },
-                  "column1" => { "value" => 500.0 },
-                  "column14" => { "value" => "CZK" },
-                  "column0" => { "value" => Date.current.to_s },
-                  "column5" => { "value" => nil },
-                  "column10" => { "value" => "Test" },
-                  "column2" => { "value" => nil },
-                  "column25" => { "value" => "Test payment" }
-                }
-              ]
-            }
-          }
-        }
+      let(:transaction) do
+        instance_double(FioAPI::Transaction,
+          transaction_id: 99999,
+          date: Date.current.to_s,
+          amount: 500.0,
+          currency: "CZK",
+          account: nil,
+          account_name: "Test",
+          bank_code: nil,
+          bank_name: nil,
+          vs: nil,
+          ks: nil,
+          ss: nil,
+          user_identification: nil,
+          message_for_recipient: "Test payment",
+          transaction_type: "Příchozí platba",
+          comment: nil
+        )
+      end
+
+      let(:response_double) do
+        instance_double(FioAPI::ListResponseDeserializer,
+          transactions: [ transaction ]
+        )
       end
 
       before do
@@ -168,7 +188,7 @@ RSpec.describe FioBankPlugin do
         list_double = instance_double(FioAPI::List)
         allow(FioAPI::List).to receive(:new).and_return(list_double)
         allow(list_double).to receive(:by_date_range)
-        allow(list_double).to receive(:response).and_return(api_response)
+        allow(list_double).to receive(:response).and_return(response_double)
       end
 
       it "does not create duplicates on re-sync" do
