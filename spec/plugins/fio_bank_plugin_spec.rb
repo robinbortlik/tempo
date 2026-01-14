@@ -95,9 +95,14 @@ RSpec.describe FioBankPlugin do
         )
       end
 
+      let(:account_double) do
+        instance_double(FioAPI::Account, account_id: "123456789")
+      end
+
       let(:response_double) do
         instance_double(FioAPI::ListResponseDeserializer,
-          transactions: [ income_transaction, expense_transaction ]
+          transactions: [ income_transaction, expense_transaction ],
+          account: account_double
         )
       end
 
@@ -172,9 +177,14 @@ RSpec.describe FioBankPlugin do
         )
       end
 
+      let(:account_double) do
+        instance_double(FioAPI::Account, account_id: "123456789")
+      end
+
       let(:response_double) do
         instance_double(FioAPI::ListResponseDeserializer,
-          transactions: [ transaction ]
+          transactions: [ transaction ],
+          account: account_double
         )
       end
 
@@ -199,6 +209,39 @@ RSpec.describe FioBankPlugin do
         second_count = MoneyTransaction.count
 
         expect(second_count).to eq(first_count)
+      end
+    end
+
+    context "with empty API response" do
+      let(:account_double) do
+        instance_double(FioAPI::Account, account_id: nil)
+      end
+
+      let(:response_double) do
+        instance_double(FioAPI::ListResponseDeserializer,
+          transactions: [],
+          account: account_double
+        )
+      end
+
+      before do
+        create(:plugin_configuration,
+               plugin_name: "fio_bank",
+               enabled: true,
+               credentials: { api_token: "invalid_token" }.to_json)
+
+        allow(FioAPI).to receive(:token=)
+        list_double = instance_double(FioAPI::List)
+        allow(FioAPI::List).to receive(:new).and_return(list_double)
+        allow(list_double).to receive(:by_date_range)
+        allow(list_double).to receive(:response).and_return(response_double)
+      end
+
+      it "fails with empty response error" do
+        result = plugin.sync
+
+        expect(result[:success]).to be false
+        expect(result[:error]).to include("FIO API returned empty response")
       end
     end
   end

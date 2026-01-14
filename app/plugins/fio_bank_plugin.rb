@@ -95,7 +95,14 @@ class FioBankPlugin < BasePlugin
     FioAPI.token = api_token
     list = FioAPI::List.new
     list.by_date_range(from_date, to_date)
-    list.response.transactions.map { |txn| normalize_transaction(txn) }
+    response = list.response
+
+    # Validate API response - if account_id is nil, the API rejected the request
+    if response.account.account_id.nil?
+      raise "FIO API returned empty response. Check if API token is valid and date range is within 90 days."
+    end
+
+    response.transactions.map { |txn| normalize_transaction(txn) }
   end
 
   def normalize_transaction(txn)
