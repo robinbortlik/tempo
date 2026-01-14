@@ -54,7 +54,9 @@ function formatDate(dateString: string | null): string {
 export default function PluginsIndex() {
   const { plugins, flash } = usePage<PageProps>().props;
   const { t } = useTranslation();
-  const [togglingPlugins, setTogglingPlugins] = useState<Set<string>>(new Set());
+  const [togglingPlugins, setTogglingPlugins] = useState<Set<string>>(
+    new Set()
+  );
   const [syncingPlugins, setSyncingPlugins] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -231,7 +233,9 @@ export default function PluginsIndex() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.visit(`/plugins/${plugin.plugin_name}/history`)}
+                      onClick={() =>
+                        router.visit(`/plugins/${plugin.plugin_name}/history`)
+                      }
                       className="text-stone-600"
                     >
                       {t("pages.plugins.viewHistory")}
