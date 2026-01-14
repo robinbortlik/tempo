@@ -40,7 +40,7 @@ class FioBankPlugin < BasePlugin
         label: "Sync from date",
         type: "date",
         required: false,
-        description: "Only import transactions after this date (defaults to 30 days ago)"
+        description: "Only import transactions after this date (defaults to 30 days ago). Note: FIO API limits to 90 days without strong authorization."
       },
       {
         name: "cron_schedule",
@@ -95,50 +95,56 @@ class FioBankPlugin < BasePlugin
     FioAPI.token = api_token
     list = FioAPI::List.new
     list.by_date_range(from_date, to_date)
-    parse_response(list.response)
-  end
-
-  def parse_response(response)
-    return [] unless response.is_a?(Hash)
-
-    transactions = response.dig("accountStatement", "transactionList", "transaction") || []
-    transactions.map { |txn| normalize_transaction(txn) }
+    list.response.transactions.map { |txn| normalize_transaction(txn) }
   end
 
   def normalize_transaction(txn)
     {
-      id: txn.dig("column22", "value")&.to_s,
-      amount: txn.dig("column1", "value")&.to_f&.abs,
-      currency: txn.dig("column14", "value") || "CZK",
-      date: parse_date(txn.dig("column0", "value")),
-      type: txn.dig("column1", "value").to_f >= 0 ? "credit" : "debit",
+      id: txn.transaction_id.to_s,
+      amount: txn.amount.abs,
+      currency: txn.currency || "CZK",
+      date: parse_date(txn.date),
+      type: txn.amount >= 0 ? "credit" : "debit",
       counterparty: extract_counterparty(txn),
-      reference: txn.dig("column5", "value")&.to_s,
-      description: txn.dig("column25", "value"),
-      raw: txn
+      reference: txn.vs&.to_s.presence,
+      description: txn.message_for_recipient || txn.comment,
+      raw: transaction_to_hash(txn)
     }
   end
 
   def parse_date(value)
     return Date.current if value.blank?
-
-    case value
-    when String
-      Date.parse(value)
-    when Time, DateTime
-      value.to_date
-    else
-      Date.current
-    end
+    Date.parse(value.to_s)
   rescue ArgumentError
     Date.current
   end
 
   def extract_counterparty(txn)
-    name = txn.dig("column10", "value")
-    account = txn.dig("column2", "value")
+    name = txn.account_name.presence || txn.user_identification.presence || txn.comment
+    account = txn.account
+    bank = txn.bank_name
 
-    [ name, account ].compact.reject(&:blank?).join(" - ").presence
+    [ name, account, bank ].compact.reject(&:blank?).first(2).join(" - ").presence
+  end
+
+  def transaction_to_hash(txn)
+    {
+      transaction_id: txn.transaction_id,
+      date: txn.date,
+      amount: txn.amount,
+      currency: txn.currency,
+      account: txn.account,
+      account_name: txn.account_name,
+      bank_code: txn.bank_code,
+      bank_name: txn.bank_name,
+      vs: txn.vs,
+      ks: txn.ks,
+      ss: txn.ss,
+      user_identification: txn.user_identification,
+      message_for_recipient: txn.message_for_recipient,
+      transaction_type: txn.transaction_type,
+      comment: txn.comment
+    }
   end
 
   def process_transactions(transactions)
