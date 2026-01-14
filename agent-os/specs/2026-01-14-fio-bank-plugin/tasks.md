@@ -41,17 +41,17 @@ This feature adds FIO bank integration to automatically sync transactions, match
 #### Task Group 2: FIO Plugin and Invoice Matching
 **Dependencies:** Task Group 1
 
-- [ ] 2.0 Complete FIO plugin and invoice matching
-  - [ ] 2.1 Write 4-6 focused tests for FIO plugin and matching
+- [x] 2.0 Complete FIO plugin and invoice matching
+  - [x] 2.1 Write 4-6 focused tests for FIO plugin and matching
     - Test FioBankPlugin class methods (name, version, description)
     - Test sync creates MoneyTransaction records with correct transaction_type
     - Test deduplication by source + external_id
     - Test InvoiceMatchingService matches transactions to invoices by reference + amount
     - Test matched invoices are marked as paid with correct paid_at
-  - [ ] 2.2 Add fio_api gem to Gemfile
+  - [x] 2.2 Add fio_api gem to Gemfile
     - Add `gem "fio_api"` to Gemfile
     - Run `bundle install`
-  - [ ] 2.3 Create FioBankPlugin class
+  - [x] 2.3 Create FioBankPlugin class
     - File: `app/plugins/fio_bank_plugin.rb`
     - Inherit from `BasePlugin`
     - Implement `name` returning `"fio_bank"`
@@ -60,21 +60,21 @@ This feature adds FIO bank integration to automatically sync transactions, match
     - Define `credential_fields` with `api_token` (password, required)
     - Define `setting_fields` with `sync_from_date` (date, optional) and `cron_schedule` (text, optional)
     - Follow ExamplePlugin pattern in `app/plugins/example_plugin.rb`
-  - [ ] 2.4 Implement FioBankPlugin sync method
+  - [x] 2.4 Implement FioBankPlugin sync method
     - Use `FioAPI::List.by_date_range` for fetching transactions
     - Create MoneyTransaction records with unique `external_id` from FIO transaction ID
     - Set `transaction_type` to `:income` for credits, `:expense` for debits based on amount sign
     - Store counterparty, reference (variable symbol), description, and raw API response
     - Use deduplication pattern: `find_by(source: name, external_id: id)`
-  - [ ] 2.5 Create InvoiceMatchingService
+  - [x] 2.5 Create InvoiceMatchingService
     - File: `app/services/invoice_matching_service.rb`
     - Match incoming transactions to invoices by exact reference and amount
     - Only match `Invoice.payable` (final status, not paid)
     - On match: update invoice status to `:paid`, set `paid_at` to transaction date
     - Link transaction to invoice via `invoice_id` foreign key
-  - [ ] 2.6 Integrate InvoiceMatchingService into FioBankPlugin
+  - [x] 2.6 Integrate InvoiceMatchingService into FioBankPlugin
     - Call InvoiceMatchingService after processing transactions
-  - [ ] 2.7 Run plugin and service tests
+  - [x] 2.7 Run plugin and service tests
     - Run ONLY the tests written in 2.1
     - Verify FIO plugin sync works (with mocked API)
 
