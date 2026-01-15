@@ -69,6 +69,11 @@ class Invoice < ApplicationRecord
     save!
   end
 
+  # Marks the invoice as paid with the given date (defaults to today)
+  def mark_as_paid!(date = nil)
+    update!(status: :paid, paid_at: date || Date.current)
+  end
+
   private
 
   def set_invoice_number

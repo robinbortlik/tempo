@@ -2,56 +2,43 @@
 #
 # Matches transactions to invoices based on:
 # - Exact reference match (variable symbol) to invoice number
-# - Exact amount match to invoice grand_total
+# - Exact amount match to invoice total_amount
 #
 # Usage:
-#   # Match all unmatched income transactions
+#   # Match all payable invoices to unmatched transactions
 #   InvoiceMatchingService.match_all
 #
-#   # Match a specific transaction
-#   service = InvoiceMatchingService.new(transaction)
-#   result = service.match
-#
 class InvoiceMatchingService
-  attr_reader :transaction
-
-  def initialize(transaction)
-    @transaction = transaction
-  end
-
-  # Class method to match all unmatched income transactions
+  # Matches all payable invoices to unmatched income transactions.
+  # Iterates over invoices (fewer) rather than transactions (many) for efficiency.
+  # @return [Integer] number of invoices matched
   def self.match_all
-    MoneyTransaction.income.unmatched.find_each do |transaction|
-      new(transaction).match
-    end
-  end
+    matched_count = 0
 
-  # Attempts to match the transaction to a payable invoice
-  # @return [Hash] result with :success and :invoice or :error
-  def match
-    return { success: false, error: "Transaction already matched" } if transaction.invoice_id.present?
-    return { success: false, error: "Not an income transaction" } unless transaction.income?
-    return { success: false, error: "No reference" } if transaction.reference.blank?
+    Invoice.payable.find_each do |invoice|
+      transaction = find_matching_transaction(invoice)
+      next unless transaction
 
-    invoice = find_matching_invoice
-    return { success: false, error: "No matching invoice found" } unless invoice
-
-    Invoice.transaction do
-      invoice.update!(status: :paid, paid_at: transaction.transacted_on)
-      transaction.update!(invoice_id: invoice.id)
+      link_invoice_to_transaction(invoice, transaction)
+      matched_count += 1
     end
 
-    { success: true, invoice: invoice }
-  rescue ActiveRecord::RecordInvalid => e
-    { success: false, error: e.message }
+    matched_count
   end
 
-  private
-
-  def find_matching_invoice
-    Invoice.payable.find_by(
-      number: transaction.reference,
-      total_amount: transaction.amount
+  def self.find_matching_transaction(invoice)
+    MoneyTransaction.income.unmatched.find_by(
+      reference: invoice.number,
+      amount: invoice.total_amount
     )
   end
+  private_class_method :find_matching_transaction
+
+  def self.link_invoice_to_transaction(invoice, transaction)
+    Invoice.transaction do
+      invoice.mark_as_paid!(transaction.transacted_on)
+      transaction.update!(invoice_id: invoice.id)
+    end
+  end
+  private_class_method :link_invoice_to_transaction
 end

@@ -124,8 +124,8 @@ class InvoicesController < ApplicationController
       return
     end
 
-    paid_at = params[:paid_at].present? ? Date.parse(params[:paid_at]) : Date.current
-    @invoice.update!(status: :paid, paid_at: paid_at)
+    paid_at = params[:paid_at].present? ? Date.parse(params[:paid_at]) : nil
+    @invoice.mark_as_paid!(paid_at)
 
     redirect_to invoice_path(@invoice), notice: t("flash.invoices.marked_as_paid")
   end

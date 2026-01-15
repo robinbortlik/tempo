@@ -64,6 +64,9 @@ class FioBankPlugin < BasePlugin
     # Match transactions to invoices after processing
     InvoiceMatchingService.match_all
 
+    # Update sync_from_date for next incremental fetch
+    update_last_sync_date(to_date)
+
     {
       success: true,
       records_processed: stats[:records_processed],
@@ -212,5 +215,12 @@ class FioBankPlugin < BasePlugin
       raw_data: txn[:raw].to_json
     )
     existing
+  end
+
+  def update_last_sync_date(date)
+    return unless configuration
+
+    new_settings = settings.merge("sync_from_date" => date.to_s)
+    configuration.update!(settings: new_settings.to_json)
   end
 end
