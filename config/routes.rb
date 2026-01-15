@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :money_transactions, only: [ :index ]
   resources :plugins, only: [ :index ] do
     member do
       patch :enable
