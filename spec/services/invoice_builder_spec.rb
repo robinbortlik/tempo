@@ -385,6 +385,52 @@ RSpec.describe InvoiceBuilder do
     end
   end
 
+  describe "bank account assignment" do
+    before do
+      create(:work_entry, :time_entry, project: project, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+    end
+
+    context "when client has a bank account assigned" do
+      let(:bank_account) { create(:bank_account, :default) }
+      let(:client_with_bank) { create(:client, hourly_rate: 100, currency: "EUR", bank_account: bank_account) }
+      let(:project_with_bank) { create(:project, client: client_with_bank, hourly_rate: 100) }
+
+      before do
+        create(:work_entry, :time_entry, project: project_with_bank, date: Date.new(2024, 12, 15), hours: 8, status: :unbilled)
+      end
+
+      it "sets bank_account_id from client" do
+        builder = described_class.new(
+          client_id: client_with_bank.id,
+          period_start: period_start,
+          period_end: period_end
+        )
+
+        result = builder.create_draft
+        invoice = result[:invoice]
+
+        expect(invoice.bank_account_id).to eq(bank_account.id)
+      end
+    end
+
+    context "when client has no bank account assigned" do
+      it "sets bank_account_id from default bank account" do
+        default_account = create(:bank_account, :default)
+
+        builder = described_class.new(
+          client_id: client.id,
+          period_start: period_start,
+          period_end: period_end
+        )
+
+        result = builder.create_draft
+        invoice = result[:invoice]
+
+        expect(invoice.bank_account_id).to eq(default_account.id)
+      end
+    end
+  end
+
   describe "VAT rate inheritance" do
     let(:client_with_vat) { create(:client, hourly_rate: 100, currency: "EUR", default_vat_rate: 21.00) }
     let(:project_with_vat) { create(:project, client: client_with_vat, hourly_rate: 100) }

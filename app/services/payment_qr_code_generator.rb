@@ -3,16 +3,17 @@
 class PaymentQrCodeGenerator
   SUPPORTED_CURRENCIES = %w[EUR CZK].freeze
 
-  attr_reader :invoice, :settings
+  attr_reader :invoice, :settings, :bank_account
 
-  def initialize(invoice:, settings:)
+  def initialize(invoice:, settings:, bank_account: nil)
     @invoice = invoice
     @settings = settings
+    @bank_account = bank_account
   end
 
   # Check if QR code can be generated
   def available?
-    settings.iban.present? &&
+    iban_value.present? &&
       SUPPORTED_CURRENCIES.include?(invoice.currency) &&
       invoice.grand_total.to_f > 0
   end
@@ -56,9 +57,9 @@ class PaymentQrCodeGenerator
       "002",                                          # Version
       "1",                                            # Character set (UTF-8)
       "SCT",                                          # Identification (SEPA Credit Transfer)
-      sanitize_bic(settings.bank_swift),              # BIC (optional)
+      sanitize_bic(bic_value),                        # BIC (optional)
       truncate(settings.company_name || "", 70),      # Beneficiary Name
-      sanitize_iban(settings.iban),                   # IBAN
+      sanitize_iban(iban_value),                      # IBAN
       format_epc_amount(invoice.grand_total),         # Amount
       "",                                             # Purpose (optional)
       "",                                             # Remittance (Structured) - empty
@@ -70,7 +71,7 @@ class PaymentQrCodeGenerator
   def build_spayd_payload
     parts = [
       "SPD*1.0",
-      "ACC:#{sanitize_iban(settings.iban)}#{bic_suffix}",
+      "ACC:#{sanitize_iban(iban_value)}#{bic_suffix}",
       "AM:#{format_spayd_amount(invoice.grand_total)}",
       "CC:CZK",
       "MSG:#{sanitize_spayd_text(invoice.number)}"
@@ -83,6 +84,14 @@ class PaymentQrCodeGenerator
     parts.join("*")
   end
 
+  def iban_value
+    bank_account&.iban || settings.iban
+  end
+
+  def bic_value
+    bank_account&.bank_swift || settings.bank_swift
+  end
+
   def sanitize_iban(iban)
     iban.to_s.gsub(/\s+/, "")
   end
@@ -92,7 +101,7 @@ class PaymentQrCodeGenerator
   end
 
   def bic_suffix
-    bic = sanitize_bic(settings.bank_swift)
+    bic = sanitize_bic(bic_value)
     bic.present? ? "+#{bic}" : ""
   end
 

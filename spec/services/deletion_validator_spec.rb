@@ -83,4 +83,40 @@ RSpec.describe DeletionValidator do
       end
     end
   end
+
+  describe ".can_delete_bank_account?" do
+    context "when bank account has no clients and is not sole default" do
+      it "returns valid: true" do
+        create(:bank_account, :default)
+        bank_account = create(:bank_account)
+
+        result = described_class.can_delete_bank_account?(bank_account)
+
+        expect(result[:valid]).to be true
+      end
+    end
+
+    context "when bank account has clients referencing it" do
+      it "returns valid: false with error message" do
+        bank_account = create(:bank_account, :default)
+        create(:client, bank_account: bank_account)
+
+        result = described_class.can_delete_bank_account?(bank_account)
+
+        expect(result[:valid]).to be false
+        expect(result[:error]).to include("clients")
+      end
+    end
+
+    context "when bank account is the sole default" do
+      it "returns valid: false with error message" do
+        bank_account = create(:bank_account, :default)
+
+        result = described_class.can_delete_bank_account?(bank_account)
+
+        expect(result[:valid]).to be false
+        expect(result[:error]).to include("default")
+      end
+    end
+  end
 end

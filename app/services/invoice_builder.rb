@@ -41,7 +41,8 @@ class InvoiceBuilder
       period_start: period_start,
       period_end: period_end,
       currency: client.currency,
-      notes: notes
+      notes: notes,
+      bank_account: client.bank_account || BankAccount.default
     )
 
     Invoice.transaction do

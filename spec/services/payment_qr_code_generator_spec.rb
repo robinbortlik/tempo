@@ -238,4 +238,49 @@ RSpec.describe PaymentQrCodeGenerator do
       end
     end
   end
+
+  describe "bank_account parameter" do
+    let(:bank_account) { create(:bank_account, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX") }
+    let(:settings) { build(:setting, company_name: "Test Company") }
+    let(:client) { create(:client, currency: "EUR") }
+    let(:invoice) { create(:invoice, client: client, currency: "EUR") }
+
+    before do
+      invoice.line_items.create!(
+        line_type: :fixed,
+        description: "Test item",
+        amount: 1000.00,
+        vat_rate: 0,
+        position: 0
+      )
+    end
+
+    subject(:generator_with_bank_account) do
+      described_class.new(invoice: invoice, settings: settings, bank_account: bank_account)
+    end
+
+    it "uses bank_account IBAN for QR code generation" do
+      payload = generator_with_bank_account.send(:build_epc_payload)
+      expect(payload).to include("CZ6508000000192000145399")
+    end
+
+    it "uses bank_account BIC for QR code generation" do
+      payload = generator_with_bank_account.send(:build_epc_payload)
+      expect(payload).to include("GIBACZPX")
+    end
+
+    it "checks bank_account IBAN for availability" do
+      expect(generator_with_bank_account.available?).to be true
+    end
+
+    context "when bank_account has no IBAN" do
+      let(:bank_account) { build(:bank_account, iban: nil) }
+
+      it "returns false for available?" do
+        # bank_account without IBAN should make it unavailable
+        gen = described_class.new(invoice: invoice, settings: settings, bank_account: bank_account)
+        expect(gen.available?).to be false
+      end
+    end
+  end
 end
