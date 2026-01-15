@@ -52,6 +52,7 @@ export default [
         HTMLElement: "readonly",
         HTMLButtonElement: "readonly",
         HTMLInputElement: "readonly",
+        HTMLSelectElement: "readonly",
         Object: "readonly",
         ResizeObserver: "readonly",
         globalThis: "readonly",

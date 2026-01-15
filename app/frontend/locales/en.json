@@ -212,7 +212,10 @@
         "bankDetails": "Bank Details",
         "bankDetailsPlaceholder": "Bank name, account number, routing...",
         "locale": "Document Language",
-        "localeDescription": "Language used for invoices and shared reports for this client"
+        "localeDescription": "Language used for invoices and shared reports for this client",
+        "bankAccount": "Bank Account",
+        "selectBankAccount": "Use default account",
+        "bankAccountDescription": "Select a bank account for this client's invoices"
       },
       "table": {
         "name": "Name",

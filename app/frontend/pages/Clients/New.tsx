@@ -19,10 +19,18 @@ interface Client {
   currency: string | null;
   default_vat_rate: number | null;
   locale: string;
+  bank_account_id: number | null;
+}
+
+interface BankAccountForSelect {
+  id: number;
+  name: string;
+  iban_hint: string | null;
 }
 
 interface PageProps {
   client: Client;
+  bank_accounts: BankAccountForSelect[];
   flash: {
     alert?: string;
     notice?: string;
@@ -32,7 +40,7 @@ interface PageProps {
 
 export default function NewClient() {
   const { t } = useTranslation();
-  const { client, flash } = usePage<PageProps>().props;
+  const { client, bank_accounts, flash } = usePage<PageProps>().props;
 
   useEffect(() => {
     if (flash.notice) {
@@ -77,7 +85,7 @@ export default function NewClient() {
           </p>
         </div>
 
-        <ClientForm client={client} />
+        <ClientForm client={client} bankAccounts={bank_accounts} />
       </div>
     </>
   );

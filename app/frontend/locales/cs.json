@@ -212,7 +212,10 @@
         "bankDetails": "Bankovní údaje",
         "bankDetailsPlaceholder": "Název banky, číslo účtu, směrový kód...",
         "locale": "Jazyk dokumentů",
-        "localeDescription": "Jazyk používaný pro faktury a sdílené reporty pro tohoto klienta"
+        "localeDescription": "Jazyk používaný pro faktury a sdílené reporty pro tohoto klienta",
+        "bankAccount": "Bankovní účet",
+        "selectBankAccount": "Použít výchozí účet",
+        "bankAccountDescription": "Vyberte bankovní účet pro faktury tohoto klienta"
       },
       "table": {
         "name": "Název",
