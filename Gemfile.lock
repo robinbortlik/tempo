@@ -144,7 +144,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    grover (1.2.4)
+    grover (1.2.6)
       nokogiri (~> 1)
     httparty (0.24.0)
       csv
