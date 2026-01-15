@@ -5,6 +5,7 @@
     "clients": "Klienti",
     "projects": "Projekty",
     "invoices": "Faktury",
+    "transactions": "Transakce",
     "plugins": "Pluginy",
     "settings": "Nastavení",
     "signOut": "Odhlásit se"
@@ -544,6 +545,39 @@
           "updated": "Aktualizovano",
           "destroyed": "Smazano"
         }
+      }
+    },
+    "moneyTransactions": {
+      "title": "Transakce",
+      "subtitle": "Zobrazení a filtrování importovaných peněžních transakcí",
+      "filter": {
+        "year": "Rok",
+        "month": "Měsíc",
+        "transactionType": "Typ transakce",
+        "description": "Popis",
+        "allTypes": "Všechny typy",
+        "income": "Příjem",
+        "expense": "Výdaj",
+        "searchDescription": "Hledat v popisu...",
+        "clear": "Vymazat filtry"
+      },
+      "summary": {
+        "totalIncome": "Celkové příjmy",
+        "totalExpenses": "Celkové výdaje",
+        "netBalance": "Čistý zůstatek",
+        "transactionCount": "Transakcí"
+      },
+      "empty": {
+        "noTransactions": "Zatím žádné transakce",
+        "noTransactionsDescription": "Transakce se zde zobrazí po importu z externích zdrojů.",
+        "noFilterResults": "Žádné transakce neodpovídají vašim filtrům"
+      },
+      "row": {
+        "source": "Zdroj",
+        "reference": "Reference",
+        "externalId": "Externí ID",
+        "counterparty": "Protistrana",
+        "linkedInvoice": "Propojená faktura"
       }
     }
   },

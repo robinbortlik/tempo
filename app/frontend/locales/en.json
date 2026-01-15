@@ -5,6 +5,7 @@
     "clients": "Clients",
     "projects": "Projects",
     "invoices": "Invoices",
+    "transactions": "Transactions",
     "plugins": "Plugins",
     "settings": "Settings",
     "signOut": "Sign out"
@@ -540,6 +541,39 @@
           "updated": "Updated",
           "destroyed": "Destroyed"
         }
+      }
+    },
+    "moneyTransactions": {
+      "title": "Transactions",
+      "subtitle": "View and filter imported money transactions",
+      "filter": {
+        "year": "Year",
+        "month": "Month",
+        "transactionType": "Transaction Type",
+        "description": "Description",
+        "allTypes": "All Types",
+        "income": "Income",
+        "expense": "Expense",
+        "searchDescription": "Search description...",
+        "clear": "Clear Filters"
+      },
+      "summary": {
+        "totalIncome": "Total Income",
+        "totalExpenses": "Total Expenses",
+        "netBalance": "Net Balance",
+        "transactionCount": "Transactions"
+      },
+      "empty": {
+        "noTransactions": "No transactions yet",
+        "noTransactionsDescription": "Transactions will appear here once imported from external sources.",
+        "noFilterResults": "No transactions match your filters"
+      },
+      "row": {
+        "source": "Source",
+        "reference": "Reference",
+        "externalId": "External ID",
+        "counterparty": "Counterparty",
+        "linkedInvoice": "Linked Invoice"
       }
     }
   },
