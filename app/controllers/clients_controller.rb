@@ -21,13 +21,15 @@ class ClientsController < ApplicationController
 
   def new
     render inertia: "Clients/New", props: {
-      client: ClientSerializer::Empty.serializable_hash
+      client: ClientSerializer::Empty.serializable_hash,
+      bank_accounts: bank_accounts_for_select
     }
   end
 
   def edit
     render inertia: "Clients/Edit", props: {
-      client: ClientSerializer.new(@client).serializable_hash
+      client: ClientSerializer.new(@client).serializable_hash,
+      bank_accounts: bank_accounts_for_select
     }
   end
 
@@ -97,7 +99,8 @@ class ClientsController < ApplicationController
       :hourly_rate,
       :currency,
       :default_vat_rate,
-      :locale
+      :locale,
+      :bank_account_id
     )
   end
 
@@ -107,5 +110,9 @@ class ClientsController < ApplicationController
              .order(date: :desc)
              .limit(10)
              .includes(project: :client)
+  end
+
+  def bank_accounts_for_select
+    BankAccountSerializer::ForSelect.new(BankAccount.order(:name)).serializable_hash
   end
 end

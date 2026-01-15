@@ -5,7 +5,7 @@ class ClientSerializer
   attributes :id, :name, :address, :email, :contact_person, :vat_id,
              :company_registration, :bank_details, :payment_terms,
              :hourly_rate, :currency, :default_vat_rate,
-             :share_token, :sharing_enabled, :locale
+             :share_token, :sharing_enabled, :locale, :bank_account_id
 
   class List
     include Alba::Resource
@@ -40,7 +40,8 @@ class ClientSerializer
       hourly_rate: nil,
       currency: "",
       default_vat_rate: nil,
-      locale: "en"
+      locale: "en",
+      bank_account_id: nil
     }.freeze
 
     def self.to_h = DEFAULTS
