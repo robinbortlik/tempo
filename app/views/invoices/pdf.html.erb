@@ -352,22 +352,22 @@
               <td><%= @settings.vat_id %></td>
             </tr>
           <% end %>
-          <% if @settings.bank_account.present? %>
+          <% if @bank_account&.bank_account.present? %>
             <tr>
               <td><%= t('invoices.pdf.bank_account') %></td>
-              <td><%= @settings.bank_account %></td>
+              <td><%= @bank_account.bank_account %></td>
             </tr>
           <% end %>
-          <% if @settings.iban.present? %>
+          <% if @bank_account&.iban.present? %>
             <tr>
               <td><%= t('invoices.pdf.iban') %></td>
-              <td><%= @settings.iban %></td>
+              <td><%= @bank_account.iban %></td>
             </tr>
           <% end %>
-          <% if @settings.bank_swift.present? %>
+          <% if @bank_account&.bank_swift.present? %>
             <tr>
               <td><%= t('invoices.pdf.swift_bic') %></td>
-              <td><%= @settings.bank_swift %></td>
+              <td><%= @bank_account.bank_swift %></td>
             </tr>
           <% end %>
           <tr>
