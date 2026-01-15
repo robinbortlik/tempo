@@ -59,6 +59,10 @@ interface IndexProps {
   filters: Filters;
   period: Period;
   summary: Summary;
+  flash?: {
+    alert?: string;
+    notice?: string;
+  };
 }
 
 export default function MoneyTransactionsIndex(props?: IndexProps) {
@@ -95,7 +99,10 @@ export default function MoneyTransactionsIndex(props?: IndexProps) {
               {t("pages.moneyTransactions.title", "Transactions")}
             </h1>
             <p className="text-stone-500 mt-1">
-              {t("pages.moneyTransactions.subtitle", "View and filter your money transactions")}
+              {t(
+                "pages.moneyTransactions.subtitle",
+                "View and filter your money transactions"
+              )}
             </p>
           </div>
         </div>
@@ -128,7 +135,10 @@ export default function MoneyTransactionsIndex(props?: IndexProps) {
               ) : (
                 <>
                   <p className="text-stone-900 font-medium">
-                    {t("pages.moneyTransactions.noTransactions", "No transactions yet")}
+                    {t(
+                      "pages.moneyTransactions.noTransactions",
+                      "No transactions yet"
+                    )}
                   </p>
                   <p className="text-stone-500 mt-1">
                     {t(
