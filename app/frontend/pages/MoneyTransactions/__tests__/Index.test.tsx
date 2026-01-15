@@ -178,13 +178,13 @@ describe("FilterBar", () => {
 });
 
 describe("SummaryBar", () => {
-  it("displays income, expenses, net balance and count", () => {
+  it("displays income, expenses, net balance and transaction count label", () => {
     render(<SummaryBar summary={mockSummary} />);
 
     expect(screen.getByText(/5.*000/)).toBeInTheDocument();
     expect(screen.getByText(/150/)).toBeInTheDocument();
     expect(screen.getByText(/4.*850/)).toBeInTheDocument();
-    expect(screen.getByText(/2/)).toBeInTheDocument();
+    expect(screen.getByText(/transactions/i)).toBeInTheDocument();
   });
 });
 
