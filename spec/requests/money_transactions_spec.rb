@@ -27,7 +27,7 @@ RSpec.describe MoneyTransactionsController, type: :request do
         json = JSON.parse(response.body)
 
         transaction_ids = json['props']['transactions'].map { |t| t['id'] }
-        expect(transaction_ids).to eq([income_tx.id])
+        expect(transaction_ids).to eq([ income_tx.id ])
       end
 
       it "filters by year and month params" do
@@ -38,7 +38,7 @@ RSpec.describe MoneyTransactionsController, type: :request do
         json = JSON.parse(response.body)
 
         transaction_ids = json['props']['transactions'].map { |t| t['id'] }
-        expect(transaction_ids).to eq([jan_tx.id])
+        expect(transaction_ids).to eq([ jan_tx.id ])
         expect(json['props']['period']['year']).to eq(2026)
         expect(json['props']['period']['month']).to eq(1)
       end

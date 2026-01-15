@@ -18,7 +18,7 @@ class MoneyTransactionFilterService
       .pluck(Arel.sql("strftime('%Y', transacted_on)"))
       .map(&:to_i)
 
-    (years_with_transactions + [Date.current.year]).uniq.sort.reverse
+    (years_with_transactions + [ Date.current.year ]).uniq.sort.reverse
   end
 
   def year
