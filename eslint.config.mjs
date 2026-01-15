@@ -114,6 +114,7 @@ export default [
         HTMLSpanElement: "readonly",
         HTMLSelectElement: "readonly",
         HTMLTextAreaElement: "readonly",
+        HTMLMetaElement: "readonly",
         Event: "readonly",
         MouseEvent: "readonly",
         KeyboardEvent: "readonly",

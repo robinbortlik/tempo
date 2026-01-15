@@ -8,6 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/sonner";
 import i18n, { supportedLocales, type SupportedLocale } from "@/lib/i18n";
+import {
+  BankAccountsSection,
+  type BankAccount,
+} from "./components/BankAccountsSection";
 
 interface Settings {
   id: number;
@@ -27,6 +31,7 @@ interface Settings {
 
 interface PageProps {
   settings: Settings;
+  bankAccounts: BankAccount[];
   locale: SupportedLocale;
   flash: {
     alert?: string;
@@ -36,8 +41,16 @@ interface PageProps {
 }
 
 export default function SettingsShow() {
-  const { settings, locale, flash } = usePage<PageProps>().props;
+  const {
+    settings,
+    bankAccounts: initialBankAccounts,
+    locale,
+    flash,
+  } = usePage<PageProps>().props;
   const { t } = useTranslation();
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>(
+    initialBankAccounts || []
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(
     settings.logo_url
@@ -491,6 +504,14 @@ export default function SettingsShow() {
             </Button>
           </div>
         </form>
+
+        {/* Bank Accounts Section - outside form for independent AJAX handling */}
+        <div className="max-w-2xl mt-8">
+          <BankAccountsSection
+            bankAccounts={bankAccounts}
+            onBankAccountsChange={setBankAccounts}
+          />
+        </div>
       </div>
     </>
   );

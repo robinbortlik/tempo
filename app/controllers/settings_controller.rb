@@ -1,7 +1,8 @@
 class SettingsController < ApplicationController
   def show
     render inertia: "Settings/Show", props: {
-      settings: SettingsSerializer.new(settings, params: { url_helpers: self }).serializable_hash
+      settings: SettingsSerializer.new(settings, params: { url_helpers: self }).serializable_hash,
+      bankAccounts: BankAccountSerializer.new(BankAccount.all.order(:name)).serializable_hash
     }
   end
 

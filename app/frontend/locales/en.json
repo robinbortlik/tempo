@@ -123,6 +123,32 @@
         "description": "Upload your company logo to display on invoices. Recommended size: 200x200px.",
         "uploadButton": "Upload Logo",
         "altText": "Company logo"
+      },
+      "bankAccounts": {
+        "title": "Bank Accounts",
+        "noAccounts": "No bank accounts configured yet.",
+        "default": "Default",
+        "addAccount": "Add Bank Account",
+        "editAccount": "Edit Bank Account",
+        "formDescription": "Enter the bank account details for invoicing.",
+        "created": "Bank account created successfully.",
+        "updated": "Bank account updated successfully.",
+        "deleted": "Bank account deleted successfully.",
+        "saveFailed": "Failed to save bank account.",
+        "deleteFailed": "Failed to delete bank account.",
+        "deleteTitle": "Delete Bank Account?",
+        "deleteDescription": "This will permanently delete this bank account. Clients using this account will need to be reassigned.",
+        "form": {
+          "name": "Name",
+          "bankName": "Bank Name",
+          "bankAccount": "Account Number",
+          "swift": "SWIFT/BIC",
+          "iban": "IBAN",
+          "setAsDefault": "Set as Default",
+          "defaultDescription": "Use this account as the default for new invoices.",
+          "nameRequired": "Name is required.",
+          "ibanRequired": "IBAN is required."
+        }
       }
     },
     "dashboard": {
