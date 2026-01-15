@@ -1,6 +1,7 @@
 class Invoice < ApplicationRecord
   # Associations
   belongs_to :client
+  belongs_to :bank_account, optional: true
   has_many :work_entries, dependent: :nullify
   has_many :line_items, class_name: "InvoiceLineItem", dependent: :destroy
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_14_213237) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_15_232605) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -39,8 +39,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_213237) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "bank_accounts", force: :cascade do |t|
+    t.string "bank_account"
+    t.string "bank_name"
+    t.string "bank_swift"
+    t.datetime "created_at", null: false
+    t.string "iban", null: false
+    t.boolean "is_default", default: false, null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_default"], name: "index_bank_accounts_on_is_default"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.text "address"
+    t.integer "bank_account_id"
     t.text "bank_details"
     t.string "company_registration"
     t.string "contact_person"
@@ -56,6 +69,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_213237) do
     t.boolean "sharing_enabled", default: false, null: false
     t.datetime "updated_at", null: false
     t.string "vat_id"
+    t.index ["bank_account_id"], name: "index_clients_on_bank_account_id"
     t.index ["share_token"], name: "index_clients_on_share_token", unique: true
   end
 
@@ -100,6 +114,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_213237) do
   end
 
   create_table "invoices", force: :cascade do |t|
+    t.integer "bank_account_id"
     t.integer "client_id", null: false
     t.datetime "created_at", null: false
     t.string "currency"
@@ -114,6 +129,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_213237) do
     t.decimal "total_amount", precision: 12, scale: 2
     t.decimal "total_hours", precision: 8, scale: 2
     t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["status"], name: "index_invoices_on_status"
@@ -232,9 +248,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_14_213237) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "clients", "bank_accounts"
   add_foreign_key "invoice_line_item_work_entries", "invoice_line_items"
   add_foreign_key "invoice_line_item_work_entries", "work_entries"
   add_foreign_key "invoice_line_items", "invoices"
+  add_foreign_key "invoices", "bank_accounts"
   add_foreign_key "invoices", "clients"
   add_foreign_key "money_transactions", "invoices"
   add_foreign_key "projects", "clients"
