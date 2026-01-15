@@ -118,7 +118,7 @@ jobs:
           bundle exec rspec spec/system
 
       - name: Keep screenshots from failed tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: screenshots
