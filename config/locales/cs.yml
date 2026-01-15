@@ -50,6 +50,8 @@ cs:
       updated: "Faktura byla úspěšně aktualizována."
       deleted: "Faktura byla úspěšně smazána."
       finalized: "Faktura byla úspěšně dokončena."
+      marked_as_paid: "Faktura byla označena jako zaplacená."
+      only_final_can_be_paid: "Pouze finální faktury mohou být označeny jako zaplacené."
       cannot_edit_finalized: "Nelze upravit dokončenou fakturu."
       cannot_update_finalized: "Nelze aktualizovat dokončenou fakturu."
       cannot_delete_finalized: "Nelze smazat dokončenou fakturu."

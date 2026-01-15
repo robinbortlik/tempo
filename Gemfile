@@ -50,6 +50,9 @@ gem "rqrcode"
 # Modern JSON serialization [https://github.com/okuramasafumi/alba]
 gem "alba"
 
+# FIO bank API wrapper [https://github.com/14113/fio_api]
+gem "fio_api"
+
 group :development, :test do
   # Load environment variables from .env files
   gem "dotenv-rails"

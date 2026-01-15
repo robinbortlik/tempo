@@ -3,7 +3,7 @@ class InvoiceSerializer
 
   # Full detail - for show page
   attributes :id, :number, :status, :issue_date, :due_date,
-             :period_start, :period_end, :notes, :currency, :client_id
+             :period_start, :period_end, :notes, :currency, :client_id, :paid_at
 
   attribute :total_hours do |invoice|
     invoice.total_hours&.to_f
@@ -61,7 +61,7 @@ class InvoiceSerializer
     include Alba::Resource
 
     attributes :id, :number, :status, :issue_date, :due_date,
-               :period_start, :period_end, :currency, :client_id
+               :period_start, :period_end, :currency, :client_id, :paid_at
 
     attribute :total_hours do |invoice|
       invoice.total_hours&.to_f

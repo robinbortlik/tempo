@@ -19,7 +19,12 @@ vi.mock("@inertiajs/react", () => ({
         { name: "api_key", label: "API Key", type: "password", required: true },
       ],
       setting_fields: [
-        { name: "import_limit", label: "Import limit", type: "number", required: false },
+        {
+          name: "import_limit",
+          label: "Import limit",
+          type: "number",
+          required: false,
+        },
       ],
       flash: {},
     },

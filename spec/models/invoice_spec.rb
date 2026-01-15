@@ -190,8 +190,8 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe "enum status" do
-    it "defines draft and final statuses" do
-      expect(Invoice.statuses).to eq({ "draft" => 0, "final" => 1 })
+    it "defines draft, final, and paid statuses" do
+      expect(Invoice.statuses).to eq({ "draft" => 0, "final" => 1, "paid" => 2 })
     end
 
     it "defaults to draft" do
@@ -204,6 +204,11 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.final?).to be true
     end
 
+    it "can be set to paid" do
+      invoice = build(:invoice, status: :paid, paid_at: Time.current)
+      expect(invoice.paid?).to be true
+    end
+
     it "provides scope methods for draft" do
       draft_invoice = create(:invoice, :draft)
       final_invoice = create(:invoice, :final)
@@ -214,6 +219,31 @@ RSpec.describe Invoice, type: :model do
       draft_invoice = create(:invoice, :draft)
       final_invoice = create(:invoice, :final)
       expect(Invoice.final).to contain_exactly(final_invoice)
+    end
+
+    it "provides scope methods for paid" do
+      draft_invoice = create(:invoice, :draft)
+      final_invoice = create(:invoice, :final)
+      paid_invoice = create(:invoice, :paid)
+      expect(Invoice.paid).to contain_exactly(paid_invoice)
+    end
+  end
+
+  describe "paid status" do
+    it "sets paid_at when marking invoice as paid" do
+      invoice = create(:invoice, :final)
+      paid_time = Time.current
+      invoice.update!(status: :paid, paid_at: paid_time)
+      expect(invoice.paid?).to be true
+      expect(invoice.paid_at).to be_within(1.second).of(paid_time)
+    end
+
+    it "transitions from final to paid" do
+      invoice = create(:invoice, :final)
+      invoice.status = :paid
+      invoice.paid_at = Time.current
+      expect(invoice).to be_valid
+      expect(invoice.paid?).to be true
     end
   end
 
@@ -237,6 +267,16 @@ RSpec.describe Invoice, type: :model do
       it "returns invoices for the specified client" do
         expect(Invoice.for_client(client1)).to contain_exactly(invoice1)
         expect(Invoice.for_client(client2)).to contain_exactly(invoice2)
+      end
+    end
+
+    describe ".payable" do
+      let!(:draft_invoice) { create(:invoice, :draft) }
+      let!(:final_invoice) { create(:invoice, :final) }
+      let!(:paid_invoice) { create(:invoice, :paid) }
+
+      it "returns only final invoices (not draft or paid)" do
+        expect(Invoice.payable).to contain_exactly(final_invoice)
       end
     end
   end

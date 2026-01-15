@@ -307,8 +307,14 @@ function SettingsForm({
 }
 
 export default function PluginsConfigure() {
-  const { plugin, credentials, settings, credential_fields, setting_fields, flash } =
-    usePage<PageProps>().props;
+  const {
+    plugin,
+    credentials,
+    settings,
+    credential_fields,
+    setting_fields,
+    flash,
+  } = usePage<PageProps>().props;
   const { t } = useTranslation();
 
   useEffect(() => {

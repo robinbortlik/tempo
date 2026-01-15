@@ -50,6 +50,8 @@ en:
       updated: "Invoice updated successfully."
       deleted: "Invoice deleted successfully."
       finalized: "Invoice finalized successfully."
+      marked_as_paid: "Invoice marked as paid."
+      only_final_can_be_paid: "Only final invoices can be marked as paid."
       cannot_edit_finalized: "Cannot edit a finalized invoice."
       cannot_update_finalized: "Cannot update a finalized invoice."
       cannot_delete_finalized: "Cannot delete a finalized invoice."
