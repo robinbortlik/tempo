@@ -36,10 +36,6 @@ class SettingsController < ApplicationController
       :phone,
       :vat_id,
       :company_registration,
-      :bank_name,
-      :bank_account,
-      :bank_swift,
-      :iban,
       :invoice_message,
       :logo
     )

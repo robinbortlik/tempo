@@ -24,24 +24,6 @@ RSpec.describe Setting, type: :model do
       end
     end
 
-    describe "iban" do
-      it "allows blank IBAN" do
-        setting = build(:setting, iban: nil)
-        expect(setting).to be_valid
-      end
-
-      it "allows valid IBAN format" do
-        setting = build(:setting, iban: "DE89370400440532013000")
-        expect(setting).to be_valid
-      end
-
-      it "rejects invalid IBAN format" do
-        setting = build(:setting, iban: "INVALID123")
-        expect(setting).not_to be_valid
-        expect(setting.errors[:iban]).to include("is not a valid IBAN")
-      end
-    end
-
     describe "invoice_message" do
       it "allows blank invoice_message" do
         setting = build(:setting, invoice_message: nil)
@@ -110,21 +92,6 @@ RSpec.describe Setting, type: :model do
     it "stores company_registration" do
       subject.company_registration = "REG789"
       expect(subject.company_registration).to eq("REG789")
-    end
-
-    it "stores bank_name" do
-      subject.bank_name = "Test Bank"
-      expect(subject.bank_name).to eq("Test Bank")
-    end
-
-    it "stores bank_account" do
-      subject.bank_account = "123456789"
-      expect(subject.bank_account).to eq("123456789")
-    end
-
-    it "stores bank_swift" do
-      subject.bank_swift = "TESTSWIFT"
-      expect(subject.bank_swift).to eq("TESTSWIFT")
     end
   end
 
