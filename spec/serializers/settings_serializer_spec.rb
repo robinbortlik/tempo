@@ -11,10 +11,6 @@ RSpec.describe SettingsSerializer do
       phone: "+1234567890",
       vat_id: "VAT123",
       company_registration: "REG123",
-      bank_name: "Test Bank",
-      bank_account: "1234567890",
-      bank_swift: "TESTSWIFT",
-      iban: "DE89370400440532013000",
       invoice_message: "Thank you!"
     )
   end
@@ -23,16 +19,13 @@ RSpec.describe SettingsSerializer do
     it "serializes all attributes" do
       result = described_class.new(settings).serializable_hash
 
+      expect(result["id"]).to eq(settings.id)
       expect(result["company_name"]).to eq("Test Company")
       expect(result["address"]).to eq("123 Test Street")
       expect(result["email"]).to eq("test@company.com")
       expect(result["phone"]).to eq("+1234567890")
       expect(result["vat_id"]).to eq("VAT123")
       expect(result["company_registration"]).to eq("REG123")
-      expect(result["bank_name"]).to eq("Test Bank")
-      expect(result["bank_account"]).to eq("1234567890")
-      expect(result["bank_swift"]).to eq("TESTSWIFT")
-      expect(result["iban"]).to eq("DE89370400440532013000")
       expect(result["invoice_message"]).to eq("Thank you!")
     end
 
@@ -74,7 +67,6 @@ RSpec.describe SettingsSerializer do
 
       expect(result["company_name"]).to eq("Test Company")
       expect(result["address"]).to eq("123 Test Street")
-      expect(result["iban"]).to eq("DE89370400440532013000")
       expect(result["invoice_message"]).to eq("Thank you!")
     end
 

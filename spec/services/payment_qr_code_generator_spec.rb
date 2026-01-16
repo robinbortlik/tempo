@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe PaymentQrCodeGenerator do
   let(:client) { create(:client, currency: "EUR") }
   let(:invoice) { create(:invoice, client: client, currency: "EUR") }
-  let(:settings) { build(:setting, iban: "DE89370400440532013000", bank_swift: "COBADEFFXXX", company_name: "Test Company") }
+  let(:settings) { build(:setting, company_name: "Test Company") }
+  let(:bank_account) { build(:bank_account, iban: "DE89370400440532013000", bank_swift: "COBADEFFXXX") }
 
   before do
     # Set up grand_total by creating line items
@@ -16,7 +17,7 @@ RSpec.describe PaymentQrCodeGenerator do
     )
   end
 
-  subject(:generator) { described_class.new(invoice: invoice, settings: settings) }
+  subject(:generator) { described_class.new(invoice: invoice, settings: settings, bank_account: bank_account) }
 
   describe "#available?" do
     context "with EUR currency and IBAN" do
@@ -28,7 +29,7 @@ RSpec.describe PaymentQrCodeGenerator do
     context "with CZK currency and IBAN" do
       let(:client) { create(:client, currency: "CZK") }
       let(:invoice) { create(:invoice, client: client, currency: "CZK") }
-      let(:settings) { build(:setting, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX") }
+      let(:bank_account) { build(:bank_account, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX") }
 
       it "returns true" do
         expect(generator.available?).to be true
@@ -36,7 +37,7 @@ RSpec.describe PaymentQrCodeGenerator do
     end
 
     context "without IBAN" do
-      let(:settings) { build(:setting, iban: nil) }
+      let(:bank_account) { build(:bank_account, iban: nil) }
 
       it "returns false" do
         expect(generator.available?).to be false
@@ -44,7 +45,7 @@ RSpec.describe PaymentQrCodeGenerator do
     end
 
     context "with empty IBAN" do
-      let(:settings) { build(:setting, iban: "") }
+      let(:bank_account) { build(:bank_account, iban: "") }
 
       it "returns false" do
         expect(generator.available?).to be false
@@ -90,7 +91,7 @@ RSpec.describe PaymentQrCodeGenerator do
     context "with CZK currency" do
       let(:client) { create(:client, currency: "CZK") }
       let(:invoice) { create(:invoice, client: client, currency: "CZK") }
-      let(:settings) { build(:setting, iban: "CZ6508000000192000145399") }
+      let(:bank_account) { build(:bank_account, iban: "CZ6508000000192000145399") }
 
       it "returns :spayd" do
         expect(generator.format).to eq(:spayd)
@@ -98,7 +99,7 @@ RSpec.describe PaymentQrCodeGenerator do
     end
 
     context "when not available" do
-      let(:settings) { build(:setting, iban: nil) }
+      let(:bank_account) { build(:bank_account, iban: nil) }
 
       it "returns nil" do
         expect(generator.format).to be_nil
@@ -137,7 +138,7 @@ RSpec.describe PaymentQrCodeGenerator do
     end
 
     context "with EUR and missing BIC" do
-      let(:settings) { build(:setting, iban: "DE89370400440532013000", bank_swift: nil, company_name: "Test Company") }
+      let(:bank_account) { build(:bank_account, iban: "DE89370400440532013000", bank_swift: nil) }
 
       it "still generates valid EPC payload" do
         payload = generator.send(:build_epc_payload)
@@ -156,7 +157,7 @@ RSpec.describe PaymentQrCodeGenerator do
     context "with CZK currency (SPAYD format)" do
       let(:client) { create(:client, currency: "CZK") }
       let(:invoice) { create(:invoice, client: client, currency: "CZK", number: "2024-001") }
-      let(:settings) { build(:setting, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX") }
+      let(:bank_account) { build(:bank_account, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX") }
 
       before do
         invoice.line_items.destroy_all
@@ -189,7 +190,7 @@ RSpec.describe PaymentQrCodeGenerator do
     context "with SPAYD and missing BIC" do
       let(:client) { create(:client, currency: "CZK") }
       let(:invoice) { create(:invoice, client: client, currency: "CZK") }
-      let(:settings) { build(:setting, iban: "CZ6508000000192000145399", bank_swift: nil) }
+      let(:bank_account) { build(:bank_account, iban: "CZ6508000000192000145399", bank_swift: nil) }
 
       before do
         invoice.line_items.create!(
@@ -209,7 +210,7 @@ RSpec.describe PaymentQrCodeGenerator do
     end
 
     context "when not available" do
-      let(:settings) { build(:setting, iban: nil) }
+      let(:bank_account) { build(:bank_account, iban: nil) }
 
       it "returns nil" do
         expect(generator.to_data_url).to be_nil
@@ -219,7 +220,7 @@ RSpec.describe PaymentQrCodeGenerator do
 
   describe "payload sanitization" do
     context "with IBAN containing spaces" do
-      let(:settings) { build(:setting, iban: "DE89 3704 0044 0532 0130 00", bank_swift: "COBADEFFXXX", company_name: "Test") }
+      let(:bank_account) { build(:bank_account, iban: "DE89 3704 0044 0532 0130 00", bank_swift: "COBADEFFXXX") }
 
       it "removes spaces from IBAN" do
         payload = generator.send(:build_epc_payload)
@@ -229,7 +230,7 @@ RSpec.describe PaymentQrCodeGenerator do
     end
 
     context "with long company name" do
-      let(:settings) { build(:setting, iban: "DE89370400440532013000", company_name: "A" * 100) }
+      let(:settings) { build(:setting, company_name: "A" * 100) }
 
       it "truncates company name to 70 characters" do
         payload = generator.send(:build_epc_payload)
