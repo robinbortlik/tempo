@@ -1,4 +1,4 @@
-# Fetches daily exchange rates from Czech National Bank and stores them
+# Fetches daily exchange rates from Czech National Bank via the CNB plugin
 #
 # Usage:
 #   # Manual execution
@@ -11,26 +11,12 @@ class ExchangeRateFetchJob < ApplicationJob
   queue_as :default
 
   def perform
-    rates = fetch_rates
-    upsert_rates(rates) if rates.present?
-  rescue CnbApiClient::FetchError => e
-    Rails.logger.error("Failed to fetch exchange rates: #{e.message}")
-  end
+    result = SyncExecutionService.new.execute(plugin_name: "cnb_exchange_rate")
 
-  private
-
-  def fetch_rates
-    CnbApiClient.new.fetch(date: Date.current)
-  end
-
-  def upsert_rates(rates)
-    ExchangeRate.transaction do
-      ExchangeRate.upsert_all(
-        rates,
-        unique_by: %i[currency date]
-      )
+    if result[:success]
+      Rails.logger.info("CNB exchange rate sync completed: #{result[:data][:records_created]} created, #{result[:data][:records_updated]} updated")
+    else
+      Rails.logger.error("CNB exchange rate sync failed: #{result[:error]}")
     end
-
-    Rails.logger.info("Successfully upserted #{rates.length} exchange rates for #{Date.current}")
   end
 end
