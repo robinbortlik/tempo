@@ -29,10 +29,17 @@ export default function SummaryBar({ summary }: SummaryBarProps) {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-stone-500">
-              {t("pages.moneyTransactions.summary.totalExpenses", "Total Expenses")}
+              {t(
+                "pages.moneyTransactions.summary.totalExpenses",
+                "Total Expenses"
+              )}
             </span>
             <span className="text-lg font-bold text-red-600 tabular-nums">
-              {formatCurrency(Number(summary.total_expenses || 0), "USD", false)}
+              {formatCurrency(
+                Number(summary.total_expenses || 0),
+                "USD",
+                false
+              )}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -50,9 +57,13 @@ export default function SummaryBar({ summary }: SummaryBarProps) {
         </div>
         <div className="flex items-center gap-6 text-sm text-stone-500">
           <span>
-            {t("pages.moneyTransactions.summary.transactionCount", "{{count}} transactions", {
-              count: summary.transaction_count || 0,
-            })}
+            {t(
+              "pages.moneyTransactions.summary.transactionCount",
+              "{{count}} transactions",
+              {
+                count: summary.transaction_count || 0,
+              }
+            )}
           </span>
         </div>
       </div>

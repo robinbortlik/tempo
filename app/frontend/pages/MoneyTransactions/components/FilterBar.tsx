@@ -52,7 +52,8 @@ export default function FilterBar({ filters, period }: FilterBarProps) {
     const year = overrides.year !== undefined ? overrides.year : period.year;
     if (year) params.year = year;
 
-    const month = overrides.month !== undefined ? overrides.month : period.month;
+    const month =
+      overrides.month !== undefined ? overrides.month : period.month;
     if (month) params.month = month;
 
     const transactionType =

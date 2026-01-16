@@ -109,9 +109,15 @@ export default function TransactionRow({
             </span>
           </div>
           {/* Amount */}
-          <span className={`text-sm font-semibold tabular-nums ${amountColorClass}`}>
+          <span
+            className={`text-sm font-semibold tabular-nums ${amountColorClass}`}
+          >
             {isIncome ? "+" : "-"}
-            {formatCurrency(Math.abs(transaction.amount), transaction.currency, false)}
+            {formatCurrency(
+              Math.abs(transaction.amount),
+              transaction.currency,
+              false
+            )}
           </span>
           {/* Expand Icon */}
           <svg
@@ -139,7 +145,10 @@ export default function TransactionRow({
             {transaction.counterparty && (
               <div>
                 <span className="text-stone-500 block">
-                  {t("pages.moneyTransactions.row.counterparty", "Counterparty")}
+                  {t(
+                    "pages.moneyTransactions.row.counterparty",
+                    "Counterparty"
+                  )}
                 </span>
                 <span className="text-stone-900 font-medium">
                   {transaction.counterparty}
@@ -151,7 +160,9 @@ export default function TransactionRow({
                 <span className="text-stone-500 block">
                   {t("common.description", "Description")}
                 </span>
-                <span className="text-stone-900">{transaction.description}</span>
+                <span className="text-stone-900">
+                  {transaction.description}
+                </span>
               </div>
             )}
             <div>
@@ -183,7 +194,10 @@ export default function TransactionRow({
             {transaction.invoice_id && transaction.invoice_number && (
               <div>
                 <span className="text-stone-500 block">
-                  {t("pages.moneyTransactions.row.linkedInvoice", "Linked Invoice")}
+                  {t(
+                    "pages.moneyTransactions.row.linkedInvoice",
+                    "Linked Invoice"
+                  )}
                 </span>
                 <Link
                   href={`/invoices/${transaction.invoice_id}`}
