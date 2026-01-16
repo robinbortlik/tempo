@@ -67,12 +67,18 @@ interface Settings {
   phone: string | null;
   vat_id: string | null;
   company_registration: string | null;
-  bank_name: string | null;
-  bank_account: string | null;
-  iban: string | null;
-  bank_swift: string | null;
   invoice_message: string | null;
   logo_url: string | null;
+}
+
+interface BankAccount {
+  id: number;
+  name: string;
+  bank_name: string | null;
+  bank_account: string | null;
+  bank_swift: string | null;
+  iban: string;
+  is_default: boolean;
 }
 
 interface QrCode {
@@ -84,6 +90,7 @@ interface PageProps {
   invoice: Invoice;
   line_items: LineItem[];
   settings: Settings;
+  bank_account: BankAccount | null;
   qr_code: QrCode | null;
   flash: {
     alert?: string;
@@ -180,7 +187,7 @@ function StatusBadge({
 }
 
 export default function InvoiceShow() {
-  const { invoice, line_items, settings, qr_code, flash } =
+  const { invoice, line_items, settings, bank_account, qr_code, flash } =
     usePage<PageProps>().props;
   const { t } = useTranslation();
   // Get translation function for client's locale (for invoice preview)
@@ -586,27 +593,27 @@ export default function InvoiceShow() {
                       </td>
                     </tr>
                   )}
-                  {settings.bank_account && (
+                  {bank_account?.bank_account && (
                     <tr className="h-6">
                       <td className="text-stone-500">{tp("bankAccount")}</td>
                       <td className="text-right text-stone-900 font-medium">
-                        {settings.bank_account}
+                        {bank_account.bank_account}
                       </td>
                     </tr>
                   )}
-                  {settings.iban && (
+                  {bank_account?.iban && (
                     <tr className="h-6">
                       <td className="text-stone-500">{tp("iban")}</td>
                       <td className="text-right text-stone-900 font-medium">
-                        {settings.iban}
+                        {bank_account.iban}
                       </td>
                     </tr>
                   )}
-                  {settings.bank_swift && (
+                  {bank_account?.bank_swift && (
                     <tr className="h-6">
                       <td className="text-stone-500">{tp("swift")}</td>
                       <td className="text-right text-stone-900 font-medium">
-                        {settings.bank_swift}
+                        {bank_account.bank_swift}
                       </td>
                     </tr>
                   )}
