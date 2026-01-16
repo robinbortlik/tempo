@@ -11,7 +11,7 @@ class BankAccountsController < ApplicationController
     if @bank_account.save
       render json: { bank_accounts: serialized_bank_accounts }
     else
-      render json: { errors: @bank_account.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: errors_hash(@bank_account) }, status: :unprocessable_entity
     end
   end
 
@@ -19,7 +19,7 @@ class BankAccountsController < ApplicationController
     if @bank_account.update(bank_account_params)
       render json: { bank_accounts: serialized_bank_accounts }
     else
-      render json: { errors: @bank_account.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: errors_hash(@bank_account) }, status: :unprocessable_entity
     end
   end
 
@@ -46,5 +46,9 @@ class BankAccountsController < ApplicationController
 
   def serialized_bank_accounts
     BankAccountSerializer.new(BankAccount.order(:name)).serializable_hash
+  end
+
+  def errors_hash(record)
+    record.errors.to_hash.transform_values { |messages| messages.first }
   end
 end
