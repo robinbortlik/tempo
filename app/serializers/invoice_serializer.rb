@@ -57,6 +57,14 @@ class InvoiceSerializer
     invoice.client.locale
   end
 
+  attribute :main_currency_amount do |invoice|
+    invoice.main_currency_amount
+  end
+
+  attribute :main_currency do |_invoice|
+    Setting.instance.main_currency
+  end
+
   class List
     include Alba::Resource
 
