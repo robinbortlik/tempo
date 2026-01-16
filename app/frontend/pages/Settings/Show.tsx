@@ -310,6 +310,12 @@ export default function SettingsShow() {
             </div>
           </div>
 
+          {/* Bank Accounts Section */}
+          <BankAccountsSection
+            bankAccounts={bankAccounts}
+            onBankAccountsChange={setBankAccounts}
+          />
+
           {/* Invoice Settings Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
             <h3 className="font-semibold text-stone-900 mb-6">
@@ -404,14 +410,6 @@ export default function SettingsShow() {
             </Button>
           </div>
         </form>
-
-        {/* Bank Accounts Section - outside form for independent AJAX handling */}
-        <div className="max-w-2xl mt-8">
-          <BankAccountsSection
-            bankAccounts={bankAccounts}
-            onBankAccountsChange={setBankAccounts}
-          />
-        </div>
       </div>
     </>
   );
