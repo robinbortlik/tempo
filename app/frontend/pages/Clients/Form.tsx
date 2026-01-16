@@ -21,15 +21,24 @@ interface Client {
   currency: string | null;
   default_vat_rate: number | null;
   locale: string;
+  bank_account_id: number | null;
+}
+
+interface BankAccountForSelect {
+  id: number;
+  name: string;
+  iban_hint: string | null;
 }
 
 interface ClientFormProps {
   client: Client;
+  bankAccounts?: BankAccountForSelect[];
   isEdit?: boolean;
 }
 
 export default function ClientForm({
   client,
+  bankAccounts = [],
   isEdit = false,
 }: ClientFormProps) {
   const { t } = useTranslation();
@@ -49,6 +58,7 @@ export default function ClientForm({
     currency: client.currency || "",
     default_vat_rate: client.default_vat_rate?.toString() || "",
     locale: client.locale || "en",
+    bank_account_id: client.bank_account_id?.toString() || "",
   });
 
   const validateEmail = (email: string): boolean => {
@@ -91,6 +101,9 @@ export default function ClientForm({
           ? parseFloat(data.default_vat_rate)
           : null,
         locale: data.locale,
+        bank_account_id: data.bank_account_id
+          ? parseInt(data.bank_account_id, 10)
+          : null,
       },
     };
 
@@ -349,6 +362,36 @@ export default function ClientForm({
               className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 placeholder:text-stone-400"
             />
           </div>
+
+          {bankAccounts.length > 0 && (
+            <div>
+              <Label
+                htmlFor="bank_account_id"
+                className="block text-sm font-medium text-stone-600 mb-1.5"
+              >
+                {t("pages.clients.form.bankAccount")}
+              </Label>
+              <select
+                id="bank_account_id"
+                value={data.bank_account_id}
+                onChange={(e) => setData("bank_account_id", e.target.value)}
+                className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+              >
+                <option value="">
+                  {t("pages.clients.form.selectBankAccount")}
+                </option>
+                {bankAccounts.map((account) => (
+                  <option key={account.id} value={account.id}>
+                    {account.name}
+                    {account.iban_hint ? ` (${account.iban_hint})` : ""}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1.5 text-sm text-stone-500">
+                {t("pages.clients.form.bankAccountDescription")}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

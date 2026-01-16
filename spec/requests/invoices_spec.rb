@@ -573,10 +573,17 @@ RSpec.describe InvoicesController, type: :request do
           address: "123 Test St\nTest City",
           email: "test@example.com",
           phone: "+1234567890",
-          vat_id: "VAT123",
+          vat_id: "VAT123"
+        )
+      end
+
+      let!(:bank_account) do
+        create(:bank_account, :default,
+          name: "Test Bank Account",
           bank_name: "Test Bank",
           bank_account: "1234567890",
-          bank_swift: "TESTSWIFT"
+          bank_swift: "TESTSWIFT",
+          iban: "DE89370400440532013000"
         )
       end
 

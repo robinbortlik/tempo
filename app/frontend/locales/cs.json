@@ -123,6 +123,32 @@
         "description": "Nahrajte logo firmy pro zobrazení na fakturách. Doporučená velikost: 200x200px.",
         "uploadButton": "Nahrát logo",
         "altText": "Logo firmy"
+      },
+      "bankAccounts": {
+        "title": "Bankovní účty",
+        "noAccounts": "Zatím nejsou nakonfigurovány žádné bankovní účty.",
+        "default": "Výchozí",
+        "addAccount": "Přidat bankovní účet",
+        "editAccount": "Upravit bankovní účet",
+        "formDescription": "Zadejte údaje bankovního účtu pro fakturaci.",
+        "created": "Bankovní účet byl úspěšně vytvořen.",
+        "updated": "Bankovní účet byl úspěšně aktualizován.",
+        "deleted": "Bankovní účet byl úspěšně smazán.",
+        "saveFailed": "Nepodařilo se uložit bankovní účet.",
+        "deleteFailed": "Nepodařilo se smazat bankovní účet.",
+        "deleteTitle": "Smazat bankovní účet?",
+        "deleteDescription": "Tím trvale smažete tento bankovní účet. Klienti používající tento účet budou muset být přiřazeni k jinému.",
+        "form": {
+          "name": "Název",
+          "bankName": "Název banky",
+          "bankAccount": "Číslo účtu",
+          "swift": "SWIFT/BIC",
+          "iban": "IBAN",
+          "setAsDefault": "Nastavit jako výchozí",
+          "defaultDescription": "Použít tento účet jako výchozí pro nové faktury.",
+          "nameRequired": "Název je povinný.",
+          "ibanRequired": "IBAN je povinný."
+        }
       }
     },
     "dashboard": {
@@ -186,7 +212,10 @@
         "bankDetails": "Bankovní údaje",
         "bankDetailsPlaceholder": "Název banky, číslo účtu, směrový kód...",
         "locale": "Jazyk dokumentů",
-        "localeDescription": "Jazyk používaný pro faktury a sdílené reporty pro tohoto klienta"
+        "localeDescription": "Jazyk používaný pro faktury a sdílené reporty pro tohoto klienta",
+        "bankAccount": "Bankovní účet",
+        "selectBankAccount": "Použít výchozí účet",
+        "bankAccountDescription": "Vyberte bankovní účet pro faktury tohoto klienta"
       },
       "table": {
         "name": "Název",

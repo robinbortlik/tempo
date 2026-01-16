@@ -12,6 +12,7 @@ RSpec.describe "Clients", type: :system do
     fill_in "Email", with: user.email_address
     fill_in "Password", with: "password123"
     click_button "Sign in"
+    sleep(1) # Wait for any asynchronous processes
     expect(page).to have_current_path(root_path)
   end
 

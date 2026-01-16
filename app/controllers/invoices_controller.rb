@@ -12,7 +12,8 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    qr_generator = PaymentQrCodeGenerator.new(invoice: @invoice, settings: settings)
+    bank_account = @invoice.bank_account || BankAccount.default
+    qr_generator = PaymentQrCodeGenerator.new(invoice: @invoice, settings: settings, bank_account: bank_account)
     entries_by_project = invoice_work_entries.group_by(&:project)
 
     render inertia: "Invoices/Show", props: {
@@ -21,6 +22,7 @@ class InvoicesController < ApplicationController
       work_entries: WorkEntrySerializer::ForInvoice.new(invoice_work_entries).serializable_hash,
       project_groups: serialize_project_groups(entries_by_project),
       settings: SettingsSerializer::ForInvoice.new(settings, params: { url_helpers: self }).serializable_hash,
+      bank_account: bank_account ? BankAccountSerializer.new(bank_account).serializable_hash : nil,
       qr_code: qr_generator.available? ? {
         data_url: qr_generator.to_data_url,
         format: qr_generator.format

@@ -1,5 +1,6 @@
 class Client < ApplicationRecord
   # Associations
+  belongs_to :bank_account, optional: true
   has_many :projects, dependent: :destroy
   has_many :invoices, dependent: :destroy
 

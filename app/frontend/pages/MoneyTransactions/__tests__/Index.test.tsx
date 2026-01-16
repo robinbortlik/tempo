@@ -13,8 +13,20 @@ vi.mock("@inertiajs/react", () => ({
     },
   }),
   Head: ({ title }: { title: string }) => <title>{title}</title>,
-  Link: ({ href, children, className, onClick }: { href: string; children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) => (
-    <a href={href} className={className} onClick={onClick}>{children}</a>
+  Link: ({
+    href,
+    children,
+    className,
+    onClick,
+  }: {
+    href: string;
+    children: React.ReactNode;
+    className?: string;
+    onClick?: (e: React.MouseEvent) => void;
+  }) => (
+    <a href={href} className={className} onClick={onClick}>
+      {children}
+    </a>
   ),
 }));
 
@@ -108,7 +120,12 @@ describe("MoneyTransactions Index", () => {
         transactions={[]}
         filters={{ ...mockFilters, transaction_type: null, description: null }}
         period={mockPeriod}
-        summary={{ total_income: 0, total_expenses: 0, net_balance: 0, transaction_count: 0 }}
+        summary={{
+          total_income: 0,
+          total_expenses: 0,
+          net_balance: 0,
+          transaction_count: 0,
+        }}
       />
     );
 
@@ -119,9 +136,18 @@ describe("MoneyTransactions Index", () => {
     render(
       <Index
         transactions={[]}
-        filters={{ ...mockFilters, transaction_type: "income", description: "nonexistent" }}
+        filters={{
+          ...mockFilters,
+          transaction_type: "income",
+          description: "nonexistent",
+        }}
         period={mockPeriod}
-        summary={{ total_income: 0, total_expenses: 0, net_balance: 0, transaction_count: 0 }}
+        summary={{
+          total_income: 0,
+          total_expenses: 0,
+          net_balance: 0,
+          transaction_count: 0,
+        }}
       />
     );
 
@@ -131,9 +157,7 @@ describe("MoneyTransactions Index", () => {
 
 describe("FilterBar", () => {
   it("renders year dropdown with available years", () => {
-    render(
-      <FilterBar filters={mockFilters} period={mockPeriod} />
-    );
+    render(<FilterBar filters={mockFilters} period={mockPeriod} />);
 
     expect(screen.getByLabelText(/year/i)).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "2026" })).toBeInTheDocument();
@@ -141,32 +165,28 @@ describe("FilterBar", () => {
   });
 
   it("renders month pills with All option", () => {
-    render(
-      <FilterBar filters={mockFilters} period={mockPeriod} />
-    );
+    render(<FilterBar filters={mockFilters} period={mockPeriod} />);
 
     expect(screen.getByRole("button", { name: "All" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Jan" })).toBeInTheDocument();
   });
 
   it("renders transaction type filter", () => {
-    render(
-      <FilterBar filters={mockFilters} period={mockPeriod} />
-    );
+    render(<FilterBar filters={mockFilters} period={mockPeriod} />);
 
     expect(screen.getByLabelText(/type/i)).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /all/i })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: /income/i })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: /expense/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("option", { name: /expense/i })
+    ).toBeInTheDocument();
   });
 
   it("triggers navigation when month pill is clicked", async () => {
     const { router } = await import("@inertiajs/react");
     const user = userEvent.setup();
 
-    render(
-      <FilterBar filters={mockFilters} period={mockPeriod} />
-    );
+    render(<FilterBar filters={mockFilters} period={mockPeriod} />);
 
     await user.click(screen.getByRole("button", { name: "Feb" }));
     expect(router.get).toHaveBeenCalledWith(

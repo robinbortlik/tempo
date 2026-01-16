@@ -88,4 +88,49 @@ RSpec.describe InvoicePdfService do
       service.generate
     end
   end
+
+  describe "bank account handling" do
+    let!(:default_bank_account) { create(:bank_account, :default, iban: "DE89370400440532013000", bank_swift: "COBADEFFXXX", bank_account: "1234567890") }
+
+    it "passes invoice's bank_account to template assigns" do
+      bank_account = create(:bank_account, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX", bank_account: "9876543210")
+      invoice_with_bank = create(:invoice, client: client, bank_account: bank_account)
+      service = described_class.new(invoice: invoice_with_bank, controller: controller)
+
+      expect(controller).to receive(:render_to_string) do |args|
+        expect(args[:assigns][:bank_account]).to eq(bank_account)
+      end
+
+      allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: ""))
+      service.generate
+    end
+
+    it "uses default bank_account when invoice has none" do
+      invoice_without_bank = create(:invoice, client: client, bank_account: nil)
+      service = described_class.new(invoice: invoice_without_bank, controller: controller)
+
+      expect(controller).to receive(:render_to_string) do |args|
+        expect(args[:assigns][:bank_account]).to eq(default_bank_account)
+      end
+
+      allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: ""))
+      service.generate
+    end
+
+    it "passes bank_account to PaymentQrCodeGenerator for QR code" do
+      bank_account = create(:bank_account, iban: "CZ6508000000192000145399", bank_swift: "GIBACZPX")
+      invoice_with_bank = create(:invoice, client: client, bank_account: bank_account, currency: "EUR")
+      invoice_with_bank.line_items.create!(line_type: :fixed, description: "Test", amount: 100, vat_rate: 0, position: 0)
+      service = described_class.new(invoice: invoice_with_bank, controller: controller)
+
+      expect(PaymentQrCodeGenerator).to receive(:new).with(
+        invoice: invoice_with_bank,
+        settings: anything,
+        bank_account: bank_account
+      ).and_call_original
+
+      allow(Grover).to receive(:new).and_return(instance_double(Grover, to_pdf: ""))
+      service.generate
+    end
+  end
 end

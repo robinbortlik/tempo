@@ -9,4 +9,10 @@ class DeletionValidator
     return { valid: false, error: "Cannot delete project with invoiced work entries." } if project.work_entries.invoiced.exists?
     { valid: true }
   end
+
+  def self.can_delete_bank_account?(bank_account)
+    return { valid: false, error: "Cannot delete bank account with associated clients." } if bank_account.clients.exists?
+    return { valid: false, error: "Cannot delete the only default bank account." } if bank_account.is_default && BankAccount.count == 1
+    { valid: true }
+  end
 end

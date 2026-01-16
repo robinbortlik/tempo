@@ -6,9 +6,6 @@ FactoryBot.define do
     phone { "+420 123 456 789" }
     vat_id { "CZ12345678" }
     company_registration { "12345678" }
-    bank_name { "Czech National Bank" }
-    bank_account { "1234567890/0100" }
-    bank_swift { "CNBACZPP" }
 
     trait :with_logo do
       after(:build) do |setting|
@@ -27,9 +24,6 @@ FactoryBot.define do
       phone { nil }
       vat_id { nil }
       company_registration { nil }
-      bank_name { nil }
-      bank_account { nil }
-      bank_swift { nil }
     end
   end
 end
