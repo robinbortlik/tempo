@@ -85,11 +85,11 @@ class PaymentQrCodeGenerator
   end
 
   def iban_value
-    bank_account&.iban || settings.iban
+    bank_account&.iban
   end
 
   def bic_value
-    bank_account&.bank_swift || settings.bank_swift
+    bank_account&.bank_swift
   end
 
   def sanitize_iban(iban)
