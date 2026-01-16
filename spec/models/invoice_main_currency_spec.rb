@@ -23,7 +23,7 @@ RSpec.describe Invoice, "#main_currency_amount" do
 
       # Create exchange rate for EUR on the invoice's issue_date
       # Rate 25.125 means 1 EUR = 25.125 CZK
-      create(:exchange_rate, currency: "EUR", rate: 25.125, amount: 1, date: Date.new(2026, 1, 15))
+      create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.125, amount: 1, date: Date.new(2026, 1, 15))
 
       # 1000 EUR * (25.125 / 1) = 25125 CZK
       expect(invoice.main_currency_amount).to eq(25125.0)
@@ -34,7 +34,7 @@ RSpec.describe Invoice, "#main_currency_amount" do
       create(:invoice_line_item, invoice: invoice, amount: 10000.00, vat_rate: 0)
 
       # JPY rate: 100 JPY = 15.30 CZK
-      create(:exchange_rate, currency: "JPY", rate: 15.30, amount: 100, date: Date.new(2026, 1, 15))
+      create(:exchange_rate, base_currency: "CZK", quote_currency: "JPY", rate: 15.30, amount: 100, date: Date.new(2026, 1, 15))
 
       # 10000 JPY * (15.30 / 100) = 1530 CZK
       expect(invoice.main_currency_amount).to eq(1530.0)
@@ -47,7 +47,7 @@ RSpec.describe Invoice, "#main_currency_amount" do
       create(:invoice_line_item, invoice: invoice, amount: 1000.00, vat_rate: 0)
 
       # No exchange rate for this date
-      create(:exchange_rate, currency: "EUR", rate: 25.125, amount: 1, date: Date.new(2026, 1, 10))
+      create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.125, amount: 1, date: Date.new(2026, 1, 10))
 
       expect(invoice.main_currency_amount).to be_nil
     end
@@ -57,7 +57,7 @@ RSpec.describe Invoice, "#main_currency_amount" do
       create(:invoice_line_item, invoice: invoice, amount: 1000.00, vat_rate: 0)
 
       # Exchange rate exists for EUR but not CHF
-      create(:exchange_rate, currency: "EUR", rate: 25.125, amount: 1, date: Date.new(2026, 1, 15))
+      create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.125, amount: 1, date: Date.new(2026, 1, 15))
 
       expect(invoice.main_currency_amount).to be_nil
     end

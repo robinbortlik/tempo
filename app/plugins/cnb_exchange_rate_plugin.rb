@@ -18,6 +18,9 @@ class CnbExchangeRatePlugin < BasePlugin
   # Load the API client
   require_relative "cnb_exchange_rate_plugin/api_client"
 
+  # CNB rates are always relative to CZK
+  BASE_CURRENCY = "CZK".freeze
+
   def self.name
     "cnb_exchange_rate"
   end
@@ -96,7 +99,11 @@ class CnbExchangeRatePlugin < BasePlugin
     rates.each do |rate_data|
       stats[:processed] += 1
 
-      existing = ExchangeRate.find_by(currency: rate_data[:currency], date: rate_data[:date])
+      existing = ExchangeRate.find_by(
+        base_currency: BASE_CURRENCY,
+        quote_currency: rate_data[:currency],
+        date: rate_data[:date]
+      )
 
       if existing
         if rate_changed?(existing, rate_data)
@@ -105,7 +112,8 @@ class CnbExchangeRatePlugin < BasePlugin
         end
       else
         ExchangeRate.create!(
-          currency: rate_data[:currency],
+          base_currency: BASE_CURRENCY,
+          quote_currency: rate_data[:currency],
           rate: rate_data[:rate],
           amount: rate_data[:amount],
           date: rate_data[:date]

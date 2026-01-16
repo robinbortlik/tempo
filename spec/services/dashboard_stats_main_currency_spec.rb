@@ -18,13 +18,13 @@ RSpec.describe DashboardStatsService, "main currency totals" do
         invoice1 = create(:invoice, :paid, client: client, currency: "EUR",
           issue_date: Date.new(current_year, 1, 15))
         create(:invoice_line_item, invoice: invoice1, amount: 1000.00, vat_rate: 0)
-        create(:exchange_rate, currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 15))
+        create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 15))
 
         # Another paid invoice with different date
         invoice2 = create(:invoice, :paid, client: client, currency: "EUR",
           issue_date: Date.new(current_year, 2, 10))
         create(:invoice_line_item, invoice: invoice2, amount: 2000.00, vat_rate: 0)
-        create(:exchange_rate, currency: "EUR", rate: 24.5, amount: 1, date: Date.new(current_year, 2, 10))
+        create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 24.5, amount: 1, date: Date.new(current_year, 2, 10))
 
         result = service.total_in_main_currency
 
@@ -59,7 +59,7 @@ RSpec.describe DashboardStatsService, "main currency totals" do
           issue_date: Date.new(current_year, 1, 15),
           due_date: Date.new(current_year, 2, 15))
         create(:invoice_line_item, invoice: invoice1, amount: 1000.00, vat_rate: 0)
-        create(:exchange_rate, currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 15))
+        create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 15))
 
         # Invoice WITHOUT exchange rate (missing rate for this date)
         invoice2 = create(:invoice, :paid, client: client, currency: "EUR",
@@ -83,19 +83,19 @@ RSpec.describe DashboardStatsService, "main currency totals" do
         paid_invoice = create(:invoice, :paid, client: client, currency: "EUR",
           issue_date: Date.new(current_year, 1, 15))
         create(:invoice_line_item, invoice: paid_invoice, amount: 1000.00, vat_rate: 0)
-        create(:exchange_rate, currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 15))
+        create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 15))
 
         # Draft invoice (should be excluded)
         draft_invoice = create(:invoice, :draft, client: client, currency: "EUR",
           issue_date: Date.new(current_year, 1, 16))
         create(:invoice_line_item, invoice: draft_invoice, amount: 5000.00, vat_rate: 0)
-        create(:exchange_rate, currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 16))
+        create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 16))
 
         # Final invoice (should be excluded)
         final_invoice = create(:invoice, :final, client: client, currency: "EUR",
           issue_date: Date.new(current_year, 1, 17))
         create(:invoice_line_item, invoice: final_invoice, amount: 3000.00, vat_rate: 0)
-        create(:exchange_rate, currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 17))
+        create(:exchange_rate, base_currency: "CZK", quote_currency: "EUR", rate: 25.0, amount: 1, date: Date.new(current_year, 1, 17))
 
         result = service.total_in_main_currency
 

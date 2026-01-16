@@ -23,7 +23,7 @@ RSpec.describe ExchangeRateFetchJob do
     it "creates exchange rates via the CNB plugin" do
       expect { described_class.perform_now }.to change(ExchangeRate, :count).by(2)
 
-      eur_rate = ExchangeRate.find_by(currency: "EUR", date: date)
+      eur_rate = ExchangeRate.find_by(quote_currency: "EUR", date: date)
       expect(eur_rate.rate.to_f).to eq(25.125)
       expect(eur_rate.amount).to eq(1)
     end
@@ -37,11 +37,11 @@ RSpec.describe ExchangeRateFetchJob do
     end
 
     it "updates existing rates with new values" do
-      create(:exchange_rate, currency: "EUR", rate: 24.000, amount: 1, date: date)
+      create(:exchange_rate, quote_currency: "EUR", rate: 24.000, amount: 1, date: date)
 
       expect { described_class.perform_now }.to change(ExchangeRate, :count).by(1)
 
-      eur_rate = ExchangeRate.find_by(currency: "EUR", date: date)
+      eur_rate = ExchangeRate.find_by(quote_currency: "EUR", date: date)
       expect(eur_rate.rate.to_f).to eq(25.125)
     end
 

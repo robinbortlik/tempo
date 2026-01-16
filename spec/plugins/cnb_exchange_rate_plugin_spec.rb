@@ -85,7 +85,7 @@ RSpec.describe CnbExchangeRatePlugin do
       it "creates ExchangeRate records with correct data" do
         plugin.sync
 
-        eur_rate = ExchangeRate.find_by(currency: "EUR", date: Date.current)
+        eur_rate = ExchangeRate.find_by(quote_currency: "EUR", date: Date.current)
         expect(eur_rate).to be_present
         expect(eur_rate.rate).to eq(25.125)
         expect(eur_rate.amount).to eq(1)
@@ -122,7 +122,7 @@ RSpec.describe CnbExchangeRatePlugin do
         result = plugin.sync
 
         expect(result[:records_updated]).to eq(1)
-        expect(ExchangeRate.find_by(currency: "EUR").rate).to eq(25.999)
+        expect(ExchangeRate.find_by(quote_currency: "EUR").rate).to eq(25.999)
       end
     end
 

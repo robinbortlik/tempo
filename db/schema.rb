@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_16_141547) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_16_215449) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -91,12 +91,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_16_141547) do
 
   create_table "exchange_rates", force: :cascade do |t|
     t.integer "amount", null: false
+    t.string "base_currency", null: false
     t.datetime "created_at", null: false
-    t.string "currency", null: false
     t.date "date", null: false
+    t.string "quote_currency", null: false
     t.decimal "rate", precision: 12, scale: 6, null: false
     t.datetime "updated_at", null: false
-    t.index ["currency", "date"], name: "index_exchange_rates_on_currency_and_date", unique: true
+    t.index ["base_currency", "quote_currency", "date"], name: "idx_on_base_currency_quote_currency_date_7270153486", unique: true
   end
 
   create_table "invoice_line_item_work_entries", force: :cascade do |t|

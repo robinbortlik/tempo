@@ -84,7 +84,11 @@ class Invoice < ApplicationRecord
     main_currency = Setting.instance.main_currency
     return grand_total.to_f if currency == main_currency
 
-    exchange_rate = ExchangeRate.find_by(currency: currency, date: issue_date)
+    exchange_rate = ExchangeRate.find_by(
+      base_currency: main_currency,
+      quote_currency: currency,
+      date: issue_date
+    )
     return nil if exchange_rate.nil?
 
     (grand_total * (exchange_rate.rate / exchange_rate.amount)).to_f

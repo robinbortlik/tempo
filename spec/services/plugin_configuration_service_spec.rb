@@ -66,27 +66,59 @@ RSpec.describe PluginConfigurationService do
   end
 
   describe "#configured?" do
-    context "when no configuration exists" do
-      it "returns false" do
-        expect(service.configured?).to be false
+    context "when plugin requires credentials" do
+      context "when no configuration exists" do
+        it "returns false" do
+          expect(service.configured?).to be false
+        end
+      end
+
+      context "when configuration exists but no credentials" do
+        before { create(:plugin_configuration, plugin_name: plugin_name, credentials: nil) }
+
+        it "returns false" do
+          expect(service.configured?).to be false
+        end
+      end
+
+      context "when configuration exists with credentials" do
+        before do
+          create(:plugin_configuration, plugin_name: plugin_name, credentials: { api_key: "secret" }.to_json)
+        end
+
+        it "returns true" do
+          expect(service.configured?).to be true
+        end
       end
     end
 
-    context "when configuration exists but no credentials" do
-      before { create(:plugin_configuration, plugin_name: plugin_name, credentials: nil) }
+    context "when plugin does not require credentials" do
+      let(:cnb_plugin_name) { "cnb_exchange_rate" }
+      let(:cnb_service) { described_class.new(plugin_name: cnb_plugin_name) }
 
-      it "returns false" do
-        expect(service.configured?).to be false
+      it "returns true even without credentials" do
+        expect(cnb_service.configured?).to be true
+      end
+
+      it "returns true when configuration exists but has no credentials" do
+        create(:plugin_configuration, plugin_name: cnb_plugin_name, credentials: nil)
+        expect(cnb_service.configured?).to be true
       end
     end
+  end
 
-    context "when configuration exists with credentials" do
-      before do
-        create(:plugin_configuration, plugin_name: plugin_name, credentials: { api_key: "secret" }.to_json)
-      end
-
+  describe "#requires_credentials?" do
+    context "when plugin has required credential fields" do
       it "returns true" do
-        expect(service.configured?).to be true
+        expect(service.requires_credentials?).to be true
+      end
+    end
+
+    context "when plugin has no required credential fields" do
+      let(:cnb_service) { described_class.new(plugin_name: "cnb_exchange_rate") }
+
+      it "returns false" do
+        expect(cnb_service.requires_credentials?).to be false
       end
     end
   end
