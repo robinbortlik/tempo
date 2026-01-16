@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_16_070547) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_16_141547) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -87,6 +87,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_16_070547) do
     t.index ["created_at"], name: "index_data_audit_logs_on_created_at"
     t.index ["source"], name: "index_data_audit_logs_on_source"
     t.index ["sync_history_id"], name: "index_data_audit_logs_on_sync_history_id"
+  end
+
+  create_table "exchange_rates", force: :cascade do |t|
+    t.integer "amount", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", null: false
+    t.date "date", null: false
+    t.decimal "rate", precision: 12, scale: 6, null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency", "date"], name: "index_exchange_rates_on_currency_and_date", unique: true
   end
 
   create_table "invoice_line_item_work_entries", force: :cascade do |t|
@@ -191,6 +201,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_16_070547) do
     t.datetime "created_at", null: false
     t.string "email"
     t.text "invoice_message"
+    t.string "main_currency", default: "CZK"
     t.string "phone"
     t.datetime "updated_at", null: false
     t.string "vat_id"

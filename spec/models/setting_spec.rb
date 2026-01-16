@@ -41,6 +41,37 @@ RSpec.describe Setting, type: :model do
         expect(setting.errors[:invoice_message]).to include("is too long (maximum is 500 characters)")
       end
     end
+
+    describe "main_currency" do
+      it "allows blank main_currency" do
+        setting = build(:setting, main_currency: nil)
+        expect(setting).to be_valid
+      end
+
+      it "allows valid 3-letter uppercase currency code" do
+        %w[CZK EUR USD GBP].each do |currency|
+          setting = build(:setting, main_currency: currency)
+          expect(setting).to be_valid, "Expected #{currency} to be valid"
+        end
+      end
+
+      it "rejects lowercase currency codes" do
+        setting = build(:setting, main_currency: "czk")
+        expect(setting).not_to be_valid
+        expect(setting.errors[:main_currency]).to include("must be 3 uppercase letters (e.g., CZK, EUR, USD)")
+      end
+
+      it "rejects invalid currency format" do
+        setting = build(:setting, main_currency: "CZ")
+        expect(setting).not_to be_valid
+        expect(setting.errors[:main_currency]).to include("must be 3 uppercase letters (e.g., CZK, EUR, USD)")
+      end
+
+      it "defaults to CZK in database" do
+        setting = Setting.create!
+        expect(setting.main_currency).to eq("CZK")
+      end
+    end
   end
 
   describe ".instance (singleton pattern)" do
