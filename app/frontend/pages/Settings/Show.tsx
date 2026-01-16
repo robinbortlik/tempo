@@ -21,10 +21,6 @@ interface Settings {
   phone: string | null;
   vat_id: string | null;
   company_registration: string | null;
-  bank_name: string | null;
-  bank_account: string | null;
-  bank_swift: string | null;
-  iban: string | null;
   invoice_message: string | null;
   logo_url: string | null;
 }
@@ -56,7 +52,6 @@ export default function SettingsShow() {
     settings.logo_url
   );
   const [emailError, setEmailError] = useState<string | null>(null);
-  const [ibanError, setIbanError] = useState<string | null>(null);
   const [currentLocale, setCurrentLocale] = useState<SupportedLocale>(locale);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,10 +62,6 @@ export default function SettingsShow() {
     phone: settings.phone || "",
     vat_id: settings.vat_id || "",
     company_registration: settings.company_registration || "",
-    bank_name: settings.bank_name || "",
-    bank_account: settings.bank_account || "",
-    bank_swift: settings.bank_swift || "",
-    iban: settings.iban || "",
     invoice_message: settings.invoice_message || "",
     logo: null as File | null,
   });
@@ -143,25 +134,15 @@ export default function SettingsShow() {
     formData.append("setting[phone]", data.phone);
     formData.append("setting[vat_id]", data.vat_id);
     formData.append("setting[company_registration]", data.company_registration);
-    formData.append("setting[bank_name]", data.bank_name);
-    formData.append("setting[bank_account]", data.bank_account);
-    formData.append("setting[bank_swift]", data.bank_swift);
-    formData.append("setting[iban]", data.iban);
     formData.append("setting[invoice_message]", data.invoice_message);
     if (data.logo) {
       formData.append("setting[logo]", data.logo);
     }
 
     setIsSubmitting(true);
-    setIbanError(null);
     router.post("/settings", formData, {
       preserveScroll: true,
       onFinish: () => setIsSubmitting(false),
-      onError: (errors) => {
-        if (errors.iban) {
-          setIbanError(errors.iban);
-        }
-      },
     });
   }
 
@@ -329,87 +310,6 @@ export default function SettingsShow() {
             </div>
           </div>
 
-          {/* Bank Details Section */}
-          <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-6">
-              {t("pages.settings.bankDetails.title")}
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <Label
-                  htmlFor="bank_name"
-                  className="block text-sm font-medium text-stone-600 mb-1.5"
-                >
-                  {t("pages.settings.bankDetails.bankName")}
-                </Label>
-                <Input
-                  id="bank_name"
-                  type="text"
-                  value={data.bank_name}
-                  onChange={(e) => setData("bank_name", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label
-                    htmlFor="bank_account"
-                    className="block text-sm font-medium text-stone-600 mb-1.5"
-                  >
-                    {t("pages.settings.bankDetails.bankAccount")}
-                  </Label>
-                  <Input
-                    id="bank_account"
-                    type="text"
-                    value={data.bank_account}
-                    onChange={(e) => setData("bank_account", e.target.value)}
-                    className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="bank_swift"
-                    className="block text-sm font-medium text-stone-600 mb-1.5"
-                  >
-                    {t("pages.settings.bankDetails.swift")}
-                  </Label>
-                  <Input
-                    id="bank_swift"
-                    type="text"
-                    value={data.bank_swift}
-                    onChange={(e) => setData("bank_swift", e.target.value)}
-                    className="w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label
-                  htmlFor="iban"
-                  className="block text-sm font-medium text-stone-600 mb-1.5"
-                >
-                  {t("pages.settings.bankDetails.iban")}
-                </Label>
-                <Input
-                  id="iban"
-                  type="text"
-                  value={data.iban}
-                  onChange={(e) => {
-                    setData("iban", e.target.value);
-                    setIbanError(null);
-                  }}
-                  className={`w-full px-3 py-2.5 bg-stone-50 border-stone-200 rounded-lg text-stone-900 font-mono ${
-                    ibanError ? "border-red-500 focus-visible:ring-red-500" : ""
-                  }`}
-                />
-                {ibanError && (
-                  <p className="mt-1 text-sm text-red-600">{ibanError}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
           {/* Invoice Settings Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">
             <h3 className="font-semibold text-stone-900 mb-6">
@@ -497,7 +397,7 @@ export default function SettingsShow() {
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={isSubmitting || !!emailError || !!ibanError}
+              disabled={isSubmitting || !!emailError}
               className="px-6 py-2.5 bg-stone-900 text-white font-medium rounded-lg hover:bg-stone-800 transition-colors"
             >
               {isSubmitting ? t("common.saving") : t("common.saveChanges")}
