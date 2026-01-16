@@ -23,6 +23,7 @@ interface Settings {
   company_registration: string | null;
   invoice_message: string | null;
   logo_url: string | null;
+  main_currency: string | null;
 }
 
 interface PageProps {
@@ -64,7 +65,10 @@ export default function SettingsShow() {
     company_registration: settings.company_registration || "",
     invoice_message: settings.invoice_message || "",
     logo: null as File | null,
+    main_currency: settings.main_currency || "CZK",
   });
+
+  const mainCurrencyOptions = ["CZK", "EUR", "USD", "GBP"] as const;
 
   // Show toast notifications for flash messages
   useEffect(() => {
@@ -135,6 +139,7 @@ export default function SettingsShow() {
     formData.append("setting[vat_id]", data.vat_id);
     formData.append("setting[company_registration]", data.company_registration);
     formData.append("setting[invoice_message]", data.invoice_message);
+    formData.append("setting[main_currency]", data.main_currency);
     if (data.logo) {
       formData.append("setting[logo]", data.logo);
     }
@@ -190,6 +195,31 @@ export default function SettingsShow() {
                 </select>
                 <p className="mt-1.5 text-sm text-stone-500">
                   {t("pages.settings.preferences.languageDescription")}
+                </p>
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="main_currency"
+                  className="block text-sm font-medium text-stone-600 mb-1.5"
+                >
+                  {t("pages.settings.preferences.mainCurrency")}
+                </Label>
+                <select
+                  id="main_currency"
+                  value={data.main_currency}
+                  onChange={(e) => setData("main_currency", e.target.value)}
+                  className="w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-lg text-stone-900"
+                  data-testid="main-currency-selector"
+                >
+                  {mainCurrencyOptions.map((currency) => (
+                    <option key={currency} value={currency}>
+                      {t(`common.currencies.${currency}`)}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1.5 text-sm text-stone-500">
+                  {t("pages.settings.preferences.mainCurrencyDescription")}
                 </p>
               </div>
             </div>

@@ -44,6 +44,11 @@ interface MonthlyHours {
   hours: number;
 }
 
+interface TotalInMainCurrency {
+  amount: number;
+  missing_exchange_rates: boolean;
+}
+
 interface PageProps {
   stats: {
     hours_this_week: number;
@@ -51,7 +56,9 @@ interface PageProps {
     unbilled_hours: number;
     unbilled_amounts: Record<string, number>;
     unbilled_by_client: UnbilledClient[];
+    total_in_main_currency: TotalInMainCurrency;
   };
+  main_currency: string;
   charts: {
     time_by_client: ClientHours[];
     time_by_project: ProjectHours[];
@@ -66,7 +73,7 @@ interface PageProps {
 }
 
 export default function DashboardIndex() {
-  const { stats, charts, flash } = usePage<PageProps>().props;
+  const { stats, charts, flash, main_currency } = usePage<PageProps>().props;
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -155,6 +162,36 @@ export default function DashboardIndex() {
             )}
           </StatCard>
         </div>
+
+        {/* Paid This Year in Main Currency */}
+        {stats.total_in_main_currency && main_currency && (
+          <div className="mb-8">
+            <StatCard
+              title={t("pages.dashboard.stats.paidThisYear", {
+                currency: main_currency,
+              })}
+              value=""
+              indicator={
+                stats.total_in_main_currency.missing_exchange_rates ? (
+                  <span
+                    className="text-amber-600 text-xs"
+                    title={t("pages.dashboard.stats.missingExchangeRates")}
+                  >
+                    {t("pages.dashboard.stats.incomplete")}
+                  </span>
+                ) : undefined
+              }
+            >
+              <p className="text-3xl font-semibold tabular-nums text-stone-900">
+                {formatCurrency(
+                  stats.total_in_main_currency.amount,
+                  main_currency,
+                  false
+                )}
+              </p>
+            </StatCard>
+          </div>
+        )}
 
         {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

@@ -264,6 +264,16 @@
       color: #1c1917;
     }
 
+    .totals-row.converted {
+      border-top: none;
+      padding-top: 4px;
+    }
+
+    .totals-row.converted .converted-amount {
+      font-size: 12px;
+      color: #78716c;
+    }
+
     /* Notes section */
     .notes-section {
       padding-top: 30px;
@@ -481,6 +491,12 @@
           <dt></dt>
           <dd><%= format_currency(@invoice.grand_total, @invoice.currency) %></dd>
         </div>
+        <% if @invoice.main_currency_amount.present? && @invoice.currency != @settings.main_currency %>
+          <div class="totals-row converted">
+            <dt></dt>
+            <dd class="converted-amount"><%= format_currency(@invoice.main_currency_amount, @settings.main_currency) %></dd>
+          </div>
+        <% end %>
       </dl>
     </div>
 

@@ -4,6 +4,7 @@ class DashboardController < ApplicationController
 
     render inertia: "Dashboard/Index", props: {
       stats: service.stats,
+      main_currency: Setting.instance.main_currency,
       charts: {
         time_by_client: service.time_by_client,
         time_by_project: service.time_by_project,
