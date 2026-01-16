@@ -151,7 +151,6 @@ RSpec.describe SettingsController, type: :request do
           follow_redirect!
           expect(flash[:alert]).to include("Email")
         end
-
       end
 
       context "with invoice_message field" do
