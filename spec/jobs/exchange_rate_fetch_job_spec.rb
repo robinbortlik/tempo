@@ -17,7 +17,7 @@ RSpec.describe ExchangeRateFetchJob do
              enabled: true)
 
       # Stub the CNB API client
-      allow_any_instance_of(CnbApiClient).to receive(:fetch).and_return(rates_data)
+      allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch).and_return(rates_data)
     end
 
     it "creates exchange rates via the CNB plugin" do
@@ -67,8 +67,8 @@ RSpec.describe ExchangeRateFetchJob do
 
     context "when API fetch fails" do
       before do
-        allow_any_instance_of(CnbApiClient).to receive(:fetch)
-          .and_raise(CnbApiClient::FetchError.new("API error"))
+        allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch)
+          .and_raise(CnbExchangeRatePlugin::ApiClient::FetchError.new("API error"))
       end
 
       it "logs error and creates failed SyncHistory" do

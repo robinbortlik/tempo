@@ -46,7 +46,7 @@ RSpec.describe CnbExchangeRatePlugin do
       Current.reset
 
       # Stub the CNB API client
-      allow_any_instance_of(CnbApiClient).to receive(:fetch).and_return(mock_rates)
+      allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch).and_return(mock_rates)
     end
 
     context "without configuration (plugin works without credentials)" do
@@ -117,7 +117,7 @@ RSpec.describe CnbExchangeRatePlugin do
           { currency: "USD", rate: 23.456, amount: 1, date: Date.current },
           { currency: "GBP", rate: 29.789, amount: 1, date: Date.current }
         ]
-        allow_any_instance_of(CnbApiClient).to receive(:fetch).and_return(updated_rates)
+        allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch).and_return(updated_rates)
 
         result = plugin.sync
 
@@ -135,7 +135,7 @@ RSpec.describe CnbExchangeRatePlugin do
       end
 
       it "fetches rates for multiple days" do
-        expect_any_instance_of(CnbApiClient).to receive(:fetch).exactly(4).times.and_return(mock_rates)
+        expect_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch).exactly(4).times.and_return(mock_rates)
 
         result = plugin.sync
 
@@ -145,8 +145,8 @@ RSpec.describe CnbExchangeRatePlugin do
 
     context "error handling" do
       it "returns failure when API fails" do
-        allow_any_instance_of(CnbApiClient).to receive(:fetch)
-          .and_raise(CnbApiClient::FetchError.new("Network error"))
+        allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch)
+          .and_raise(CnbExchangeRatePlugin::ApiClient::FetchError.new("Network error"))
 
         result = plugin.sync
 
@@ -155,7 +155,7 @@ RSpec.describe CnbExchangeRatePlugin do
       end
 
       it "returns failure for unexpected errors" do
-        allow_any_instance_of(CnbApiClient).to receive(:fetch)
+        allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch)
           .and_raise(StandardError.new("Something went wrong"))
 
         result = plugin.sync
@@ -167,7 +167,7 @@ RSpec.describe CnbExchangeRatePlugin do
 
     context "empty response" do
       it "handles empty rates gracefully" do
-        allow_any_instance_of(CnbApiClient).to receive(:fetch).and_return([])
+        allow_any_instance_of(CnbExchangeRatePlugin::ApiClient).to receive(:fetch).and_return([])
 
         result = plugin.sync
 

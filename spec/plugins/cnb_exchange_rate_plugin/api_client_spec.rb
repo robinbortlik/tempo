@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CnbApiClient do
+RSpec.describe CnbExchangeRatePlugin::ApiClient do
   describe "#fetch" do
     let(:client) { described_class.new }
     let(:date) { Date.new(2024, 12, 15) }
@@ -50,7 +50,7 @@ RSpec.describe CnbApiClient do
       it "retries up to 3 times and raises error" do
         expect(Rails.logger).to receive(:error).at_least(:once)
 
-        expect { client.fetch(date: date) }.to raise_error(CnbApiClient::FetchError, /Failed to fetch CNB rates/)
+        expect { client.fetch(date: date) }.to raise_error(CnbExchangeRatePlugin::ApiClient::FetchError, /Failed to fetch CNB rates/)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe CnbApiClient do
       it "retries and raises error after max attempts" do
         expect(Rails.logger).to receive(:error).at_least(:once)
 
-        expect { client.fetch(date: date) }.to raise_error(CnbApiClient::FetchError)
+        expect { client.fetch(date: date) }.to raise_error(CnbExchangeRatePlugin::ApiClient::FetchError)
       end
     end
   end

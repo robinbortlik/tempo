@@ -15,6 +15,9 @@
 #   SyncExecutionService.new.execute(plugin_name: "cnb_exchange_rate")
 #
 class CnbExchangeRatePlugin < BasePlugin
+  # Load the API client
+  require_relative "cnb_exchange_rate_plugin/api_client"
+
   def self.name
     "cnb_exchange_rate"
   end
@@ -62,7 +65,7 @@ class CnbExchangeRatePlugin < BasePlugin
       records_updated: stats[:records_updated],
       dates_fetched: dates_to_fetch.map(&:to_s)
     }
-  rescue CnbApiClient::FetchError => e
+  rescue ApiClient::FetchError => e
     { success: false, error: e.message }
   rescue StandardError => e
     { success: false, error: "Unexpected error: #{e.message}" }
@@ -119,6 +122,6 @@ class CnbExchangeRatePlugin < BasePlugin
   end
 
   def api_client
-    @api_client ||= CnbApiClient.new
+    @api_client ||= ApiClient.new
   end
 end
