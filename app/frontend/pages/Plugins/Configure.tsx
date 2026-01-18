@@ -371,20 +371,22 @@ export default function PluginsConfigure() {
         </div>
 
         <div className="max-w-2xl space-y-6">
-          {/* Credentials Section */}
-          <div className="bg-white rounded-xl border border-stone-200 p-6">
-            <h3 className="font-semibold text-stone-900 mb-1">
-              {t("pages.plugins.configuration.credentialsSection")}
-            </h3>
-            <p className="text-sm text-stone-500 mb-4">
-              {t("pages.plugins.configuration.credentialsDescription")}
-            </p>
-            <CredentialsForm
-              fields={credential_fields}
-              defaultValues={credentials}
-              pluginName={plugin.plugin_name}
-            />
-          </div>
+          {/* Credentials Section - only show if plugin has credential fields */}
+          {credential_fields.length > 0 && (
+            <div className="bg-white rounded-xl border border-stone-200 p-6">
+              <h3 className="font-semibold text-stone-900 mb-1">
+                {t("pages.plugins.configuration.credentialsSection")}
+              </h3>
+              <p className="text-sm text-stone-500 mb-4">
+                {t("pages.plugins.configuration.credentialsDescription")}
+              </p>
+              <CredentialsForm
+                fields={credential_fields}
+                defaultValues={credentials}
+                pluginName={plugin.plugin_name}
+              />
+            </div>
+          )}
 
           {/* Settings Section */}
           <div className="bg-white rounded-xl border border-stone-200 p-6">

@@ -17,3 +17,7 @@ production:
     class: PluginSyncOrchestratorJob
     queue: default
     schedule: every minute
+  exchange_rate_fetch:
+    class: ExchangeRateFetchJob
+    queue: default
+    schedule: at 5pm Europe/Prague every day

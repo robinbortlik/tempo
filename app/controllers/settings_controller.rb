@@ -37,7 +37,8 @@ class SettingsController < ApplicationController
       :vat_id,
       :company_registration,
       :invoice_message,
-      :logo
+      :logo,
+      :main_currency
     )
   end
 end

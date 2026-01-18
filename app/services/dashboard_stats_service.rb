@@ -6,7 +6,8 @@ class DashboardStatsService
       hours_this_month: hours_this_month,
       unbilled_hours: unbilled_hours,
       unbilled_amounts: unbilled_amounts_by_currency,
-      unbilled_by_client: unbilled_by_client
+      unbilled_by_client: unbilled_by_client,
+      total_in_main_currency: total_in_main_currency
     }
   end
 
@@ -107,7 +108,32 @@ class DashboardStatsService
       .map { |month, hours| { month: month.strftime("%b %Y"), hours: hours } }
   end
 
+  def total_in_main_currency
+    invoices = paid_invoices_current_year
+    return { amount: 0.0, missing_exchange_rates: false } if invoices.empty?
+
+    total = 0.0
+    missing_rates = false
+
+    invoices.each do |invoice|
+      converted_amount = invoice.main_currency_amount
+      if converted_amount.nil?
+        missing_rates = true
+      else
+        total += converted_amount
+      end
+    end
+
+    { amount: total, missing_exchange_rates: missing_rates }
+  end
+
   private
+
+  def paid_invoices_current_year
+    @paid_invoices_current_year ||= Invoice
+      .paid
+      .for_year(Date.current.year)
+  end
 
   def unbilled_entries_with_amounts
     @unbilled_entries_with_amounts ||= WorkEntry

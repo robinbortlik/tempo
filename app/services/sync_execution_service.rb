@@ -72,12 +72,22 @@ class SyncExecutionService
     end
   end
 
-  # Validate that the plugin has credentials configured
+  # Validate that the plugin has credentials configured (if required)
   def validate_plugin_configured!(plugin_name)
+    plugin_class = PluginRegistry.find(plugin_name)
+    return if plugin_class && !requires_credentials?(plugin_class)
+
     config = PluginConfiguration.find_by(plugin_name: plugin_name)
     unless config&.has_credentials?
       raise PluginNotConfiguredError, "Plugin '#{plugin_name}' is not configured (missing credentials)"
     end
+  end
+
+  # Check if a plugin requires credentials
+  def requires_credentials?(plugin_class)
+    return false unless plugin_class.respond_to?(:credential_fields)
+    credential_fields = plugin_class.credential_fields
+    credential_fields.present? && credential_fields.any? { |f| f[:required] }
   end
 
   # Returns enabled plugin configurations

@@ -2,7 +2,7 @@ class SettingsSerializer
   include Alba::Resource
 
   attributes :id, :company_name, :address, :email, :phone, :vat_id,
-             :company_registration, :invoice_message
+             :company_registration, :invoice_message, :main_currency
 
   attribute :logo_url do |settings|
     if settings.logo?

@@ -30,9 +30,21 @@ class PluginConfigurationService
   end
 
   # Returns whether the plugin has credentials configured
+  # Plugins without required credential fields are considered configured by default
   # @return [Boolean]
   def configured?
+    return true unless requires_credentials?
+
     configuration.persisted? && configuration.credentials.present?
+  end
+
+  # Returns whether the plugin requires credentials to operate
+  # @return [Boolean]
+  def requires_credentials?
+    return false unless plugin_class.respond_to?(:credential_fields)
+
+    credential_fields = plugin_class.credential_fields
+    credential_fields.present? && credential_fields.any? { |f| f[:required] }
   end
 
   # Enables the plugin

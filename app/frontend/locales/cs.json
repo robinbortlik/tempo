@@ -95,7 +95,9 @@
       "preferences": {
         "title": "Předvolby",
         "language": "Jazyk",
-        "languageDescription": "Vyberte preferovaný jazyk"
+        "languageDescription": "Vyberte preferovaný jazyk",
+        "mainCurrency": "Hlavní měna",
+        "mainCurrencyDescription": "Měna používaná pro daňové účely a přepočtené částky na fakturách"
       },
       "businessDetails": {
         "title": "Údaje o firmě",
@@ -162,7 +164,10 @@
         "thisWeek": "Tento týden",
         "thisMonth": "Tento měsíc",
         "totalHours": "Celkem hodin",
-        "totalInvoiced": "Celkem vyfakturováno"
+        "totalInvoiced": "Celkem vyfakturováno",
+        "paidThisYear": "Zaplaceno letos ({{currency}})",
+        "incomplete": "Neúplné",
+        "missingExchangeRates": "Některé faktury nebylo možné přepočítat kvůli chybějícím kurzům"
       },
       "recentActivity": "Poslední aktivita",
       "quickActions": "Rychlé akce",

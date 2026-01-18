@@ -95,7 +95,9 @@
       "preferences": {
         "title": "Preferences",
         "language": "Language",
-        "languageDescription": "Select your preferred language"
+        "languageDescription": "Select your preferred language",
+        "mainCurrency": "Main Currency",
+        "mainCurrencyDescription": "Currency used for tax reporting and converted amounts on invoices"
       },
       "businessDetails": {
         "title": "Business Details",
@@ -162,7 +164,10 @@
         "thisWeek": "This Week",
         "thisMonth": "This Month",
         "totalHours": "Total Hours",
-        "totalInvoiced": "Total Invoiced"
+        "totalInvoiced": "Total Invoiced",
+        "paidThisYear": "Paid This Year ({{currency}})",
+        "incomplete": "Incomplete",
+        "missingExchangeRates": "Some invoices could not be converted due to missing exchange rates"
       },
       "recentActivity": "Recent Activity",
       "quickActions": "Quick Actions",

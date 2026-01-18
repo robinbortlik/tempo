@@ -75,6 +75,25 @@ class Invoice < ApplicationRecord
     update!(status: :paid, paid_at: date || Date.current)
   end
 
+  # Converts grand_total to main currency using exchange rate from issue_date
+  # Returns nil if no exchange rate available or currency is nil
+  # Returns original amount if invoice currency matches main currency
+  def main_currency_amount
+    return nil if currency.blank?
+
+    main_currency = Setting.instance.main_currency
+    return grand_total.to_f if currency == main_currency
+
+    exchange_rate = ExchangeRate.find_by(
+      base_currency: main_currency,
+      quote_currency: currency,
+      date: issue_date
+    )
+    return nil if exchange_rate.nil?
+
+    (grand_total * (exchange_rate.rate / exchange_rate.amount)).to_f
+  end
+
   private
 
   def set_invoice_number

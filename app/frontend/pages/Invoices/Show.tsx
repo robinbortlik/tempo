@@ -58,6 +58,8 @@ interface Invoice {
   client_default_vat_rate: number | null;
   client_locale: string;
   paid_at: string | null;
+  main_currency_amount: number | null;
+  main_currency: string | null;
 }
 
 interface Settings {
@@ -841,6 +843,21 @@ export default function InvoiceShow() {
                   {formatCurrency(invoice.grand_total, invoice.currency)}
                 </dd>
               </div>
+              {invoice.main_currency_amount !== null &&
+                invoice.main_currency &&
+                invoice.currency !== invoice.main_currency && (
+                  <div
+                    className="flex justify-end pt-2"
+                    data-testid="converted-amount"
+                  >
+                    <dd className="tabular-nums text-sm text-stone-500">
+                      {formatCurrency(
+                        invoice.main_currency_amount,
+                        invoice.main_currency
+                      )}
+                    </dd>
+                  </div>
+                )}
             </dl>
           </div>
 
