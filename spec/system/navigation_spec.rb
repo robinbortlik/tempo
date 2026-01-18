@@ -15,7 +15,7 @@ RSpec.describe "Navigation", type: :system do
   describe "Desktop Sidebar Navigation" do
     before do
       # Ensure we're in desktop viewport
-      page.driver.browser.manage.window.resize_to(1280, 800)
+      page.driver.resize_window_to(page.driver.current_window_handle, 1280, 800)
     end
 
     it "displays the sidebar with logo" do
@@ -110,7 +110,7 @@ RSpec.describe "Navigation", type: :system do
   describe "Mobile Navigation" do
     before do
       # Set mobile viewport
-      page.driver.browser.manage.window.resize_to(375, 667)
+      page.driver.resize_window_to(page.driver.current_window_handle, 375, 667)
       # Wait for the page to reflow
       sleep 0.1
     end
@@ -178,7 +178,7 @@ RSpec.describe "Navigation", type: :system do
 
   describe "Active State Styling" do
     before do
-      page.driver.browser.manage.window.resize_to(1280, 800)
+      page.driver.resize_window_to(page.driver.current_window_handle, 1280, 800)
     end
 
     it "applies correct styles to active nav item" do
