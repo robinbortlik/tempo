@@ -77,17 +77,22 @@ RUN npm run build 2>/dev/null || bundle exec vite build
 RUN bundle exec bootsnap precompile app/ lib/
 
 # =============================================================================
-# Production stage: Final image with Chromium for PDF generation
+# Production stage: Final image with Node.js and Chromium for PDF generation
 # =============================================================================
 FROM base
 
-# Install Chromium and its dependencies for Puppeteer/Grover PDF generation
+ARG NODE_VERSION
+
+# Install Node.js and Chromium with dependencies for Puppeteer/Grover PDF generation
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
+    gnupg \
     chromium \
     fonts-liberation \
     fonts-noto-color-emoji \
     fonts-dejavu-core \
+    && curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set Puppeteer environment variables to use system Chromium

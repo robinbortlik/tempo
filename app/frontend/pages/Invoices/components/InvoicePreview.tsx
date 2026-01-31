@@ -8,6 +8,7 @@ export interface LineItem {
   quantity: number | null;
   unit_price: number | null;
   amount: number;
+  vat_rate?: number;
   position: number;
   project_id?: number;
   project_name?: string;
@@ -46,6 +47,11 @@ export default function InvoicePreview({
       </div>
     );
   }
+
+  // Calculate VAT - all line items have the same vat_rate from client's default
+  const vatRate = lineItems[0]?.vat_rate ?? 0;
+  const vatAmount = totalAmount * (vatRate / 100);
+  const grandTotal = totalAmount + vatAmount;
 
   // Group line items by project
   const groupedByProject = lineItems.reduce(
@@ -176,10 +182,10 @@ export default function InvoicePreview({
             </div>
             <div className="flex justify-between">
               <dt className="text-stone-500">
-                {t("pages.invoices.newPreview.vat")} (0%)
+                {t("pages.invoices.newPreview.vat")} ({vatRate}%)
               </dt>
               <dd className="tabular-nums text-stone-900">
-                {formatCurrency(0, currency)}
+                {formatCurrency(vatAmount, currency)}
               </dd>
             </div>
             <div className="flex justify-between pt-2 border-t border-stone-200">
@@ -187,7 +193,7 @@ export default function InvoicePreview({
                 {t("pages.invoices.newPreview.total")}
               </dt>
               <dd className="tabular-nums font-semibold text-stone-900">
-                {formatCurrency(totalAmount, currency)}
+                {formatCurrency(grandTotal, currency)}
               </dd>
             </div>
           </dl>
